@@ -2,13 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
-namespace getnet.core
+namespace getnet.core.Model
 {
-    public class Class1
+    public class getnetContext : DbContext
     {
-        public Class1()
-        {
-        }
+
     }
 }
