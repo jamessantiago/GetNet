@@ -207,12 +207,13 @@ namespace getnet
             }
         }
 
+        //TODO add exception functions
         public void Error(Exception ex, string type)
         {
             if (!IsTraining)
             {
                 LogEventInfo ev = new LogEventInfo(LogLevel.Error, _logger.Name, ex.Message);
-                ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
+                //ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
                 if (!string.IsNullOrEmpty(type))
                     ev.Properties["type"] = type;
                 else
@@ -226,7 +227,7 @@ namespace getnet
             if (!IsTraining)
             {
                 LogEventInfo ev = new LogEventInfo(LogLevel.Error, _logger.Name, message);
-                ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
+                //ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
                 if (!string.IsNullOrEmpty(type))
                     ev.Properties["type"] = type;
                 else
@@ -260,12 +261,13 @@ namespace getnet
             }
         }
 
+        //TODO add exception functions
         public void Fatal(Exception ex, string type)
         {
             if (!IsTraining)
             {
                 LogEventInfo ev = new LogEventInfo(LogLevel.Fatal, _logger.Name, ex.Message);
-                ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
+                //ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
                 if (!string.IsNullOrEmpty(type))
                     ev.Properties["type"] = type;
                 else
@@ -280,7 +282,7 @@ namespace getnet
             if (!IsTraining)
             {
                 LogEventInfo ev = new LogEventInfo(LogLevel.Fatal, _logger.Name, message);
-                ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
+                //ev.Properties["details"] = ExceptionHelper.ParseErrorMessage(ex);
                 if (!string.IsNullOrEmpty(type))
                     ev.Properties["type"] = type;
                 else

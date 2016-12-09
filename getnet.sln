@@ -8,13 +8,12 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C056E4D0-ACB2-46D4-919C-4A77799A07FE}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
+		README.txt = README.txt
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.web", "src\getnet.web\getnet.web.xproj", "{612DA792-54C3-4FE1-A20A-A312746DEFD6}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.core", "src\getnet.core\getnet.core.xproj", "{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}"
-EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.whistler", "src\getnet.logging\getnet.whistler.xproj", "{1A4F85D2-8D2C-4C1C-92DB-8466858F4482}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,10 +29,6 @@ Global
 		{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1A4F85D2-8D2C-4C1C-92DB-8466858F4482}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1A4F85D2-8D2C-4C1C-92DB-8466858F4482}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1A4F85D2-8D2C-4C1C-92DB-8466858F4482}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1A4F85D2-8D2C-4C1C-92DB-8466858F4482}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -41,6 +36,5 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{612DA792-54C3-4FE1-A20A-A312746DEFD6} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
 		{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
-		{1A4F85D2-8D2C-4C1C-92DB-8466858F4482} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
 	EndGlobalSection
 EndGlobal

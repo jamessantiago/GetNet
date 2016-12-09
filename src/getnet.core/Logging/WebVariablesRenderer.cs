@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+//using System.Web;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -33,38 +33,38 @@ namespace getnet.logging
 		{
 			if (logEvent.Level > LogLevel.Info)
 			{
-				StringBuilder sb = new StringBuilder();
-				XmlWriter writer = XmlWriter.Create(sb);
+				//StringBuilder sb = new StringBuilder();
+				//XmlWriter writer = XmlWriter.Create(sb);
 
-				writer.WriteStartElement("error");
+				//writer.WriteStartElement("error");
 
-				writer.WriteStartElement("serverVariables");
-				foreach (string key in HttpContext.Current.Request.ServerVariables.AllKeys)
-				{
-					writer.WriteStartElement("item");
-					writer.WriteAttributeString("name", key);
-					writer.WriteStartElement("value");
-					writer.WriteAttributeString("string", HttpContext.Current.Request.ServerVariables[key].ToString());
-					writer.WriteEndElement();
-				}
-				writer.WriteEndElement();
-				writer.WriteStartElement("cookies");
-				foreach (string key in HttpContext.Current.Request.Cookies.AllKeys)
-				{
-					writer.WriteStartElement("item");
-					writer.WriteAttributeString("name", key);
-					writer.WriteStartElement("value");
-					writer.WriteAttributeString("string", HttpContext.Current.Request.Cookies[key].ToString());
-					writer.WriteEndElement();
-				}
-				writer.WriteEndElement();
+				//writer.WriteStartElement("serverVariables");
+				//foreach (string key in HttpContext.Current.Request.ServerVariables.AllKeys)
+				//{
+				//	writer.WriteStartElement("item");
+				//	writer.WriteAttributeString("name", key);
+				//	writer.WriteStartElement("value");
+				//	writer.WriteAttributeString("string", HttpContext.Current.Request.ServerVariables[key].ToString());
+				//	writer.WriteEndElement();
+				//}
+				//writer.WriteEndElement();
+				//writer.WriteStartElement("cookies");
+				//foreach (string key in HttpContext.Current.Request.Cookies.AllKeys)
+				//{
+				//	writer.WriteStartElement("item");
+				//	writer.WriteAttributeString("name", key);
+				//	writer.WriteStartElement("value");
+				//	writer.WriteAttributeString("string", HttpContext.Current.Request.Cookies[key].ToString());
+				//	writer.WriteEndElement();
+				//}
+				//writer.WriteEndElement();
 
-				writer.WriteEndElement();
+				//writer.WriteEndElement();
 
-				writer.Flush();
-				writer.Close();
-				string xml = sb.ToString();
-				builder.Append(xml);
+				//writer.Flush();
+				//writer.Close();
+				//string xml = sb.ToString();
+				//builder.Append(xml);
 			}
 		}
 	}

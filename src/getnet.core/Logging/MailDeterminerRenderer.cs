@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Web;
+//using System.Web;
 using System.Globalization;
 using System.Text;
 using System.Xml;
@@ -14,7 +14,7 @@ namespace getnet.logging
 	[LayoutRenderer("mail_determiner")]
 	public class MailDeterminerRenderer : LayoutRenderer
 	{
-		
+		//TODO Fix mail determiner
 		protected override void Append(StringBuilder builder, LogEventInfo logEvent)
 		{
 			//using (NetworkDataContext db = new NetworkDataContext())
