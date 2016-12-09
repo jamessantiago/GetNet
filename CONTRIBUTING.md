@@ -2,7 +2,7 @@
 
 Here's a quick guide.
 
-Fork, then clone the repo:
+Clone the repo:
 
     git clone http://gitlab.santiagodevelopment.com/jamessantiago/getnet.git
 
