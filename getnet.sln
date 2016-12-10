@@ -7,8 +7,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1FC5DD2B-3D1
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{C056E4D0-ACB2-46D4-919C-4A77799A07FE}"
 	ProjectSection(SolutionItems) = preProject
+		CONTRIBUTING.md = CONTRIBUTING.md
 		global.json = global.json
-		README.txt = README.txt
+		README.md = README.md
 	EndProjectSection
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.web", "src\getnet.web\getnet.web.xproj", "{612DA792-54C3-4FE1-A20A-A312746DEFD6}"
