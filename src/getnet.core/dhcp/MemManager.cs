@@ -37,8 +37,8 @@ namespace Dwo.Interop
             if (isDisposed)
                 throw new ObjectDisposedException(this.ToString());
 
-            IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf(structure));
-            Marshal.StructureToPtr(structure, iptr, false);
+            IntPtr iptr = Marshal.AllocHGlobal(Marshal.SizeOf<Object>(structure));
+            Marshal.StructureToPtr<Object>(structure, iptr, false);
             allocations.Add(iptr);
             return iptr;
         }
@@ -107,7 +107,7 @@ namespace Dwo.Interop
             if (isDisposed)
                 throw new ObjectDisposedException(this.ToString());
 
-            IntPtr iptr = Marshal.AllocHGlobal((int)arraysize * Marshal.SizeOf(type));
+            IntPtr iptr = Marshal.AllocHGlobal((int)arraysize * Marshal.SizeOf<Type>(type));
             allocations.Add(iptr);
             return iptr;
         }

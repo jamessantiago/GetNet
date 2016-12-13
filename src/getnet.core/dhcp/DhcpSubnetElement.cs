@@ -213,7 +213,7 @@ namespace Dwo
     
             this.Type = (DhcpSubnetElementDataType)nativeElement.ElementType;
         
-            DHCP_IP_RANGE ipr = (DHCP_IP_RANGE)Marshal.PtrToStructure(nativeElement.Data, typeof(DHCP_IP_RANGE));
+            DHCP_IP_RANGE ipr = (DHCP_IP_RANGE)Marshal.PtrToStructure<DHCP_IP_RANGE>(nativeElement.Data);
             this.StartAddress = new DhcpIpAddress(ipr.StartAddress);
             this.EndAddress = new DhcpIpAddress(ipr.EndAddress);
         }
@@ -291,7 +291,7 @@ namespace Dwo
         {
             this.Type = (DhcpSubnetElementDataType)nativeElement.ElementType;
 
-            DHCP_BOOTP_IP_RANGE ipr = (DHCP_BOOTP_IP_RANGE)Marshal.PtrToStructure(nativeElement.Data, typeof(DHCP_BOOTP_IP_RANGE));
+            DHCP_BOOTP_IP_RANGE ipr = (DHCP_BOOTP_IP_RANGE)Marshal.PtrToStructure<DHCP_BOOTP_IP_RANGE>(nativeElement.Data);
             this.StartAddress = new DhcpIpAddress(ipr.StartAddress);
             this.EndAddress = new DhcpIpAddress(ipr.EndAddress);
             this.BootpAllocated = ipr.BootpAllocated;
@@ -367,11 +367,11 @@ namespace Dwo
         {
             this.Type = (DhcpSubnetElementDataType)nativeElement.ElementType;
 
-            DHCP_IP_RESERVATION_V4 rez = (DHCP_IP_RESERVATION_V4)Marshal.PtrToStructure(nativeElement.Data, typeof(DHCP_IP_RESERVATION_V4));
+            DHCP_IP_RESERVATION_V4 rez = (DHCP_IP_RESERVATION_V4)Marshal.PtrToStructure<DHCP_IP_RESERVATION_V4>(nativeElement.Data);
             this.ReservedIp = new DhcpIpAddress(rez.ReservedIpAddress);
             this.bAllowedClientTypes = (DhcpSubnetClientType)rez.bAllowedClientTypes;
 
-            DHCP_CLIENT_UID mac = (DHCP_CLIENT_UID)Marshal.PtrToStructure(rez.ReservedForClient, typeof(DHCP_CLIENT_UID));
+            DHCP_CLIENT_UID mac = (DHCP_CLIENT_UID)Marshal.PtrToStructure<DHCP_CLIENT_UID>(rez.ReservedForClient);
             if (mac.DataLength < 5)
                 return;
             byte[] bytes = new byte[(int)mac.DataLength - 5];

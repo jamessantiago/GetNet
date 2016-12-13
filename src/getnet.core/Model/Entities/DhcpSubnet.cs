@@ -10,7 +10,7 @@ namespace getnet.core.Model.Entities
 {
     public class DhcpSubnet
     {
-        public int DhcpSubnetID { get; set; }
+        public int DhcpSubnetId { get; set; }
         [StringLength(100)]
         public string Name { get; set; }
         public int RawIP { get; set; }

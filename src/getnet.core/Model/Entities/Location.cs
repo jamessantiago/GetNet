@@ -8,7 +8,7 @@ namespace getnet.core.Model.Entities
 {
     public class Location
     {
-        public int LocationID { get; set; }
+        public int LocationId { get; set; }
 
         [StringLength(100)]
         public string Name { get; set; }

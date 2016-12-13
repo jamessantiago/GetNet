@@ -7,6 +7,8 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
+using getnet.core.Model;
 
 namespace getnet
 {
@@ -37,6 +39,22 @@ namespace getnet
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
+
+            if (Configuration["Data:SqlServerConnectionString"].HasValue())
+                services.AddEntityFrameworkSqlServer()
+                    .AddDbContext<getnetContext>(ops =>
+                    {
+                        ops.UseSqlServer(Configuration["Data:SqlServerConnectionString"]);
+                    });
+            else if (Configuration["Data:PostgresConnectionString"].HasValue())
+                services.AddEntityFrameworkNpgsql()
+                    .AddDbContext<getnetContext>(ops =>
+                    {
+                        ops.UseNpgsql(Configuration["Data:SqlServerConnectionString"]);
+                    });
+            UnitOfWork uow = new UnitOfWork();
+            getnetContext gc = new getnetContext();
+            //else enter some sort of unconfigured state
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

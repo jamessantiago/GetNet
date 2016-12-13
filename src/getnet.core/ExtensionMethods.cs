@@ -11,6 +11,7 @@ using System.ComponentModel;
 using System.Threading;
 using System.Reflection;
 using System.Security.Cryptography;
+using System.Net;
 
 namespace getnet
 {
@@ -483,6 +484,14 @@ namespace getnet
                 ip += Convert.ToUInt32(elements[3]);
             }
             return ip;
+        }
+
+        public static int ToInt(this IPAddress ip)
+        {
+            var address = ip.GetAddressBytes();
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(address);
+            return BitConverter.ToInt32(address, 0);
         }
     }
 }

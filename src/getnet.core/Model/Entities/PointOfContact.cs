@@ -8,7 +8,7 @@ namespace getnet.core.Model.Entities
 {
     public class PointOfContact
     {
-        public int PointOfContactID { get; set; }
+        public int PointOfContactId { get; set; }
 
         [Required, StringLength(250)]
         public string Name { get; set; }

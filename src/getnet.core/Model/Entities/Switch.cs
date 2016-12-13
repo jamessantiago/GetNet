@@ -29,6 +29,8 @@ namespace getnet.core.Model.Entities
         public virtual Tenant Tenant { get; set; }
         public virtual ICollection<RouterSwitchConnection> RouterSwitchConnections { get; set; }
 
-        public virtual ICollection<SwitchSwitchConnection> SwitchSwitchConnections { get; set; }
+        public virtual ICollection<SwitchSwitchConnection> InSwitchSwitchConnections { get; set; }
+
+        public virtual ICollection<SwitchSwitchConnection> OutSwitchSwitchConnections { get; set; }
     }
 }

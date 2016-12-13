@@ -148,12 +148,12 @@ namespace Dwo
                     throw new DhcpException(Response);
 
                 //work
-                DHCP_IP_ARRAY NativeIps = (DHCP_IP_ARRAY)Marshal.PtrToStructure(retPtr, typeof(DHCP_IP_ARRAY));
+                DHCP_IP_ARRAY NativeIps = (DHCP_IP_ARRAY)Marshal.PtrToStructure<DHCP_IP_ARRAY>(retPtr);
 
                 for (int i = 0; i < NativeIps.NumElements; ++i)
                 {
                     current = new DhcpSubnet();
-                    current.Address = new DhcpIpAddress((UInt32)Marshal.ReadInt32(NativeIps.Elements, i*Marshal.SizeOf(typeof(UInt32))));
+                    current.Address = new DhcpIpAddress((UInt32)Marshal.ReadInt32(NativeIps.Elements, i*Marshal.SizeOf<UInt32>()));
                     current.Get(server);
                     subnets.Add(current);
                 }   

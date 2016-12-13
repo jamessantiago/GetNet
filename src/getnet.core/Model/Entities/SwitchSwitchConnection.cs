@@ -7,10 +7,8 @@ namespace getnet.core.Model.Entities
 {
     public class SwitchSwitchConnection
     {
-        [Key, Column(Order = 0)]
         public int SwitchId { get; set; }
-
-        [Key, Column(Order = 1)]
+        
         public int ConnectedSwitchId { get; set; }
 
         [StringLength(100)]
@@ -25,16 +23,21 @@ namespace getnet.core.Model.Entities
 
     public class SwitchSwitchConnectionBuildItem : IModelBuildItem
     {
-        public void Build(ModelBuilder modelBuilder)
+        public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<SwitchSwitchConnection>()
+                .HasKey(d => new { d.SwitchId, d.ConnectedSwitchId });
+
+            modelBuilder.Entity<SwitchSwitchConnection>()
                .HasOne(d => d.Switch)
-               .WithMany(d => d.SwitchSwitchConnections)
+               .WithMany(d => d.InSwitchSwitchConnections)
+               .HasPrincipalKey(d => d.SwitchId)
                .HasForeignKey(d => d.SwitchId);
 
             modelBuilder.Entity<SwitchSwitchConnection>()
                 .HasOne(d => d.ConnectedSwitch)
-                .WithMany(d => d.SwitchSwitchConnections)
+                .WithMany(d => d.OutSwitchSwitchConnections)
+                .HasPrincipalKey(d => d.SwitchId)
                 .HasForeignKey(d => d.ConnectedSwitchId);
         }
     }

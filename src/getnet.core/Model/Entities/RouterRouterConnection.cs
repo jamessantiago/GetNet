@@ -7,10 +7,8 @@ namespace getnet.core.Model.Entities
 {
     public class RouterRouterConnection
     {
-        [Key, Column(Order = 0)]
         public int RouterId { get; set; }
-
-        [Key, Column(Order = 1)]
+        
         public int ConnectedRouterId { get; set; }
 
         [StringLength(100)]
@@ -25,17 +23,22 @@ namespace getnet.core.Model.Entities
 
     public class RouterRouterConnectionBuildItem : IModelBuildItem
     {
-        public void Build(ModelBuilder modelBuilder)
+        public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<RouterRouterConnection>()
-                .HasOne(d => d.Router)
-                .WithMany(d => d.RouterRouterConnections)
-                .HasForeignKey(d => d.RouterId);
+                .HasKey(d => new { d.RouterId, d.ConnectedRouterId });
+
+            modelBuilder.Entity<RouterRouterConnection>()                
+                .HasOne(d => d.ConnectedRouter)
+                .WithMany(d => d.InRouterRouterConnections)
+                .HasPrincipalKey(d => d.RouterId)
+                .HasForeignKey(d => d.ConnectedRouterId);
 
             modelBuilder.Entity<RouterRouterConnection>()
-                .HasOne(d => d.ConnectedRouter)
-                .WithMany(d => d.RouterRouterConnections)
-                .HasForeignKey(d => d.ConnectedRouterId);
+                .HasOne(d => d.Router)
+                .WithMany(d => d.OutRouterRouterConnections)
+                .HasPrincipalKey(d => d.RouterId)
+                .HasForeignKey(d => d.RouterId);
         }
     }
 }

@@ -1,5 +1,8 @@
 ﻿using System;
 using getnet.core.Model.Entities;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Storage;
 
 namespace getnet.core.Model
 {
@@ -19,6 +22,11 @@ namespace getnet.core.Model
                 }
                 return switchRepository;
             }
+        }
+
+        public bool DabaseExists()
+        {
+            return (context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists();
         }
 
         public void Dispose()

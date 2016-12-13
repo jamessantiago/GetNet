@@ -5,15 +5,14 @@ using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore;
 
 namespace getnet.core.Model.Entities
 {
     public class RouterSwitchConnection
     {
-        [Key, Column(Order = 0)]
         public int RouterId { get; set; }
-
-        [Key, Column (Order = 1)]
+        
         public int SwitchId { get; set; }
 
         [StringLength(100)]
@@ -24,5 +23,14 @@ namespace getnet.core.Model.Entities
 
         public virtual Router Router { get; set; }
         public virtual Switch Switch { get; set; }
+    }
+
+    public class RouterSwitchConnectionBuildItem : IModelBuildItem
+    {
+        public void Build(ref ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<RouterSwitchConnection>()
+                .HasKey("RouterId", "SwitchId");
+        }
     }
 }

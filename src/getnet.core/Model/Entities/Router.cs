@@ -30,16 +30,19 @@ namespace getnet.core.Model.Entities
         public virtual Tenant Tenant { get; set; }
         public virtual ICollection<RouterSwitchConnection> RouterSwitchConnections { get; set; }
 
-        public virtual ICollection<RouterRouterConnection> RouterRouterConnections { get; set; }
+        public virtual ICollection<RouterRouterConnection> OutRouterRouterConnections { get; set; }
+
+        public virtual ICollection<RouterRouterConnection> InRouterRouterConnections { get; set; }
 
         public virtual ICollection<Vlan> Vlans { get; set; }
     }
 
     public class RouterBuildItem : IModelBuildItem
     {
-        public void Build(ModelBuilder modelBuilder)
+        public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Router>().HasIndex("Model");
+            
         }
     }
 }

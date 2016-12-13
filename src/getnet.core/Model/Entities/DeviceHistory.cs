@@ -10,7 +10,7 @@ namespace getnet.core.Model.Entities
     [Table("DeviceHistories")]
     public class DeviceHistory
     {
-        public int DeviceHistoryID { get; set; }
+        public int DeviceHistoryId { get; set; }
 
         [StringLength(50)]
         public string MAC { get; set; }

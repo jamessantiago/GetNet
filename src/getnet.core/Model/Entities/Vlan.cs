@@ -10,7 +10,7 @@ namespace getnet.core.Model.Entities
 {
     public class Vlan
     {
-        public int VlanID { get; set; }
+        public int VlanId{ get; set; }
 
         [Required]
         public int VlanNumber { get; set; }
@@ -26,6 +26,9 @@ namespace getnet.core.Model.Entities
 
         [NotMapped]
         public IPAddress VlanSM => new IPAddress(RawVlanSM);
+
+        [NotMapped]
+        public IPNetwork IPNetwork => IPNetwork.Parse(VlanIP, VlanSM);
 
         public virtual Router Router { get; set; }
         public virtual ICollection<Device> Devices { get; set; }

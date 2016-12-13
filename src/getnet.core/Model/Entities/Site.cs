@@ -35,7 +35,7 @@ namespace getnet.core.Model.Entities
 
     public class SiteBuildItem : IModelBuildItem
     {
-        public void Build(ModelBuilder modelBuilder)
+        public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Site>().HasIndex("Status");
         }

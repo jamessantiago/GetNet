@@ -8,7 +8,7 @@ namespace getnet.core.Model.Entities
 {
     public class Diagram
     {
-        public int DiagramID { get; set; }
+        public int DiagramId { get; set; }
 
         [StringLength(100)]
         public string Type { get; set; }

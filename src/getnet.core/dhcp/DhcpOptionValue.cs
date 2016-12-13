@@ -437,7 +437,7 @@ namespace Dwo
             this.Type = DhcpOptionDataType.IpAddressType;
 
             //grab first element for type test
-            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(NativeOptData.Elements, typeof(DHCP_OPTION_DATA_ELEMENT));
+            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(NativeOptData.Elements);
 
             if (element.OptionType != DHCP_OPTION_DATA_TYPE.DhcpIpAddressOption)
                 throw new ArgumentException("NativeOptData type not IP");
@@ -449,8 +449,8 @@ namespace Dwo
             IntPtr iPtr;
             for (int i = 1; i < NativeOptData.NumElements; ++i)
             {
-                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
-                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(iPtr, typeof(DHCP_OPTION_DATA_ELEMENT));
+                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
+                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(iPtr);
                 this.Data[i] = new DhcpIpAddress(element.DWordOption);
             }
         }
@@ -478,7 +478,7 @@ namespace Dwo
                 element.OptionType = DHCP_OPTION_DATA_TYPE.DhcpIpAddressOption;
                 element.DWordOption = this.Data[i].GetUIntAddress();
 
-                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
+                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
                 Marshal.StructureToPtr(element, iptr, false);
 
             }
@@ -521,7 +521,7 @@ namespace Dwo
             this.Type = DhcpOptionDataType.WordType;
 
             //grab first element for type test
-            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(NativeOptData.Elements, typeof(DHCP_OPTION_DATA_ELEMENT));
+            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(NativeOptData.Elements);
 
             if (element.OptionType != DHCP_OPTION_DATA_TYPE.DhcpWordOption)
                 throw new ArgumentException("NativeOptData type not WORD");
@@ -533,8 +533,8 @@ namespace Dwo
             IntPtr iPtr;
             for (int i = 1; i < NativeOptData.NumElements; ++i)
             {
-                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
-                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(iPtr, typeof(DHCP_OPTION_DATA_ELEMENT));
+                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
+                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(iPtr);
                 this.Data[i] = element.WordOption;
             }
         }
@@ -562,7 +562,7 @@ namespace Dwo
                 element.OptionType = DHCP_OPTION_DATA_TYPE.DhcpWordOption;
                 element.WordOption = this.Data[i];
 
-                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
+                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
                 Marshal.StructureToPtr(element, iptr, false);
 
             }
@@ -605,7 +605,7 @@ namespace Dwo
             this.Type = DhcpOptionDataType.DWordType; 
 
             //grab first element for type test
-            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(NativeOptData.Elements, typeof(DHCP_OPTION_DATA_ELEMENT));
+            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(NativeOptData.Elements);
 
             if (element.OptionType != DHCP_OPTION_DATA_TYPE.DhcpDWordOption)
                 throw new ArgumentException("NativeOptData type not DWORD");
@@ -617,8 +617,8 @@ namespace Dwo
             IntPtr iPtr;
             for (int i = 1; i < NativeOptData.NumElements; ++i)
             {
-                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
-                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(iPtr, typeof(DHCP_OPTION_DATA_ELEMENT));
+                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
+                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(iPtr);
                 this.Data[i] = element.DWordOption;
             }
         }
@@ -646,7 +646,7 @@ namespace Dwo
                 element.OptionType = DHCP_OPTION_DATA_TYPE.DhcpDWordOption;
                 element.DWordOption = this.Data[i];
 
-                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
+                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
                 Marshal.StructureToPtr(element, iptr, false);
 
             }
@@ -689,7 +689,7 @@ namespace Dwo
             this.Type = DhcpOptionDataType.DWordDWordType;
 
             //grab first element for type test
-            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(NativeOptData.Elements, typeof(DHCP_OPTION_DATA_ELEMENT));
+            DHCP_OPTION_DATA_ELEMENT element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(NativeOptData.Elements);
 
             if (element.OptionType != DHCP_OPTION_DATA_TYPE.DhcpDWordDWordOption)
                 throw new ArgumentException("NativeOptData type not DWORDDWORD");
@@ -701,8 +701,8 @@ namespace Dwo
             IntPtr iPtr;
             for (int i = 1; i < NativeOptData.NumElements; ++i)
             {
-                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
-                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure(iPtr, typeof(DHCP_OPTION_DATA_ELEMENT));
+                iPtr = (IntPtr)(NativeOptData.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
+                element = (DHCP_OPTION_DATA_ELEMENT)Marshal.PtrToStructure<DHCP_OPTION_DATA_ELEMENT>(iPtr);
                 this.Data[i] = ((((UInt64)element.DWordDWordOption.UpperWord1) << 32) | element.DWordDWordOption.LowerWord2); ;
             }
         }
@@ -731,7 +731,7 @@ namespace Dwo
                 element.DWordDWordOption.LowerWord2 = (UInt32)(this.Data[i] & 0xFFFFFFFF);
                 element.DWordDWordOption.UpperWord1 = (UInt32)((this.Data[i] & 0xFFFFFFFF00000000) >> 32);
 
-                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
+                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
                 Marshal.StructureToPtr(element, iptr, false);
 
             }
@@ -815,7 +815,7 @@ namespace Dwo
                 element.OptionType = DHCP_OPTION_DATA_TYPE.DhcpStringDataOption;
                 element.StringOption = Mem.AllocString(this.Data[i]);
 
-                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf(typeof(DHCP_OPTION_DATA_ELEMENT))));
+                iptr = (IntPtr)(data.Elements.ToInt32() + (i * Marshal.SizeOf<DHCP_OPTION_DATA_ELEMENT>()));
                 Marshal.StructureToPtr(element, iptr, false);
 
             }

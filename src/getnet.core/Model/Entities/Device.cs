@@ -11,7 +11,7 @@ namespace getnet.core.Model.Entities
 {
     public class Device
     {
-        public int DeviceID { get; set; }
+        public int DeviceId { get; set; }
         public DeviceType Type { get; set; }
 
         [Required]
@@ -51,7 +51,7 @@ namespace getnet.core.Model.Entities
 
     public class DeviceBuildItem : IModelBuildItem
     {
-        public void Build(ModelBuilder modelBuilder)
+        public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Device>().HasIndex("MAC").IsUnique();
         }

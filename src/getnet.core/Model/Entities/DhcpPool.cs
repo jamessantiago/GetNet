@@ -10,7 +10,7 @@ namespace getnet.core.Model.Entities
 {
     public class DhcpPool
     {
-        public int DhcpPoolID { get; set; }
+        public int DhcpPoolId { get; set; }
 
         [StringLength(100)]
         public string Type { get; set; }
