@@ -3,10 +3,12 @@
 
   "dependencies": {
     "Microsoft.EntityFrameworkCore.SqlServer": "1.1.0",
+    "Microsoft.Extensions.DependencyInjection.Abstractions": "1.1.0",
     "NETStandard.Library": "1.6.1",
     "NLog": "5.0.0-beta03",
     "Npgsql.EntityFrameworkCore.PostgreSQL": "1.1.0",
-    "SSH.NET": "2016.0.0"
+    "SSH.NET": "2016.0.0",
+    "System.Reflection.TypeExtensions": "4.3.0"
   },
 
   "frameworks": {

@@ -470,5 +470,19 @@ namespace getnet
             System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
             return regex.IsMatch(email);
         }
+
+        public static uint IP2Int(this string IPAddress)
+        {
+            uint ip = 0;
+            string[] elements = IPAddress.Split(new Char[] { '.' });
+            if (elements.Length == 4)
+            {
+                ip = Convert.ToUInt32(elements[0]) << 24;
+                ip += Convert.ToUInt32(elements[1]) << 16;
+                ip += Convert.ToUInt32(elements[2]) << 8;
+                ip += Convert.ToUInt32(elements[3]);
+            }
+            return ip;
+        }
     }
 }

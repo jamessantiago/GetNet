@@ -1,24 +1,25 @@
 ﻿using System;
+using getnet.core.Model.Entities;
 
 namespace getnet.core.Model
 {
     public class UnitOfWork : IDisposable
     {
         private getnetContext context = new getnetContext();
-        //private GenericRepository<Example> exampleRepository;
+        private GenericRepository<Switch> switchRepository;
         private bool disposed = false;
 
-        //public GenericRepository<example> ExampleRepository
-        //{
-        //    get
-        //    {
-        //        if (this.exampleRepository == null)
-        //        {
-        //            this.exampleRepository = new GenericRepository<Example>(context);
-        //        }
-        //        return exampleRepository;
-        //    }
-        //}        
+        public GenericRepository<Switch> SwitchRepository
+        {
+            get
+            {
+                if (this.switchRepository == null)
+                {
+                    this.switchRepository = new GenericRepository<Switch>(context);
+                }
+                return switchRepository;
+            }
+        }
 
         public void Dispose()
         {
