@@ -28,6 +28,30 @@ namespace getnet
                 builder.AddApplicationInsightsSettings(developerMode: true);
             }
             Configuration = builder.Build();
+
+            //TODO create system wide connection state for database
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                Exception connEx;
+                if (!uow.ConnectionIsConfigured)
+                {
+
+                }
+                else if (!uow.TestDatabaseConnection(out connEx))
+                {
+                    
+                }
+                else if (!uow.CheckIfDabaseExists())
+                {
+
+                } else
+                {
+
+                }
+
+            }
+
+            //set unconfigured state if database can't connect
         }
 
         public IConfigurationRoot Configuration { get; }
@@ -39,22 +63,6 @@ namespace getnet
             services.AddApplicationInsightsTelemetry(Configuration);
 
             services.AddMvc();
-
-            if (Configuration["Data:SqlServerConnectionString"].HasValue())
-                services.AddEntityFrameworkSqlServer()
-                    .AddDbContext<getnetContext>(ops =>
-                    {
-                        ops.UseSqlServer(Configuration["Data:SqlServerConnectionString"]);
-                    });
-            else if (Configuration["Data:PostgresConnectionString"].HasValue())
-                services.AddEntityFrameworkNpgsql()
-                    .AddDbContext<getnetContext>(ops =>
-                    {
-                        ops.UseNpgsql(Configuration["Data:SqlServerConnectionString"]);
-                    });
-            UnitOfWork uow = new UnitOfWork();
-            getnetContext gc = new getnetContext();
-            //else enter some sort of unconfigured state
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
