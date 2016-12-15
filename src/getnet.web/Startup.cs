@@ -21,19 +21,14 @@ namespace getnet
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddJsonFile($"appsettings.{env.EnvironmentName}.json", optional: true)
                 .AddEnvironmentVariables();
-
-            if (env.IsDevelopment())
-            {
-                // This will push telemetry data through Application Insights pipeline faster, allowing you to view results immediately.
-                builder.AddApplicationInsightsSettings(developerMode: true);
-            }
+            
             Configuration = builder.Build();
 
             //TODO create system wide connection state for database
             using (UnitOfWork uow = new UnitOfWork())
             {
                 Exception connEx;
-                if (!uow.ConnectionIsConfigured)
+                if (uow.ConfigurationState != UnitOfWork.DatabaseConfigurationState.Configured)
                 {
 
                 }
@@ -80,7 +75,7 @@ namespace getnet
             }
             else
             {
-                app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/a/Error");
             }
 
             app.UseApplicationInsightsExceptionTelemetry();
@@ -91,7 +86,7 @@ namespace getnet
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Home}/{action=Index}/{id?}");
+                    template: "{controller=a}/{action=Index}/{id?}");
             });
         }
     }

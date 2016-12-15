@@ -3,9 +3,11 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Reflection;
+using getnet;
 
 namespace getnet.core.Model
 {
+
     public interface IModelBuildItem
     {
         void Build(ref ModelBuilder modelBuilder);
@@ -13,6 +15,8 @@ namespace getnet.core.Model
 
     public class getnetContext : DbContext
     {
+        private Whistler logger = new Whistler();
+
         public event EventHandler ConfigurationComplete = delegate { };
         public DbSet<DeviceHistory> DeviceHistories { get; set; }
         public DbSet<Device> Devices { get; set; }
@@ -31,15 +35,18 @@ namespace getnet.core.Model
                 {
                     optionsBuilder.UseSqlServer(Current.Configuration["Data:SqlServerConnectionString"]);
                     IsConfigured = true;
+                    logger.Info("Database set to use a MS SQL server connection", WhistlerTypes.DatabaseSetup);
                 }
                 else if (Current.Configuration["Data:NpgsqlConnectionString"].HasValue())
                 {
                     optionsBuilder.UseNpgsql(Current.Configuration["Data:NpgsqlConnectionString"]);
                     IsConfigured = true;
+                    logger.Info("Database set to use a PostgreSQL server connection", WhistlerTypes.DatabaseSetup);
                 }
                 else
                 {
                     IsConfigured = false;
+                    logger.Warn("There is no connection string in the configuration available to configure the database", WhistlerTypes.DatabaseSetup);
                 }
             }
             catch { }

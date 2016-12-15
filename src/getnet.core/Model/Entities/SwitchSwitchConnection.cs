@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace getnet.core.Model.Entities
 {
@@ -38,7 +39,8 @@ namespace getnet.core.Model.Entities
                 .HasOne(d => d.ConnectedSwitch)
                 .WithMany(d => d.OutSwitchSwitchConnections)
                 .HasPrincipalKey(d => d.SwitchId)
-                .HasForeignKey(d => d.ConnectedSwitchId);
+                .HasForeignKey(d => d.ConnectedSwitchId)
+                .OnDelete(DeleteBehavior.Restrict);
         }
     }
 }

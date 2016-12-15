@@ -27,10 +27,11 @@ namespace getnet.core.Model.Entities
         public virtual Location Location { get; set; }
         public virtual Priority Priority { get; set; }
 
-        public virtual List<Router> Routers { get; set; }
-        public virtual List<Switch> Switches { get; set; }
-        public virtual List<PointOfContact> PointOfContacts { get; set; }
-        public virtual List<Diagram> Diagrams { get; set; }
+        public virtual ICollection<Router> Routers { get; set; }
+        public virtual ICollection<Switch> Switches { get; set; }
+        public virtual ICollection<PointOfContact> PointOfContacts { get; set; }
+        public virtual ICollection<Diagram> Diagrams { get; set; }
+        public virtual ICollection<AlertRule> AlertRules { get; set; }
     }
 
     public class SiteBuildItem : IModelBuildItem

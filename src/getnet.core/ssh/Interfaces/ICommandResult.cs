@@ -7,6 +7,7 @@ namespace getnet.core.ssh
 {
     public interface ICommandResult
     {
-        T ConvertCommandResult<T>(string data, int exitStatus);
+        string GetStoredCommand();        
+        ICommandResult ConvertCommandResult<T>(string data);
     }
 }

@@ -6,9 +6,9 @@ using Renci.SshNet;
 
 namespace getnet.core.ssh
 {
-    public class RenciSshClientFactory : IgetnetSshClientFactory
+    public class RenciSshClientFactory : IGscFactory
     {
-        public SshClient CreateClient(IgetnetSshClientSettings settings)
+        public SshClient CreateClient(IGscSettings settings)
         {
             ConnectionInfo con = new ConnectionInfo(settings.Host, settings.Username,
                 new AuthenticationMethod[] {
@@ -20,8 +20,8 @@ namespace getnet.core.ssh
                     {
                         new PrivateKeyFile(settings.KeyFile, settings.Passphrase)
                     }));
-            var client = new SshClient(con);
-            client.Connect();
+            var client = new SshClient(con); 
+            client.Connect();            
             return client;
         }
     }

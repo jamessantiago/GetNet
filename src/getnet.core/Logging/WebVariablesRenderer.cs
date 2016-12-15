@@ -9,7 +9,7 @@ using NLog;
 using NLog.Config;
 using NLog.LayoutRenderers;
 
-namespace getnet.logging
+namespace getnet.core.Logging
 {
 	[LayoutRenderer("web_variables")]
 	public class WebVariablesRenderer : LayoutRenderer

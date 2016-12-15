@@ -13,18 +13,53 @@ namespace getnet.tests
     public class UnitOfWorkTests
     {
         [Fact]
-        public void CheckDatabaseConnection()
+        public void CheckDatabaseTest()
         {
-            Current.Configuration["Data:SqlServerConnectionString"] = "test";
+            var w = new Whistler();
+            Current.Configuration["Data:SqlServerConnectionString"] = "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true";
             using (UnitOfWork uow = new UnitOfWork())
             {
-                Exception ex = null;
-                if (uow.ConfigurationState == UnitOfWork.DatabaseConfigurationState.Pending)
-                    uow.TestDatabaseConnection(out ex);
-                Assert.True(uow.ConfigurationState == UnitOfWork.DatabaseConfigurationState.Configured);
+                w.Info("test", "test");
+                bool configured, exists = false, tested, deleted = false;
+
+                Exception testException = null;
+                Exception createException = null;
+                Exception deleteException = null;
                 
-                Assert.True(uow.TestDatabaseConnection(out ex));
-                Assert.True(uow.CheckIfDabaseExists());
+                tested = uow.TestDatabaseConnection(out testException);
+                configured = uow.ConfigurationState == UnitOfWork.DatabaseConfigurationState.Configured;
+
+                try
+                {
+                    exists = uow.EnsureDatabaseExists();
+                    tested = uow.TestDatabaseConnection(out testException);
+
+                } catch (Exception e)
+                {
+                    createException = e;
+                } 
+
+                try
+                {
+                    deleted = uow.EnsureDatabaseIsDeleted();
+                } catch (Exception ee)
+                {
+                    deleteException = ee;
+                }
+
+                if (testException != null)
+                    throw testException;
+                if (createException != null)
+                    throw createException;
+                if (deleteException != null)
+                    throw deleteException;
+
+                w.Fatal("test2", "test2");
+
+                Assert.True(configured);
+                Assert.True(tested);
+                Assert.True(exists);
+                Assert.True(deleted);
             }
         }
     }

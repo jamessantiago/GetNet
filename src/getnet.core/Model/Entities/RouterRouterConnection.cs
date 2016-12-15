@@ -2,6 +2,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace getnet.core.Model.Entities
 {
@@ -32,7 +33,8 @@ namespace getnet.core.Model.Entities
                 .HasOne(d => d.ConnectedRouter)
                 .WithMany(d => d.InRouterRouterConnections)
                 .HasPrincipalKey(d => d.RouterId)
-                .HasForeignKey(d => d.ConnectedRouterId);
+                .HasForeignKey(d => d.ConnectedRouterId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<RouterRouterConnection>()
                 .HasOne(d => d.Router)

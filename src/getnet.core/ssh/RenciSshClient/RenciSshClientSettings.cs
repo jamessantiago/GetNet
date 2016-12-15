@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace getnet.core.ssh
 {
-    public class RenciSshClientSettings : IgetnetSshClientSettings
+    public class RenciSshClientSettings : IGscSettings
     {
         public string Host { get; set; }
         public int Port { get; set; }

@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace getnet.core.ssh
 {
-    public interface IgetnetSshClientSettings
+    public interface IGscSettings
     {
         string Host { get; set; }
         int Port { get; set; }

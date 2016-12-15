@@ -8,7 +8,7 @@ using NLog;
 using NLog.Config;
 using NLog.LayoutRenderers;
 
-namespace getnet.logging
+namespace getnet.core.Logging
 {
 	[LayoutRenderer("mail_subject")]
 	public class MailSubjectRenderer : LayoutRenderer
