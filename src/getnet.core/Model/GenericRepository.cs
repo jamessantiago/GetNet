@@ -7,7 +7,9 @@ using System.Linq.Expressions;
 
 namespace getnet.core.Model
 {
-    public class GenericRepository<TEntity> where TEntity : class
+    public interface IGenericRepository { }
+
+    public class GenericRepository<TEntity> : IGenericRepository where TEntity : class
     {
         internal getnetContext context;
         internal DbSet<TEntity> dbSet;

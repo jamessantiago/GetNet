@@ -7,7 +7,7 @@ using System.IO;
 
 namespace getnet
 {
-    public static partial class Current
+    public static partial class CoreCurrent
     {
         private static IConfigurationRoot configuration;
 

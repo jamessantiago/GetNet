@@ -24,29 +24,7 @@ namespace getnet
             
             Configuration = builder.Build();
 
-            //TODO create system wide connection state for database
-            using (UnitOfWork uow = new UnitOfWork())
-            {
-                Exception connEx;
-                if (uow.ConfigurationState != UnitOfWork.DatabaseConfigurationState.Configured)
-                {
-
-                }
-                else if (!uow.TestDatabaseConnection(out connEx))
-                {
-                    
-                }
-                else if (!uow.CheckIfDabaseExists())
-                {
-
-                } else
-                {
-
-                }
-
-            }
-
-            //set unconfigured state if database can't connect
+            Current.SetDbConfigurationState();
         }
 
         public IConfigurationRoot Configuration { get; }

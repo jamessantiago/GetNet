@@ -31,15 +31,15 @@ namespace getnet.core.Model
         {
             try
             {
-                if (Current.Configuration["Data:SqlServerConnectionString"].HasValue())
+                if (CoreCurrent.Configuration["Data:SqlServerConnectionString"].HasValue())
                 {
-                    optionsBuilder.UseSqlServer(Current.Configuration["Data:SqlServerConnectionString"]);
+                    optionsBuilder.UseSqlServer(CoreCurrent.Configuration["Data:SqlServerConnectionString"]);
                     IsConfigured = true;
                     logger.Info("Database set to use a MS SQL server connection", WhistlerTypes.DatabaseSetup);
                 }
-                else if (Current.Configuration["Data:NpgsqlConnectionString"].HasValue())
+                else if (CoreCurrent.Configuration["Data:NpgsqlConnectionString"].HasValue())
                 {
-                    optionsBuilder.UseNpgsql(Current.Configuration["Data:NpgsqlConnectionString"]);
+                    optionsBuilder.UseNpgsql(CoreCurrent.Configuration["Data:NpgsqlConnectionString"]);
                     IsConfigured = true;
                     logger.Info("Database set to use a PostgreSQL server connection", WhistlerTypes.DatabaseSetup);
                 }

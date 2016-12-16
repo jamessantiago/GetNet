@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using System;
+using System.Collections.Generic;
 
 namespace getnet.core.Model
 {
@@ -36,6 +37,15 @@ namespace getnet.core.Model
             Pending
         }
         public DatabaseConfigurationState ConfigurationState { get; private set; }
+
+        private List<IGenericRepository> repos { get; set; }
+
+        public List<IGenericRepository> Repos { get
+            {
+                repos = new List<IGenericRepository>();
+                repos.Add(new GenericRepository<Switch>(context));
+                return repos;
+            } }
 
         public GenericRepository<AlertRule> AlertRuleRepository
         {

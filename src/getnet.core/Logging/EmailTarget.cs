@@ -18,15 +18,15 @@ namespace getnet.core.Logging
     {
         public MailKitTarget()
         {
-            if (Current.Configuration["Data:Smtp:Server"].HasValue() &&
-                Current.Configuration["Data:Smtp:From"].HasValue() &&
-                Current.Configuration["Data:Smtp:SubjectTemplate"].HasValue())
+            if (CoreCurrent.Configuration["Data:Smtp:Server"].HasValue() &&
+                CoreCurrent.Configuration["Data:Smtp:From"].HasValue() &&
+                CoreCurrent.Configuration["Data:Smtp:SubjectTemplate"].HasValue())
             {
                 try
                 {
                     client = new SmtpClient();
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    client.Connect(Current.Configuration["Data:Smtp:Server"]);
+                    client.Connect(CoreCurrent.Configuration["Data:Smtp:Server"]);
                     IsConfigured = true;
                 } catch
                 {
@@ -44,8 +44,8 @@ namespace getnet.core.Logging
             var message = new MimeMessage();
             foreach (var ta in toAddresses.Split(';'))
                 message.To.Add(new MailboxAddress(ta));
-            message.To.Add(new MailboxAddress(Current.Configuration["Data:Smtp:From"]));
-            generalLayout = Current.Configuration["Data:Smtp:SubjectTemplate"];
+            message.To.Add(new MailboxAddress(CoreCurrent.Configuration["Data:Smtp:From"]));
+            generalLayout = CoreCurrent.Configuration["Data:Smtp:SubjectTemplate"];
             message.Subject = generalLayout.Render(logEvent);
             var mailLayout = new WhistlerMailRenderer();
             message.Body = new TextPart("plain")
@@ -61,7 +61,7 @@ namespace getnet.core.Logging
             get
             {
                 if (!client.IsConnected)
-                    client.Connect(Current.Configuration["Data:Smtp:Server"]);
+                    client.Connect(CoreCurrent.Configuration["Data:Smtp:Server"]);
                 return client;
             }
         }
