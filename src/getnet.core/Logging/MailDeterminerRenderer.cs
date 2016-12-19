@@ -27,7 +27,7 @@ namespace getnet.core.Logging
                 if ((logEvent.Properties.ContainsKey("SiteId") && int.TryParse(logEvent.Properties["SiteId"].ToString(), out SiteId)) && logEvent.Properties.ContainsKey("type"))
                 {
                     predicates = predicates.And(d => (d.Type == logEvent.Properties["type"].ToString() || d.Type == "All") && d.Site != null && d.Site.SiteId == (int)logEvent.Properties["SiteId"]);
-                    var net = uow.SiteRepository.GetByID(SiteId);
+                    var net = uow.Repo<Site>().GetByID(SiteId);
                 }
                 else
                     predicates = predicates.And(d => d.Site == null);
@@ -35,7 +35,7 @@ namespace getnet.core.Logging
                 if (logEvent.Properties.ContainsKey("type") && !logEvent.Properties.ContainsKey("directory"))
                     predicates = predicates.And(d => (d.Type == logEvent.Properties["type"].ToString() || d.Type == "All"));
 
-                var alerts = uow.AlertRuleRepository.Get(predicates);
+                var alerts = uow.Repo<AlertRule>().Get(predicates);
                 string finalemail = "";
                 foreach (var alert in alerts)
                 {

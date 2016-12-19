@@ -1,101 +1,60 @@
-﻿using getnet.core.Model.Entities;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
+using Microsoft.Extensions.DependencyInjection;
 using System;
-using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
 
 namespace getnet.core.Model
 {
     public class UnitOfWork : IDisposable
     {
+        public IServiceProvider Services;
+        private getnetContext context {
+            get
+            {
+                return Services.GetRequiredService<getnetContext>();
+            }
+        }
+        private bool disposed = false;
         private Whistler logger = new Whistler();
-
         public UnitOfWork()
         {
+            IServiceCollection serviceCollection = new ServiceCollection();
+            ConfigureServices(serviceCollection);
+            Services = serviceCollection.BuildServiceProvider();
             context.ConfigurationComplete += Context_ConfigurationComplete;
             ConfigurationState = DatabaseConfigurationState.Pending;
         }
 
-        private void Context_ConfigurationComplete(object sender, EventArgs e)
-        {
-            if (context.IsConfigured)
-                ConfigurationState = DatabaseConfigurationState.Configured;
-            else
-                ConfigurationState = DatabaseConfigurationState.Unconfigured;
-        }
-
-        private getnetContext context = new getnetContext();
-        private bool disposed = false;
-        private GenericRepository<Switch> switchRepository;
-        private GenericRepository<Site> siteRepository;
-        private GenericRepository<AlertRule> alertRuleRepository;
         public enum DatabaseConfigurationState
         {
             Configured,
             Unconfigured,
             Pending
         }
+
         public DatabaseConfigurationState ConfigurationState { get; private set; }
-
-        private List<IGenericRepository> repos { get; set; }
-
-        public List<IGenericRepository> Repos { get
-            {
-                repos = new List<IGenericRepository>();
-                repos.Add(new GenericRepository<Switch>(context));
-                return repos;
-            } }
-
-        public GenericRepository<AlertRule> AlertRuleRepository
-        {
-            get
-            {
-                if (this.alertRuleRepository == null)
-                {
-                    this.alertRuleRepository = new GenericRepository<AlertRule>(context);
-                }
-                return alertRuleRepository;
-            }
-        }
-
-        public GenericRepository<Switch> SwitchRepository
-        {
-            get
-            {
-                if (this.switchRepository == null)
-                {
-                    this.switchRepository = new GenericRepository<Switch>(context);
-                }
-                return switchRepository;
-            }
-        }
-
-        public GenericRepository<Site> SiteRepository
-        {
-            get
-            {
-                if (this.siteRepository == null)
-                {
-                    this.siteRepository = new GenericRepository<Site>(context);
-                }
-                return siteRepository;
-            }
-        }
 
         public bool CheckIfDabaseExists()
         {
             return (context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists();
         }
 
-        public bool EnsureDatabaseExists() => context.Database.EnsureCreated();
-
-        public bool EnsureDatabaseIsDeleted() => context.Database.EnsureDeleted();
-
         public void Dispose()
         {
             Dispose(true);
             GC.SuppressFinalize(this);
+        }
+
+        public bool EnsureDatabaseExists() => context.Database.EnsureCreated();
+
+        public bool EnsureDatabaseIsDeleted() => context.Database.EnsureDeleted();
+
+        public IGenericRepository<T> Repo<T>()
+        {
+            return Services.GetRequiredService<IGenericRepository<T>>();
         }
 
         public void Save()
@@ -121,6 +80,7 @@ namespace getnet.core.Model
                 return false;
             }
         }
+
         protected virtual void Dispose(bool disposing)
         {
             if (!this.disposed)
@@ -131,6 +91,30 @@ namespace getnet.core.Model
                 }
             }
             this.disposed = true;
+        }
+
+        private void ConfigureServices(IServiceCollection services)
+        {
+            services.AddSingleton<getnetContext>();
+            var q = from t in Assembly.Load(new AssemblyName("getnet.core")).GetTypes()
+                    where !typeof(IModelBuildItem).IsAssignableFrom(t) &&
+                            t != typeof(IModelBuildItem) &&
+                            t.Namespace == "getnet.core.Model.Entities"
+                    select t;
+
+            foreach (var t in q.ToList())
+            {
+                services.AddTransient(Type.GetType(t.FullName), Type.GetType(t.FullName));
+            }
+            services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+        }
+
+        private void Context_ConfigurationComplete(object sender, EventArgs e)
+        {
+            if (context.IsConfigured)
+                ConfigurationState = DatabaseConfigurationState.Configured;
+            else
+                ConfigurationState = DatabaseConfigurationState.Unconfigured;
         }
     }
 }

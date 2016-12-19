@@ -6,6 +6,7 @@ using getnet;
 using System.Threading;
 using getnet.core;
 using getnet.core.Model;
+using getnet.core.Model.Entities;
 using Xunit;
 
 namespace getnet.tests
@@ -60,6 +61,29 @@ namespace getnet.tests
                 Assert.True(tested);
                 Assert.True(exists);
                 Assert.True(deleted);
+            }
+        }
+
+        [Fact]
+        public void CreateSiteTest()
+        {
+            CoreCurrent.Configuration["Data:SqlServerConnectionString"] = "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true";
+            using (UnitOfWork uow = new UnitOfWork())
+            {
+                Exception testException;
+                uow.TestDatabaseConnection(out testException);
+                uow.EnsureDatabaseExists();
+                uow.Repo<Site>().Insert(new Site()
+                {
+                    Name = "Site Test",
+                    Priority = Priority.P1,
+                    Building = "10",
+                    Details = "This is a site test",
+                    Owner = "Owner",
+                    Status = SiteStatus.Unkown
+                });
+                uow.Save();
+                Assert.NotNull(uow.Repo<Site>().Get(d => d.Name == "Site Test").First());
             }
         }
     }
