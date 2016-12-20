@@ -7,6 +7,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration.Json;
 using Newtonsoft.Json;
 using System.Text;
+using Microsoft.Extensions.Primitives;
 
 namespace getnet
 {
@@ -20,14 +21,14 @@ namespace getnet
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddCustomJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
-            
+            ConfigFile = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
             return builder.Build();
         }
 
+        public static string ConfigFile { get; private set; }
+
         public const string ENTROPY = "getnet";
     }
-
-    
 }

@@ -21,7 +21,8 @@
     "BundlerMinifier.Core": "2.2.306",
     "Microsoft.NETCore.App": "1.1.0",
     "Microsoft.EntityFrameworkCore.Design": "1.1.0",
-    "Novell.Directory.Ldap.NETStandard": "2.3.5"
+    "Novell.Directory.Ldap.NETStandard": "2.3.5",
+    "Microsoft.jQuery.Unobtrusive.Ajax": "3.2.3"
   },
 
   "tools": {

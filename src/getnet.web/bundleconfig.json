@@ -13,6 +13,8 @@
     "outputFileName": "wwwroot/js/site.min.js",
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/jquery-validation/jquery.validate.js",
+      "wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
       "wwwroot/lib/material-design-lite/material.js",
       "wwwroot/js/site.js"
     ],

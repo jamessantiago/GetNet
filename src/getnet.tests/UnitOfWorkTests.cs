@@ -7,6 +7,7 @@ using System.Threading;
 using getnet.core;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
+using getnet.core.Helpers;
 using Xunit;
 
 namespace getnet.tests
@@ -17,7 +18,7 @@ namespace getnet.tests
         public void CheckDatabaseTest()
         {
             var w = new Whistler();
-            CoreCurrent.Configuration["Data:SqlServerConnectionString"] = "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true";
+            CoreCurrent.Configuration.SetSecure("Data:SqlServerConnectionString", "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true");
             using (UnitOfWork uow = new UnitOfWork())
             {
                 w.Info("test", "test");
@@ -67,7 +68,8 @@ namespace getnet.tests
         [Fact]
         public void CreateSiteTest()
         {
-            CoreCurrent.Configuration["Data:SqlServerConnectionString"] = "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true";
+            CoreCurrent.Configuration.SetSecure("Data:SqlServerConnectionString", "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true");
+            
             using (UnitOfWork uow = new UnitOfWork())
             {
                 Exception testException;

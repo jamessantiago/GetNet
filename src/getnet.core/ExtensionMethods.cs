@@ -13,6 +13,10 @@ using System.Reflection;
 using System.Security.Cryptography;
 using System.Net;
 using Microsoft.Extensions.Configuration;
+using System.IO;
+using System.Dynamic;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace getnet
 {
@@ -288,7 +292,7 @@ namespace getnet
             if (result != null && !(result is List<T>))
                 return Enumerable.ToList<T>(result);
             return (List<T>)(result);
-        }        
+        }
 
         public static async Task<IDisposable> EnsureOpenAsync(this DbConnection connection)
         {
@@ -448,7 +452,7 @@ namespace getnet
             if (s.Length <= maxLength) return s;
 
             return $"{Truncate(s, Math.Max(maxLength, 3) - 3)}...";
-        }        
+        }
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random rng)
         {
@@ -498,6 +502,8 @@ namespace getnet
         public static string GetSecure(this IConfiguration config, string key)
         {
             var cipherText = config[key];
+            if (!cipherText.HasValue())
+                return string.Empty;
             string description = string.Empty;
             return DPAPI.Decrypt(cipherText, CoreCurrent.ENTROPY, out description);
         }
@@ -505,7 +511,40 @@ namespace getnet
         public static void SetSecure(this IConfiguration config, string key, string value)
         {
             var secureText = DPAPI.Encrypt(DPAPI.KeyType.MachineKey, value, CoreCurrent.ENTROPY);
-            config[key] = secureText;
+            config.Set(key, secureText);
+        }
+
+        public static void Set(this IConfiguration config, string key, string value)
+        {
+            string json = File.ReadAllText(CoreCurrent.ConfigFile);
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            var jsonExp = (JObject)jsonObj;
+            var keypath = key.Split(':');
+            var current = jsonExp;
+
+            switch (keypath.Count()) // D:
+            {
+                case 1:
+                    jsonObj[keypath[0]] = value;
+                    break;
+                case 2:
+                    jsonObj[keypath[0]][keypath[1]] = value;
+                    break;
+                case 3:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]] = value;
+                    break;
+                case 4:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]] = value;
+                    break;
+                case 5:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]][keypath[4]] = value;
+                    break;
+                default:
+                    throw new NotSupportedException("Key depth can only be 5");
+            }
+            string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(CoreCurrent.ConfigFile, output);
+            config[key] = value;
         }
     }
 }
