@@ -84,6 +84,7 @@ namespace getnet.tests
                 });
                 uow.Save();
                 Assert.NotNull(uow.Repo<Site>().Get(d => d.Name == "Site Test").First());
+                uow.EnsureDatabaseIsDeleted();
             }
         }
     }

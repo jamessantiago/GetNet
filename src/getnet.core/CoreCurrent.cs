@@ -4,6 +4,9 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using System.IO;
+using Microsoft.Extensions.Configuration.Json;
+using Newtonsoft.Json;
+using System.Text;
 
 namespace getnet
 {
@@ -17,10 +20,14 @@ namespace getnet
         {
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
-                .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
+                .AddCustomJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
             
             return builder.Build();
         }
+
+        public const string ENTROPY = "getnet";
     }
+
+    
 }

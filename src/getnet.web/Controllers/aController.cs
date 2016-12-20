@@ -7,7 +7,7 @@ using getnet.Helpers;
 
 namespace getnet.Controllers
 {
-    [RedirectOnDbIssue]
+    //[RedirectOnDbIssue]
     public class aController : BaseController
     {
         public IActionResult Index()

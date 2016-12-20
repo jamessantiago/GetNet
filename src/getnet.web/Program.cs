@@ -18,6 +18,8 @@ namespace getnet
                 .UseStartup<Startup>()
                 .Build();
 
+            Current.Services = host.Services;
+
             host.Run();
         }
     }

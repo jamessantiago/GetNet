@@ -12,6 +12,7 @@ using System.Threading;
 using System.Reflection;
 using System.Security.Cryptography;
 using System.Net;
+using Microsoft.Extensions.Configuration;
 
 namespace getnet
 {
@@ -492,6 +493,19 @@ namespace getnet
             if (BitConverter.IsLittleEndian)
                 Array.Reverse(address);
             return BitConverter.ToInt32(address, 0);
+        }
+
+        public static string GetSecure(this IConfiguration config, string key)
+        {
+            var cipherText = config[key];
+            string description = string.Empty;
+            return DPAPI.Decrypt(cipherText, CoreCurrent.ENTROPY, out description);
+        }
+
+        public static void SetSecure(this IConfiguration config, string key, string value)
+        {
+            var secureText = DPAPI.Encrypt(DPAPI.KeyType.MachineKey, value, CoreCurrent.ENTROPY);
+            config[key] = secureText;
         }
     }
 }

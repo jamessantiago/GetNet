@@ -11,14 +11,11 @@ namespace getnet.core.Model
     public class UnitOfWork : IDisposable
     {
         public IServiceProvider Services;
-        private getnetContext context {
-            get
-            {
-                return Services.GetRequiredService<getnetContext>();
-            }
-        }
+
         private bool disposed = false;
+
         private Whistler logger = new Whistler();
+
         public UnitOfWork()
         {
             IServiceCollection serviceCollection = new ServiceCollection();
@@ -37,6 +34,13 @@ namespace getnet.core.Model
 
         public DatabaseConfigurationState ConfigurationState { get; private set; }
 
+        private getnetContext context
+        {
+            get
+            {
+                return Services.GetRequiredService<getnetContext>();
+            }
+        }
         public bool CheckIfDabaseExists()
         {
             return (context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists();
