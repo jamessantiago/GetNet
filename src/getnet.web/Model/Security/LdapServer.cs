@@ -11,6 +11,15 @@ namespace getnet.Model.Security
         private static volatile LdapServer current;
         private static object syncRoot = new Object();
         private LdapConnection conn;
+        private LdapSearchConstraints searchConstraints = new LdapSearchConstraints()
+        {
+            ReferralFollowing = true,
+            BatchSize = 2000,
+            HopLimit = 5,
+            MaxResults = 2000,
+            ServerTimeLimit = 10000,
+            TimeLimit = 10000
+        };
 
         private LdapServer() {
             var configExists = CoreCurrent.Configuration.GetSection("Security")?.GetSection("Ldap").GetChildren().Where(d =>
@@ -25,16 +34,16 @@ namespace getnet.Model.Security
             int ldapPort, ldapVersion;
 
             if (!int.TryParse(CoreCurrent.Configuration["Security:LdapPort"], out ldapPort))
-                ldapPort = LdapConnection.DEFAULT_SSL_PORT;
+                ldapPort = LdapConnection.DEFAULT_PORT;
 
             if (!int.TryParse(CoreCurrent.Configuration["Security:LdapVersion"], out ldapVersion))
                 ldapVersion = LdapConnection.Ldap_V3;
             
             conn = new LdapConnection();
-            conn.SecureSocketLayer = true;
+            conn.SecureSocketLayer = false;
             conn.Connect(CoreCurrent.Configuration["Security:Ldap:Host"], ldapPort);
-            
-            conn.Bind(ldapVersion, CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN"), CoreCurrent.Configuration.GetSecure("Security:Ldap:Password"));
+            conn.Bind(ldapVersion, CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN"), 
+                CoreCurrent.Configuration.GetSecure("Security:Ldap:Password"));
         }
 
         public static LdapServer Current
@@ -49,11 +58,13 @@ namespace getnet.Model.Security
             }
         }
 
+        public string BaseDN => conn.AuthenticationDN.Substring(conn.AuthenticationDN.IndexOf("DC="), conn.AuthenticationDN.Length - conn.AuthenticationDN.IndexOf("DC="));
+
         public bool Authenticate(string username, string password)
         {
             var dn = FindUserDN(username);
             var testconn = new LdapConnection();
-            testconn.SecureSocketLayer = true;
+            testconn.SecureSocketLayer = false;
             testconn.Connect(CoreCurrent.Configuration["Security:Ldap:Host"], conn.Port);
 
             testconn.Bind(conn.ProtocolVersion, dn, password);
@@ -65,35 +76,33 @@ namespace getnet.Model.Security
 
         public bool InGroup(string username, string groupname)
         {
-            var results = conn.Search("", LdapConnection.SCOPE_SUB,
-                string.Format("(&(objectCategory=person)(objectClass=user)(sAMAccountName={0}))", groupname),
-                new string[] { "memberof" }, false);
-
-            try
+            if (groupname == "Domain Users")
             {
-                var entry = results.next();
-                return entry.getAttribute("memberof").StringValueArray.Any(d => d.Equals(groupname, StringComparison.CurrentCultureIgnoreCase));
-            } catch (Exception ex)
-            {
-                throw ex;
+                var user = FindUser(username);
+                return (user.getAttribute("primaryGroupID").StringValue == "513");
             }
+            var userDN = FindUserDN(username);
+            var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
+                string.Format("(&(objectCategory=group)(sAMAccountName={0}))", groupname),
+                null, false, searchConstraints);
+            
+            var entry = results.next();
+            return entry.getAttribute("member").StringValueArray.Any(d => d.Equals(userDN, StringComparison.CurrentCultureIgnoreCase));
+            
         }
 
         public string FindUserDN(string username)
         {
-            var results = conn.Search("", LdapConnection.SCOPE_SUB,
+            return FindUser(username).DN;
+        }
+
+        public LdapEntry FindUser(string username)
+        {
+            var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
                 string.Format("(&(objectCategory=person)(objectClass=user)(sAMAccountName={0}))", username),
-                null, false);
+                null, false, searchConstraints);
 
-            try
-            {
-                var entry = results.next();
-                return entry.DN;
-            } catch (Exception ex)
-            {
-                throw ex; // :shrug:
-            }
-
+            return results.next();
         }
     }
 }

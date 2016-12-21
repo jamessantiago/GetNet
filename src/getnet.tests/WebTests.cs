@@ -12,10 +12,13 @@ namespace getnet.tests
         [Fact]
         public void TestLdapConnection()
         {
-            CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "test");
-            CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "test");
-            var x = getnet.Model.Security.LdapServer.Current;
-            Assert.NotNull(x);
+            CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
+            Assert.NotNull(LdapServer.Current);
+
+            Assert.True(LdapServer.Current.Authenticate("testuser", "TestPassword456"));
+            Assert.True(LdapServer.Current.InGroup("testuser", "Domain Users"));
         }
     }
 }
