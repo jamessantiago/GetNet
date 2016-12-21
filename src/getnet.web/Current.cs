@@ -6,7 +6,7 @@ using getnet.core.Model;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.DependencyInjection;
 using getnet.Models;
-using getnet.Models.Security;
+using getnet.Model.Security;
 using Microsoft.AspNetCore.Http;
 
 namespace getnet
@@ -25,9 +25,8 @@ namespace getnet
                 configured = uow.ConfigurationState == UnitOfWork.DatabaseConfigurationState.Configured;
                 tested = uow.TestDatabaseConnection(out testException);
 
-                ConfigurationRequired = configured;
-                if (testException != null)
-                    DatabaseConnectionError = testException;
+                ConfigurationRequired = !configured;
+                DatabaseConnectionError = testException;
             }
         }
 

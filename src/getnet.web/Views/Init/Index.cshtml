@@ -2,3 +2,62 @@
     ViewData["Title"] = "Welcome to GetNet";
 }
 
+<div class="getnet-full-page">
+
+    @if (ViewData["DbError"] != null)
+    {
+        <span id="DbError" class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--yellow">
+            <span class="mdl-chip__contact"><i class="material-icons getnet-chip-icon">error</i></span>
+            <span class="mdl-chip__text">@(((Exception)ViewData["DbError"]).Message.TruncateWithEllipsis(80))</span>
+            
+            <a href="#" onclick="$('#DbError').hide()" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
+        </span>
+        <div class="mdl-tooltip getnet-tooltip" data-mdl-for="DbError">
+                @(((Exception)ViewData["DbError"]).ToString())
+        </div>
+    }
+
+    <div id="loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <div id="thisform">
+        <form action="/init/configure"
+              data-ajax="true"
+              data-ajax-loading="#loading"
+              data-ajax-mode="replace"
+              data-ajax-update="#savedresult"
+              method="post">
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="SqlConfigurationString" id="SqlConfigurationString" value="@ViewData["DbString"]">
+                <label class="mdl-textfield__label" for="sample1">Database Connection</label>
+            </div>
+            <br />
+            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Save
+            </button>
+        </form>
+    </div>
+
+    <div id="savedresult">
+
+    </div>
+
+    @if (!(bool)ViewData["DbExists"])
+    {
+        <div id="loading2" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+        <div id="newdbform">
+            <form action="/init/createdb"
+                  data-ajax="true"
+                  data-ajax-loading="#loading"
+                  data-ajax-mode="replace"
+                  data-ajax-update="#savedresult"
+                  method="post">
+
+                <p>The GetNet database may not currently exist.  There may just be a connection issue or if the database may need to be created.  You can create the database here if GetNet has the proper credentials to do so either in the SQL connection string or through integrated security via GetNet's web service account.  If the database already exists no further action will be taken.  Be sure not to use the master db in your connection string otherwise GetNet will end up creating all the SQL objects there.</p>
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Ensure DB Exists
+                </button>
+            </form>
+        </div>
+    }
+</div>

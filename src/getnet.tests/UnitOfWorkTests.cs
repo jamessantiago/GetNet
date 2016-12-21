@@ -18,7 +18,7 @@ namespace getnet.tests
         public void CheckDatabaseTest()
         {
             var w = new Whistler();
-            CoreCurrent.Configuration.SetSecure("Data:SqlServerConnectionString", "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true");
+            CoreCurrent.Configuration["Data:SqlServerConnectionString"] = "Server=.\\SQLEXPRESS;Database=getnetTests;Integrated Security=true";
             using (UnitOfWork uow = new UnitOfWork())
             {
                 w.Info("test", "test");

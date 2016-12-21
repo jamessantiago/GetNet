@@ -1,4 +1,4 @@
-﻿namespace getnet.Models.Security
+﻿namespace getnet.Model.Security
 {
     /// <summary>
     /// Does this REALLY need an explanation?

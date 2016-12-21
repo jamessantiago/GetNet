@@ -11,10 +11,39 @@ namespace getnet.Controllers
 {
     public class InitController : BaseController
     {
+
         [Route("/configure")]
         public IActionResult Index()
         {
+            try {
+                ViewData["DbExists"] = uow.CheckIfDabaseExists();
+            } catch
+            {
+                ViewData["DbExists"] = false;
+            }
+            ViewData["DbError"] = Current.DatabaseConnectionError;
+            ViewData["DbString"] = CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString");
+
             return View();
+        }
+
+        [HttpPost]
+        public IActionResult Configure(string SqlConfigurationString)
+        {
+            CoreCurrent.Configuration.SetSecure("Data:SqlServerConnectionString", SqlConfigurationString);
+            Current.SetDbConfigurationState();
+            uow = new UnitOfWork();
+            return PartialView("_success");
+        }
+
+        [HttpPost]
+        public IActionResult CreateDb()
+        {
+            Exception e;
+            uow.TestDatabaseConnection(out e);
+            uow.EnsureDatabaseExists();
+            Current.SetDbConfigurationState();
+            return PartialView("_success");
         }
     }
 }

@@ -5,7 +5,7 @@ using System.Security;
 using System.Threading;
 using Novell.Directory.Ldap;
 
-namespace getnet.Models.Security
+namespace getnet.Model.Security
 {
     public class ActiveDirectoryProvider : SecurityProvider
     {
@@ -16,12 +16,17 @@ namespace getnet.Models.Security
 
         public override bool InGroups(string groupNames, string accountName)
         {
-            throw new NotImplementedException();
+            foreach (var group in groupNames.Split(';'))
+            {
+                if (LdapServer.Current.InGroup(accountName, group.Trim()))
+                    return true;
+            }
+            return false;
         }
 
         public override bool ValidateUser(string userName, string password)
         {
-            throw new NotImplementedException();
+            return LdapServer.Current.Authenticate(userName, password);
         }
     }
 }

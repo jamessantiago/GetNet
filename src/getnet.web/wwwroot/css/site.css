@@ -11,6 +11,19 @@ html, body {
   padding: 0px;
   margin-top: 41px;
 }
+.getnet-layout .getnet-full-page {
+    width: 100%;
+}
+
+.getnet-chip-icon {
+    margin-top: 4px;
+}
+
+.getnet-tooltip {
+    max-width: 500px;
+    text-align: left;
+}
+
 .getnet-layout .getnet-header .mdl-textfield .mdl-textfield__expandable-holder {
   bottom: 19px;
 }

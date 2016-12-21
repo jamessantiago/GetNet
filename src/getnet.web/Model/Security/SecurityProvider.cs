@@ -2,7 +2,7 @@
 using System.Linq;
 using System.Net;
 
-namespace getnet.Models.Security
+namespace getnet.Model.Security
 {
     public abstract class SecurityProvider
     {

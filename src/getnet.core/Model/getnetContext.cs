@@ -39,7 +39,7 @@ namespace getnet.core.Model
                 }
                 else if (CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString").HasValue())
                 {
-                    optionsBuilder.UseNpgsql(CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString"));
+                    optionsBuilder.UseNpgsql(CoreCurrent.Configuration["Data:NpgsqlConnectionString"]);
                     IsConfigured = true;
                     logger.Info("Database set to use a PostgreSQL server connection", WhistlerTypes.DatabaseSetup);
                 }

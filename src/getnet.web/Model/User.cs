@@ -2,7 +2,7 @@
 using System.Security.Principal;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Http;
-using getnet.Models.Security;
+using getnet.Model.Security;
 
 namespace getnet.Models
 {
