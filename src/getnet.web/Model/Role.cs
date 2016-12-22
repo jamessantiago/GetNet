@@ -9,6 +9,6 @@ namespace getnet.Model
 {
     public class Role : IdentityRole
     {
-
+        
     }
 }

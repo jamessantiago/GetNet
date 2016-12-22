@@ -39,12 +39,14 @@ namespace getnet
                         .AddClaimsPrincipalFactory<ActiveDirectoryProvider>()
                         .AddUserStore<ActiveDirectoryProvider>()
                         .AddRoleStore<ActiveDirectoryProvider>();
+                    services.AddSingleton<SecurityProvider, ActiveDirectoryProvider>();
                     break;
                 case "admin":
                 default:
                     services.AddIdentity<User, Role>()
                         .AddUserStore<EveryonesAnAdminProvider>()
                         .AddRoleStore<EveryonesAnAdminProvider>();
+                    services.AddSingleton<SecurityProvider, EveryonesAnAdminProvider>();
                     break;
             }
             services.AddMvc();

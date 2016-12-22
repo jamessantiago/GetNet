@@ -11,13 +11,9 @@ using getnet.Model;
 namespace getnet.Controllers
 {
     [RedirectOnDbIssue]
-    [Authorize]
+    [Authorize()]
     public class aController : BaseController
     {
-        public aController(UserManager<User> UserManager,
-            SignInManager<User> SignInManager) : base(UserManager, SignInManager)
-        {        }
-
         public IActionResult Index()
         {
             return View();

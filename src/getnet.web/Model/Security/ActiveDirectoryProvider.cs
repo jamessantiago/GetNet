@@ -26,16 +26,6 @@ namespace getnet.Model.Security
             uow = unitOfWork;
         }
 
-        public override bool InGroups(string groupNames, string accountName)
-        {
-            foreach (var group in groupNames.Split(';'))
-            {
-                if (LdapServer.Current.InGroup(accountName, group.Trim()))
-                    return true;
-            }
-            return false;
-        }
-
         public override bool ValidateUser(string email, string password)
         {
             return LdapServer.Current.Authenticate(email, password);
@@ -107,7 +97,7 @@ namespace getnet.Model.Security
         {
             return new Task<IList<string>>(() =>
             {
-                return user.Roles.Select(d => d.RoleId).ToList();
+                return user.Claims.Where(d => d.Type == ClaimTypes.Role).Select(d => d.Value).ToList();
             });
         }
 
@@ -123,26 +113,6 @@ namespace getnet.Model.Security
                 return Retry.Do(() => LdapServer.Current.InGroup(user.AccountName, roleName), TimeSpan.FromSeconds(1));
             });
         }
-
-        public override Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string password)
-        {
-            return new Task<IdentityResult>(() =>
-            {
-                var signInResult = false;
-                Exception lastException = null;
-                try
-                {
-                    signInResult = Retry.Do(() => LdapServer.Current.Authenticate(user.AccountName, password), TimeSpan.FromSeconds(1));
-                } catch (AggregateException ex)
-                {
-                    lastException = ex.InnerExceptions.Last();
-                }
-                var result = new AuthenticateResult(signInResult, lastException?.Message ?? null);
-                return (IdentityResult)result;
-                
-            });
-        }
-
 
         public override void Dispose()
         {
@@ -167,42 +137,9 @@ namespace getnet.Model.Security
             }
         }
 
-        private List<User> _logins = new List<User>();
-
-        public override Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
-        {
-            user.Logins.Add(new Microsoft.AspNetCore.Identity.EntityFrameworkCore.IdentityUserLogin<string>
-            {
-                UserId = user.AccountName,
-                LoginProvider = login.LoginProvider,
-                ProviderDisplayName = login.ProviderDisplayName,
-                ProviderKey = login.ProviderKey
-            });
-            _logins.Add(user);
-            return Task.FromResult(0);
-        }
-
-        public override Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken)
-        {
-            _logins.Remove(user);
-            return Task.FromResult(0);
-        }
-
-        public override Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
-        {
-            IList<UserLoginInfo> logins = user.Logins.Select(d => new UserLoginInfo(d.LoginProvider, d.ProviderKey, d.ProviderDisplayName)).ToList();
-            return Task.FromResult(logins);
-        }
-
-        public override Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
-        {
-            var login = _logins.FirstOrDefault(d => d.Logins.Any(l => l.LoginProvider == loginProvider) && d.Logins.Any(l => l.ProviderKey == providerKey));
-            return Task.FromResult(login);
-        }
-
         public override Task<ClaimsPrincipal> CreateAsync(User user)
         {
-            return Task.FromResult(user.CreatePrincipal());
+            return Task.FromResult((ClaimsPrincipal)user);
         }
     }
 }

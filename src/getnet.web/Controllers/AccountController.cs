@@ -14,9 +14,15 @@ namespace getnet.Controllers
 {
     public class AccountController : BaseController
     {
+        protected UserManager<User> userManager;
+        protected SignInManager<User> signInManager;
+
         public AccountController(UserManager<User> UserManager,
-            SignInManager<User> SignInManager) : base(UserManager, SignInManager)
-        { }
+            SignInManager<User> SignInManager)
+        {
+            userManager = UserManager;
+            signInManager = SignInManager;
+        }
         
         [AllowAnonymous]
         [Route("/login")]

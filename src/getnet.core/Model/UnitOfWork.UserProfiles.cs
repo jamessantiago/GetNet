@@ -11,6 +11,9 @@ namespace getnet.core.Model
         //do this instead of custom repositories?
         public UserProfile GetUserProfile(string email)
         {
+            if (!email.HasValue())
+                return null;
+
             var profile = Repo<UserProfile>().Get(d => d.Email == email).FirstOrDefault();
             if (profile != null)
                 return profile;

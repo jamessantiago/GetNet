@@ -9,10 +9,10 @@ namespace getnet.Model.Security
 {
     public class EveryonesAnAdminProvider : SecurityProvider
     {
-        public override bool IsAdmin => true;
+        //public override bool IsAdmin => true;
 
-        internal override bool InAdminGroups(ISecurableModule settings) { return true; }
-        public override bool InGroups(string groupNames, string accountName) { return true; }
+        //internal override bool InAdminGroups(ISecurableModule settings) { return true; }
+        //public override bool InGroups(string groupNames, string accountName) { return true; }
         public override bool ValidateUser(string userName, string password) { return true; }
 
         public override Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
@@ -76,31 +76,6 @@ namespace getnet.Model.Security
         }
 
         public override Task<IList<User>> GetUsersInRoleAsync(string roleName, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string password)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public override Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken)
         {
             throw new NotImplementedException();
         }

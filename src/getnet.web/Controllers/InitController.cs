@@ -13,9 +13,6 @@ namespace getnet.Controllers
 {
     public class InitController : BaseController
     {
-        public InitController(UserManager<User> UserManager,
-            SignInManager<User> SignInManager) : base(UserManager, SignInManager)
-        { }
 
         [Route("/configure")]
         public IActionResult Index()

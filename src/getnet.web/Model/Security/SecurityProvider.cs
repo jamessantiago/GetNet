@@ -10,37 +10,11 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace getnet.Model.Security
 {
-    public abstract class SecurityProvider : IUserStore<User>, IRoleStore<Role>, IUserRoleStore<User>, IPasswordValidator<User>, IUserPasswordStore<User>, IUserLoginStore<User>, IUserClaimsPrincipalFactory<User>
+    public abstract class SecurityProvider : IUserStore<User>, IRoleStore<Role>, IUserRoleStore<User>, IUserClaimsPrincipalFactory<User>
     {
-        public virtual bool IsAdmin => InGroups(CoreCurrent.Configuration["Security:GlobalAdminGroups"]);
-        public virtual bool IsViewer => InGroups(CoreCurrent.Configuration["Security:GlobalViewGroups"]);
-
-        internal virtual bool InReadGroups(ISecurableModule settings)
-        {
-            return IsViewer || (settings != null && (InGroups(settings.ViewGroups) || InAdminGroups(settings)));
-        }
-
-        internal virtual bool InAdminGroups(ISecurableModule settings)
-        {
-            return IsAdmin || (settings != null && InGroups(settings.AdminGroups));
-        }
-
-        private bool InGroups(string groupNames)
-        {
-            return true;
-            //if (groupNames.IsNullOrEmpty() || Current.User.AccountName.IsNullOrEmpty()) return false;
-            //return groupNames == "*" || InGroups(groupNames, Current.User.AccountName);
-        }
-
-        public abstract bool InGroups(string groupNames, string accountName);
+        //public abstract bool InGroups(string groupNames, string accountName);
         public abstract bool ValidateUser(string userName, string password);
-
-        public virtual List<string> GetGroupMembers(string groupName)
-        {
-            return new List<string>();
-        }
-        public virtual void PurgeCache() { }
-
+        
         public List<IPNetwork> InternalNetworks;
         protected SecurityProvider()
         {
@@ -151,28 +125,7 @@ namespace getnet.Model.Security
         {
             throw new NotImplementedException();
         }
-
-        public abstract Task<IdentityResult> ValidateAsync(UserManager<User> manager, User user, string password);
-
-        public Task SetPasswordHashAsync(User user, string passwordHash, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public Task<string> GetPasswordHashAsync(User user, CancellationToken cancellationToken)
-        {
-            return new Task<string>(() => string.Empty);
-        }
-
-        public Task<bool> HasPasswordAsync(User user, CancellationToken cancellationToken)
-        {
-            throw new NotImplementedException();
-        }
-
-        public abstract Task AddLoginAsync(User user, UserLoginInfo login, CancellationToken cancellationToken);
-        public abstract Task RemoveLoginAsync(User user, string loginProvider, string providerKey, CancellationToken cancellationToken);
-        public abstract Task<IList<UserLoginInfo>> GetLoginsAsync(User user, CancellationToken cancellationToken);
-        public abstract Task<User> FindByLoginAsync(string loginProvider, string providerKey, CancellationToken cancellationToken);
+    
         public abstract Task<ClaimsPrincipal> CreateAsync(User user);
     }
 

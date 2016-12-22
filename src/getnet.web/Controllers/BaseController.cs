@@ -12,14 +12,10 @@ namespace getnet.Controllers
     public class BaseController : Controller
     {
         protected UnitOfWork uow;
-        protected UserManager<User> userManager;
-        protected SignInManager<User> signInManager;
 
-        public BaseController(UserManager<User> UserManager,
-            SignInManager<User> SignInManager) : this(new UnitOfWork())
+        public BaseController() : this(new UnitOfWork())
         {
-            userManager = UserManager;
-            signInManager = SignInManager;
+            
         }
 
         public BaseController(UnitOfWork unitOfWork)
