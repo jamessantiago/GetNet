@@ -6,11 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.AspNetCore.Identity;
+using getnet.Model;
 
 namespace getnet.Controllers
 {
     public class InitController : BaseController
     {
+        public InitController(UserManager<User> UserManager,
+            SignInManager<User> SignInManager) : base(UserManager, SignInManager)
+        { }
 
         [Route("/configure")]
         public IActionResult Index()

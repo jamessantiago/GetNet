@@ -8,7 +8,7 @@ using System.Reflection;
 
 namespace getnet.core.Model
 {
-    public class UnitOfWork : IDisposable
+    public partial class UnitOfWork : IDisposable
     {
         public IServiceProvider Services;
 

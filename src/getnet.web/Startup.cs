@@ -10,7 +10,11 @@ using Microsoft.Extensions.Logging;
 using Microsoft.EntityFrameworkCore;
 using getnet.core.Model;
 using Microsoft.AspNetCore.Mvc;
+using getnet.Model;
+using getnet.Model.Security;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace getnet
 {
@@ -24,8 +28,34 @@ namespace getnet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
+            CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
+            switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
+            {
+                case "ldap":
+                    services.AddIdentity<User, Role>()
+                        .AddClaimsPrincipalFactory<ActiveDirectoryProvider>()
+                        .AddUserStore<ActiveDirectoryProvider>()
+                        .AddRoleStore<ActiveDirectoryProvider>();
+                    break;
+                case "admin":
+                default:
+                    services.AddIdentity<User, Role>()
+                        .AddUserStore<EveryonesAnAdminProvider>()
+                        .AddRoleStore<EveryonesAnAdminProvider>();
+                    break;
+            }
             services.AddMvc();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            services.Configure<IdentityOptions>(options =>
+            {
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(150);
+                options.Cookies.ApplicationCookie.LoginPath = "/login";
+                options.Cookies.ApplicationCookie.LogoutPath = "/logoff";
+            });
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -33,6 +63,9 @@ namespace getnet
         {
             loggerFactory.AddConsole(CoreCurrent.Configuration.GetSection("Logging"));
             loggerFactory.AddDebug();
+
+            app.UseIdentity();
+            app.UseCookieAuthentication();
 
             if (env.IsDevelopment())
             {

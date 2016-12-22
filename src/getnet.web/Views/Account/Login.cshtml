@@ -1,0 +1,51 @@
+﻿@{
+    ViewData["Title"] = "Login";
+}
+
+<div class="getnet-full-page">
+    <div id="thisform" class="mdl-grid mdl-cell--4-col">
+        <div class="mdl-layout-spacer"></div>
+        <form action="/login"
+              method="post">
+
+            @if (ViewData["FailedLoginMessage"] != null)
+            {
+                <span id="LoginError" class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--yellow">
+                    <span class="mdl-chip__contact"><i class="material-icons getnet-chip-icon">error</i></span>
+                    <span class="mdl-chip__text">@ViewData["FailedLoginMessage"]</span>
+
+                    <a href="#" onclick="$('#LoginError').hide()" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
+                </span>
+            }
+
+            @if (ViewData["LastError"] != null)
+            {
+                <span id="LastError" class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--red">
+                    <span class="mdl-chip__contact"><i class="material-icons getnet-chip-icon">error</i></span>
+                    <span class="mdl-chip__text">@(((Exception)ViewData["LastError"]).Message.TruncateWithEllipsis(80))</span>
+
+                    <a href="#" onclick="$('#LastError').hide()" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
+                </span>
+                <div class="mdl-tooltip getnet-tooltip" data-mdl-for="LastError">
+                    @(((Exception)ViewData["LastError"]).ToString())
+                </div>
+            }
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="text" name="email" id="email">
+                <label class="mdl-textfield__label" for="sample1">Email</label>
+            </div>
+
+            <div class="mdl-textfield mdl-js-textfield">
+                <input class="mdl-textfield__input" type="password" name="password" id="password">
+                <label class="mdl-textfield__label" for="sample1">Password</label>
+            </div>
+
+            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                Login
+            </button>
+        </form>
+        <div class="mdl-layout-spacer"></div>
+    </div>
+
+</div>

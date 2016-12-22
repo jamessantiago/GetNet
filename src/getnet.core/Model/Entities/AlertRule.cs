@@ -17,7 +17,7 @@ namespace getnet.core.Model.Entities
         [StringLength(50)]
         public string LogLevel { get; set; }
         
-        public virtual User User { get; set; }
+        public virtual UserProfile User { get; set; }
         public virtual Site Site { get; set; }
     }
 }

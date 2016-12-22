@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace getnet.Models
+namespace getnet.Model
 {
     [Flags]
     public enum Roles

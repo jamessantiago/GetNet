@@ -60,9 +60,9 @@ namespace getnet.Model.Security
 
         public string BaseDN => conn.AuthenticationDN.Substring(conn.AuthenticationDN.IndexOf("DC="), conn.AuthenticationDN.Length - conn.AuthenticationDN.IndexOf("DC="));
 
-        public bool Authenticate(string username, string password)
+        public bool Authenticate(string email, string password)
         {
-            var dn = FindUserDN(username);
+            var dn = FindUserDN(email);
             var testconn = new LdapConnection();
             testconn.SecureSocketLayer = false;
             testconn.Connect(CoreCurrent.Configuration["Security:Ldap:Host"], conn.Port);
@@ -74,14 +74,14 @@ namespace getnet.Model.Security
             return connected;
         }
 
-        public bool InGroup(string username, string groupname)
+        public bool InGroup(string email, string groupname)
         {
             if (groupname == "Domain Users")
             {
-                var user = FindUser(username);
+                var user = FindUser(email);
                 return (user.getAttribute("primaryGroupID").StringValue == "513");
             }
-            var userDN = FindUserDN(username);
+            var userDN = FindUserDN(email);
             var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
                 string.Format("(&(objectCategory=group)(sAMAccountName={0}))", groupname),
                 null, false, searchConstraints);
@@ -91,15 +91,15 @@ namespace getnet.Model.Security
             
         }
 
-        public string FindUserDN(string username)
+        public string FindUserDN(string email)
         {
-            return FindUser(username).DN;
+            return FindUser(email).DN;
         }
 
         public LdapEntry FindUser(string username)
         {
             var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
-                string.Format("(&(objectCategory=person)(objectClass=user)(sAMAccountName={0}))", username),
+                string.Format("(&(objectCategory=person)(objectClass=user)(mail={0}))", username),
                 null, false, searchConstraints);
 
             return results.next();

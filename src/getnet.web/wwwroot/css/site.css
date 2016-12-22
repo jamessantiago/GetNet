@@ -11,6 +11,9 @@ html, body {
   padding: 0px;
   margin-top: 41px;
 }
+.getnet-layout .getnet-header .mdl-textfield .mdl-button--icon {
+    top: inherit;
+}
 .getnet-layout .getnet-full-page {
     width: 100%;
 }
