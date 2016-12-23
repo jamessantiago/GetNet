@@ -28,11 +28,11 @@ namespace getnet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
-            CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
-            CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
-            CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
-            CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmin, "Domain Users");
+            //CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
+            //CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
+            //CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
+            //CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
+            //CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmin, "Domain Users");
             switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
             {
                 case "ldap":
