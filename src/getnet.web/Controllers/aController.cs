@@ -11,7 +11,7 @@ using getnet.Model;
 namespace getnet.Controllers
 {
     [RedirectOnDbIssue]
-    [Authorize()]
+    [Authorize(Roles = Roles.GlobalAdmin)]
     public class aController : BaseController
     {
         public IActionResult Index()

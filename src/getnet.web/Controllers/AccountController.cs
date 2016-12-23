@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
+using getnet.Model.Security;
 
 namespace getnet.Controllers
 {
@@ -26,8 +27,13 @@ namespace getnet.Controllers
         
         [AllowAnonymous]
         [Route("/login")]
-        public IActionResult Login()
+        public async Task<IActionResult> Login()
         {
+            if (Current.Security as EveryonesAnAdminProvider != null)
+            {
+                await signInManager.SignInAsync(new Model.User("AdminUser@GetNet", Roles.GlobalAdmin), false);
+                return RedirectToAction("a", "index");
+            }
             return View();
         }
 
@@ -36,11 +42,12 @@ namespace getnet.Controllers
         public async Task<IActionResult> Login(string email, string password)
         {
             email = email.ToLower();
-            var tempUser = new User(email, uow.GetUserProfile(email));
             try
             {
                 if (Retry.Do(() => getnet.Model.Security.LdapServer.Current.Authenticate(email, password), TimeSpan.FromSeconds(1), 2))
                 {
+                    var groups = (Current.Security as ActiveDirectoryProvider).GetRoles(email);
+                    var tempUser = new User(email, groups.ToArray());
                     await signInManager.SignInAsync(tempUser, true);
                     return RedirectToAction("index", "a");
                 }

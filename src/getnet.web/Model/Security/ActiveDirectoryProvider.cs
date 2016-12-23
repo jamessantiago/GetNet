@@ -26,9 +26,27 @@ namespace getnet.Model.Security
             uow = unitOfWork;
         }
 
-        public override bool ValidateUser(string email, string password)
+        public List<string> GetRoles(string email)
         {
-            return LdapServer.Current.Authenticate(email, password);
+            var memberRoles = new List<string>();
+            foreach (var roleMap in Roles.ConfigRoles)
+            {
+                if (!roleMap.Value.HasValue())
+                    continue;
+                foreach (var role in roleMap.Value.Split(','))
+                {
+                    try
+                    {
+                        if (Retry.Do(() => LdapServer.Current.InGroup(email, role.Trim()), TimeSpan.FromMilliseconds(50), 2))
+                        {
+                            memberRoles.Add(roleMap.Key);
+                            break;
+                        }
+                    }
+                    catch { }
+                }
+            }
+            return memberRoles;
         }
 
         public Task<User> FindUserAsync(string email, CancellationToken cancellationToken)
@@ -40,7 +58,7 @@ namespace getnet.Model.Security
 
                 var entry = Retry.Do(() => LdapServer.Current.FindUser(email), TimeSpan.FromSeconds(1));
                 var profile = uow.Repo<UserProfile>().Get(d => d.Email == email).FirstOrDefault();
-                var user = new User(entry.getAttribute("mail").StringValue, profile);
+                var user = new User(entry.getAttribute("mail").StringValue);
                 return user;
             });
         }

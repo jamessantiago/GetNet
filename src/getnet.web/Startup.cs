@@ -32,6 +32,7 @@ namespace getnet
             CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
             CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
             CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
+            CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmin, "Domain Users");
             switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
             {
                 case "ldap":

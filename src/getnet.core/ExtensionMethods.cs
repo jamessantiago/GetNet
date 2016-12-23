@@ -514,15 +514,98 @@ namespace getnet
             config.Set(key, secureText);
         }
 
-        public static void Set(this IConfiguration config, string key, string value)
+        private static void CreateKey(string key)
         {
             string json = File.ReadAllText(CoreCurrent.ConfigFile);
             dynamic jsonObj = JsonConvert.DeserializeObject(json);
-            var jsonExp = (JObject)jsonObj;
             var keypath = key.Split(':');
-            var current = jsonExp;
 
-            switch (keypath.Count()) // D:
+            switch (keypath.Count())
+            {
+                case 1:
+                    jsonObj[keypath[0]] = new JRaw("{}");
+                    break;
+                case 2:
+                    jsonObj[keypath[0]][keypath[1]] = new JRaw("{}");
+                    break;
+                case 3:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]] = new JRaw("{}");
+                    break;
+                case 4:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]] = new JRaw("{}");
+                    break;
+                case 5:
+                    jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]][keypath[4]] = new JRaw("{}");
+                    break;
+                default:
+                    break;
+            }
+            string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
+            File.WriteAllText(CoreCurrent.ConfigFile, output);
+        }
+
+        public static void VerifyKey(string key)
+        {
+            string json = File.ReadAllText(CoreCurrent.ConfigFile);
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            var keypath = key.Split(':');
+            for (int i = 1; i < keypath.Count(); i++)
+            {
+                switch (i)
+                {
+                    case 1:
+                        if (jsonObj[keypath[0]] == null)
+                        {
+                            CreateKey(string.Join(":", keypath.Take(i)));
+                            jsonObj = JsonConvert.DeserializeObject(File.ReadAllText(CoreCurrent.ConfigFile));
+                        }
+                        break;
+                    case 2:
+                        if (jsonObj[keypath[0]][keypath[1]] == null)
+                        {
+                            CreateKey(string.Join(":", keypath.Take(i)));
+                            jsonObj = JsonConvert.DeserializeObject(File.ReadAllText(CoreCurrent.ConfigFile));
+                        }
+                        break;
+                    case 3:
+                        if (jsonObj[keypath[0]][keypath[1]][keypath[2]] == null) { 
+                            CreateKey(string.Join(":", keypath.Take(i)));
+                            jsonObj = JsonConvert.DeserializeObject(File.ReadAllText(CoreCurrent.ConfigFile));
+                        }
+                        break;
+                    case 4:
+                        if (jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]] == null)
+                        {
+                            CreateKey(string.Join(":", keypath.Take(i)));
+                            jsonObj = JsonConvert.DeserializeObject(File.ReadAllText(CoreCurrent.ConfigFile));
+                        }
+                        break;
+                    case 5:
+                        if (jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]][keypath[4]] == null)
+                        {
+                            CreateKey(string.Join(":", keypath.Take(i)));
+                            jsonObj = JsonConvert.DeserializeObject(File.ReadAllText(CoreCurrent.ConfigFile));
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        }
+
+        public static void Set(this IConfiguration config, string key, string value)
+        {
+            VerifyKey(key);
+            string json = File.ReadAllText(CoreCurrent.ConfigFile);
+            dynamic jsonObj = JsonConvert.DeserializeObject(json);
+            var keypath = key.Split(':');
+            var current = (JObject)jsonObj;
+
+            if (keypath.Count() > 5)
+                throw new NotSupportedException("Key depth can only be 5");
+            
+
+            switch (keypath.Count())
             {
                 case 1:
                     jsonObj[keypath[0]] = value;
@@ -540,7 +623,7 @@ namespace getnet
                     jsonObj[keypath[0]][keypath[1]][keypath[2]][keypath[3]][keypath[4]] = value;
                     break;
                 default:
-                    throw new NotSupportedException("Key depth can only be 5");
+                    break;
             }
             string output = Newtonsoft.Json.JsonConvert.SerializeObject(jsonObj, Newtonsoft.Json.Formatting.Indented);
             File.WriteAllText(CoreCurrent.ConfigFile, output);

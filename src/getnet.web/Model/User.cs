@@ -7,6 +7,7 @@ using getnet.Model.Security;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
 using getnet.core.Model.Entities;
+using System.Linq;
 
 namespace getnet.Model
 {
@@ -15,9 +16,8 @@ namespace getnet.Model
 
         public string AccountName { get; }
         public bool IsAnonymous { get; }
-        public UserProfile UserProfile => profile ?? (profile = getnet.Current.uow.GetUserProfile(AccountName));
-        private UserProfile profile;
-        public List<Role> UserRoles { get; set; }
+        public UserProfile UserProfile => getnet.Current.uow.GetUserProfile(AccountName);
+        public List<string> UserRoles => Claims.Where(d => d.Type == ClaimTypes.Role).Select(d => d.Value).ToList();
 
         public User(ClaimsPrincipal principal)
         {
@@ -25,13 +25,14 @@ namespace getnet.Model
             this.AddIdentity(new Identity((ClaimsIdentity)principal.Identity));
         }
 
-        public User(string email, UserProfile profile)
+        public User(string email, params string[] roles)
         {
             AccountName = email;
-            this.profile = profile;
             var claims = new List<Claim>();
             claims.Add(new Claim(ClaimTypes.Name, AccountName));
             claims.Add(new Claim(ClaimTypes.Email, AccountName));
+            foreach (var role in roles)
+                claims.Add(new Claim(ClaimTypes.Role, role));
             this.AddIdentity(new Identity(AccountName, claims));
         }
     }

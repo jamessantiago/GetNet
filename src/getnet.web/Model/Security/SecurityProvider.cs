@@ -12,9 +12,7 @@ namespace getnet.Model.Security
 {
     public abstract class SecurityProvider : IUserStore<User>, IRoleStore<Role>, IUserRoleStore<User>, IUserClaimsPrincipalFactory<User>
     {
-        //public abstract bool InGroups(string groupNames, string accountName);
-        public abstract bool ValidateUser(string userName, string password);
-        
+                
         public List<IPNetwork> InternalNetworks;
         protected SecurityProvider()
         {
