@@ -1,2 +1,7 @@
-﻿
-<p>Good</p>
+﻿@model string
+<div class="getnet-alert getnet-alert-success getnet-alert-closable" id="SuccessAlert">
+    <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('SuccessAlert')">
+        <i class="material-icons">close</i>
+    </button>
+    @(Model ?? "Success")
+</div>

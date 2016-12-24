@@ -1,4 +1,8 @@
-﻿window.getnet = (function () {
+﻿/// <reference path="../lib/jquery/dist/jquery.js"/>
+/// <reference path="../lib/jquery-form/jquery-form.js"/>
+/// <reference path="../lib/material-design-lite/material.js"/>
+
+window.getnet = (function () {
 
     var registeredRefreshes = {};
 
@@ -6,6 +10,7 @@
         getnet.options = options;
     }
 
+    //#region Refresh
     function registerRefresh(name, callback, interval, paused) {
         var refreshData = {
             name: name,
@@ -77,8 +82,14 @@
             }
         }
     }
+    //#endregion Refresh
 
-    function copyToClipboard(elem) {
+    function ShowSnack(data) {
+        componentHandler.upgradeElement(document.querySelector('#global-snack'));
+        document.querySelector('#global-snack').MaterialSnackbar.showSnackbar(data);
+    }
+
+    function CopyToClipboard(elem) {
         var targetId = "_hiddenCopyText_";
         var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
         var elemdata = elem.getAttribute("data-text");
@@ -134,6 +145,11 @@
         return succeed;
     }
 
+    function CloseAlert(id) {
+        $("#" + id).animate({ height: 0, paddingTop: 0, paddingBottom: 0, marginTop: 0, marginBottom: 0 }, 500);
+        setTimeout(function () { $("#" + id).remove(); }, 500);
+    }
+
     function SelectElementText(element) {
         var doc = document
             , text = doc.getElementById(element)
@@ -161,12 +177,14 @@
             run: runRefresh,
             registered: registeredRefreshes
         },
-        copy: copyToClipboard,
-        selectText: SelectElementText
+        copy: CopyToClipboard,
+        selectText: SelectElementText,
+        showSnack: ShowSnack,
+        closeAlert: CloseAlert
     }
 })();
 
-unite.Forms = (function () {
+getnet.Forms = (function () {
     function init(options) {
         //requires jquery-form
         getnet.Forms.options = options;
@@ -175,24 +193,83 @@ unite.Forms = (function () {
 
     function EnableForms() {
         $(".getnet-ajax-form").each(function (i) {
-            var formId = $(this).attr("id");
-            var updateTarget = formId + "-container";
-            var loadingTarget = formid + "-loading";
-            var errorTarget = formId + "-error";
-            var successTarget = formid + "-success";
-            $(this).ajaxSubmit({
-                target: formId,
-                error: function (e) {
-
-                },
-                replaceTarget: true,
-                target: updateTarget,
-                type: 'POST',
-                success: function (data) {
-
-                }
-            })
+            EnableForm($(this).attr("id"));
         });
+    }
+
+    function EnableForm(formId) {
+        if (formId.length == 0) {
+            return;
+        }
+
+        //discover attributes            
+        var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
+        var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
+        var successTarget = GetIdOrData(formId + "-success", formId, "ajax-success");
+        var reset = false;
+        if ($("#" + formId).attr("data-ajax-reset"))
+        {
+            reset = true;
+        }
+        var successAction = function () {
+            console.log("success or error form");
+            if ($(loadingTarget).length > 0) {
+                $(loadingTarget).hide();
+            }
+            if (reset) {
+                EnableForm(formId);
+            }
+        };
+        var errorAction = successAction;
+        if ($("#" + formId).attr("data-ajax-success-action")) {
+            successAction = function (e) {
+                if ($(loadingTarget).length > 0) {
+                    $(loadingTarget).hide();
+                }
+                eval($("#" + formId).data("ajax-success-action"));
+                if (reset) {
+                    EnableForm(formId);
+                }
+            }
+        }
+        if ($("#" + formId).attr("data-ajax-success-action")) {
+            errorAction = function (data, status) {
+                if ($(loadingTarget).length > 0) {
+                    $(loadingTarget).hide();
+                }
+                eval($("#" + formId).data("ajax-error-action"));
+                if (reset) {
+                    EnableForm(formId);
+                }
+            }
+        }
+
+        //add ajax event
+        $("#" + formId).ajaxForm({
+            target: formId,
+            error: errorAction,
+            target: updateTarget,
+            type: 'POST',
+            success: successAction,
+            beforeSubmit: function () {
+                console.log("Submitting form");
+                if ($(loadingTarget).length > 0) {
+                    $(loadingTarget).show();
+                }
+            }
+        });
+        console.log("Ajax submit loaded for " + formId);
+    }
+
+    function GetIdOrData(id, dataTarget, dataid) {
+        if ($("#" + id).length > 0)
+        {
+            return "#" + id;
+        } else if ($("#" + dataTarget).length > 0 && $("#" + dataTarget).attr("data-" + dataid)) {
+            return "#" + $("#" + dataTarget).data(dataid);
+        } else {
+            return "";
+        }
     }
 
     function Shutdown() {

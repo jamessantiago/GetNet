@@ -18,6 +18,58 @@ html, body {
     width: 100%;
 }
 
+.getnet-alert {
+    border-radius: 1px;
+    padding: 15px;
+    margin: 10px;
+    color: rgba(255,255,255, 0.84);
+    background-color:  #03a9f4;
+    overflow: hidden;
+}
+
+.getnet-alert-closed {
+    display: none;
+}
+
+.getnet-alert-closable {
+    padding-right: 35px;
+}
+
+.getnet-alert-close {
+    position: relative;
+    top: -5px;
+    right: -31px;
+    color: inherit;
+    float: right;
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1;
+    color: #000;
+    text-shadow: 0 1px 0 #fff;
+    filter: alpha(opacity=20);
+    opacity: .2;
+    -webkit-appearance: none;
+    padding: 0;
+    cursor: pointer;
+    background: 0 0;
+    border: 0;
+}
+
+.getnet-alert-error {
+    color: rgba(255,255,255, 0.84);
+    background-color:  #f44336;
+}
+
+.getnet-alert-warning {
+    color: rgba(255,255,255, 0.84);
+    background-color:   #ff5722;
+}
+
+.getnet-alert-success {
+    color: rgba(255,255,255, 0.84);
+    background-color: #8bc34a;
+}
+
 .getnet-chip-icon {
     margin-top: 4px;
 }

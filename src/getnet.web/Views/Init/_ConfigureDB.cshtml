@@ -1,0 +1,13 @@
+﻿<div id="thisform-results">
+    <div id="thisform-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <form action="/init/ConfigureDB" id="thisform" class="getnet-ajax-form">
+        <div class="mdl-textfield mdl-js-textfield">
+            <input class="mdl-textfield__input" type="text" name="SqlConfigurationString" id="SqlConfigurationString" value="@ViewData["DbString"]">
+            <label class="mdl-textfield__label" for="sample1">Database Connection</label>
+        </div>
+        <br />
+        <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+            Save
+        </button>
+    </form>
+</div>

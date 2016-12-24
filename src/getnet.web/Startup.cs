@@ -51,6 +51,7 @@ namespace getnet
                     break;
             }
             services.AddMvc();
+            services.AddSession();
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<IdentityOptions>(options =>
             {
@@ -68,6 +69,7 @@ namespace getnet
             loggerFactory.AddDebug();
 
             app.UseIdentity();
+            app.UseSession();
             app.UseCookieAuthentication();
 
             if (env.IsDevelopment())

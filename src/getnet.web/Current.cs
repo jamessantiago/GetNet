@@ -10,6 +10,7 @@ using getnet.Model.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.AspNetCore.Identity;
+using System.Threading;
 
 namespace getnet
 {
@@ -44,6 +45,8 @@ namespace getnet
         public static string RequestIP => Context.Request.HttpContext.Connection.RemoteIpAddress?.ToString() ?? "0.0.0.0";
 
         public static SecurityProvider Security => Services.GetRequiredService<SecurityProvider>();
+
+        public static CancellationTokenSource AppCancellationSource = new CancellationTokenSource();
 
         public static User User => new User(Context.User);
 
