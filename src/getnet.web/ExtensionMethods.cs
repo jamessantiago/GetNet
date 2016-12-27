@@ -81,5 +81,9 @@ namespace getnet
             return pagedMessages;
         }
         
+        public static bool IsAjaxRequest(this HttpRequest request)
+        {
+            return request != null && request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
     }
 }

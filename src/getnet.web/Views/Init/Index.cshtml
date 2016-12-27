@@ -27,30 +27,34 @@
             </div>
         }
 
-        <div class="mdl-cell--4-col">
+        <div class="mdl-cell--12-col">
 
             <h3>Connection String Configuration</h3>
             <div id="thisform-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             <div id="thisform-results"></div>
             <form action="/init/configure" id="thisform" class="getnet-ajax-form" data-ajax-reset="true">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseMSSQL">
-                    <input type="radio" id="UseMSSQL" class="mdl-radio__button" name="DbChoice" value="UseMSSQL" @((string)ViewData["DbChoice"] == "UseMSSQL" ? "checked" : "")>
+                    <input type="radio" id="UseMSSQL" class="mdl-radio__button getnet-group-selector" data-group="mssql-group" name="DbChoice" value="UseMSSQL" @((string)ViewData["DbChoice"] == "UseMSSQL" ? "checked" : "")>
                     <span class="mdl-radio__label">Use MS SQL</span>
                 </label>
 
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" name="SqlConfigurationString" id="SqlConfigurationString" value="@ViewData["MSSQLString"]">
-                    <label class="mdl-textfield__label" for="sample1">Database Connection</label>
+                <div id="mssql-group" class="getnet-selection-group">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @((string)ViewData["DbChoice"] != "UseMSSQL" ? "disabled" : "") class="mdl-textfield__input" type="text" name="SqlConfigurationString" id="SqlConfigurationString" value="@ViewData["MSSQLString"]">
+                        <label class="mdl-textfield__label" for="SqlConfigurationString">Database Connection</label>
+                    </div>
                 </div>
 
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UsePostgres">
-                    <input type="radio" id="UsePostgres" class="mdl-radio__button" name="DbChoice" value="UsePostgres" @((string)ViewData["DbChoice"] == "UsePostgres" ? "checked" : "")>
+                    <input type="radio" id="UsePostgres" class="mdl-radio__button getnet-group-selector" data-group="postgres-group" name="DbChoice" value="UsePostgres" @((string)ViewData["DbChoice"] == "UsePostgres" ? "checked" : "")>
                     <span class="mdl-radio__label">Use PostgreSQL</span>
                 </label>
 
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                    <input class="mdl-textfield__input" type="text" name="PostgresConfigurationString" id="PostgresConfigurationString" value="@ViewData["PostgresString"]">
-                    <label class="mdl-textfield__label" for="sample1">Database Connection</label>
+                <div id="postgres-group" class="getnet-selection-group">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @((string)ViewData["DbChoice"] != "UsePostgres" ? "disabled" : "") class="mdl-textfield__input" type="text" name="PostgresConfigurationString" id="PostgresConfigurationString" value="@ViewData["PostgresString"]">
+                        <label class="mdl-textfield__label" for="PostgresConfigurationString">Database Connection</label>
+                    </div>
                 </div>
                 
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
@@ -62,7 +66,7 @@
 
         @if (!(bool)ViewData["DbExists"])
         {
-            <div class="mdl-cell--6-col">
+            <div class="mdl-cell--12-col">
                 <h3>Database Creation</h3>
                 <form action="/init/createdb" method="post">
                     <div class="getnet-alert getnet-alert-warning">
@@ -80,7 +84,62 @@
 
 <section class="mdl-layout__tab-panel" id="auth-tab">
     <div class="page-content">
+        <div class="mdl-cell--12-col">
+            <h3>Web Authentication</h3>
+            <div id="authconfig-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+            <div id="authconfig-results"></div>
+            <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true">
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseLdap">
+                    <input type="radio" id="UseLdap" class="mdl-radio__button getnet-group-selector" data-group="ldap-group" name="AuthChoice" value="ldap" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "ldap" ? "checked" : "")>
+                    <span class="mdl-radio__label">Use LDAP</span>
+                </label>
 
+                <div id="ldap-group" class="getnet-selection-group">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="Host" id="Host" value="@CoreCurrent.Configuration["Security:Ldap:Host"]">
+                        <label class="mdl-textfield__label" for="Host">LDAP Host</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="LoginDN" id="LoginDN" value="@CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN")">
+                        <label class="mdl-textfield__label" for="LoginDN">LDAP Login DN</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="password" name="Password" id="Password" value="************">
+                        <label class="mdl-textfield__label" for="Password">LDAP Password</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalAdmins" id="GlobalAdmins" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalAdmins"]">
+                        <label class="mdl-textfield__label" for="GlobalAdmins">Global Admin Groups</label>
+                    </div>
+
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalViewers" id="GlobalViewers" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalViewers"]">
+                        <label class="mdl-textfield__label" for="GlobalViewers">Global Viewer Groups</label>
+                    </div>
+                </div>
+
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseAdmin">
+                    <input type="radio" id="UseAdmin" class="mdl-radio__button getnet-group-selector" data-group="admin-group" name="AuthChoice" value="admin" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "admin" ? "checked" : "")>
+                    <span class="mdl-radio__label">Let everyone have admin rights</span>
+                </label>
+                <br />
+                <br />
+
+                <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseView">
+                    <input type="radio" id="UseView" class="mdl-radio__button getnet-group-selector" data-group="view-group" name="AuthChoice" value="view" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "view" ? "checked" : "")>
+                    <span class="mdl-radio__label">Let everyone have only view rights</span>
+                </label>
+                <br />
+                <br />
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Save
+                </button>
+            </form>
+        </div>
     </div>
 </section>
 

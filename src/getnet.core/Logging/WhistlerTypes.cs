@@ -8,5 +8,6 @@ namespace getnet
     public static class WhistlerTypes
     {
         public const string DatabaseSetup = "Database Setup";
+        public const string UnhandledException = "Unhandled Exception";
     }
 }

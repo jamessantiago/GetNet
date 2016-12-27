@@ -1,0 +1,7 @@
+﻿@model string
+<div class="getnet-alert getnet-alert-error getnet-alert-closable" id="ErrorAlert">
+    <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('ErrorAlert')">
+        <i class="material-icons">close</i>
+    </button>
+    @(Model ?? "Error")
+</div>

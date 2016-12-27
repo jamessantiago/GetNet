@@ -112,9 +112,9 @@ window.getnet = (function () {
             origSelectionStart = elem.selectionStart;
             origSelectionEnd = elem.selectionEnd;
         } else {
-            target = document.getElementById(targetId);
+            var target = document.getElementById(targetId);
             if (!target) {
-                var target = document.createElement("textarea");
+                target = document.createElement("textarea");
                 target.style.position = "absolute";
                 target.style.left = "-9999px";
                 target.style.top = "0";
@@ -195,24 +195,32 @@ getnet.Forms = (function () {
         $(".getnet-ajax-form").each(function (i) {
             EnableForm($(this).attr("id"));
         });
+
+        $(".getnet-group-selector").each(function (i) {
+            $(this).on("click", function () {
+                $(".getnet-selection-group input").prop("disabled", true);
+                $(".getnet-selection-group .mdl-textfield").addClass("is-disabled");
+                $("#" + $(this).data("group") + " input").prop("disabled", false);
+                $("#" + $(this).data("group") + " .mdl-textfield").removeClass("is-disabled");
+            });
+        });
     }
 
     function EnableForm(formId) {
-        if (formId.length == 0) {
+        if (formId.length === 0) {
             return;
         }
 
         //discover attributes            
         var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
         var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
-        var successTarget = GetIdOrData(formId + "-success", formId, "ajax-success");
         var reset = false;
         if ($("#" + formId).attr("data-ajax-reset"))
         {
             reset = true;
         }
         var successAction = function () {
-            console.log("success or error form");
+            console.log("success form");
             if ($(loadingTarget).length > 0) {
                 $(loadingTarget).hide();
             }
@@ -220,7 +228,16 @@ getnet.Forms = (function () {
                 EnableForm(formId);
             }
         };
-        var errorAction = successAction;
+        var errorAction = function (data) {
+            console.log("error form");
+            $(updateTarget).html(data.responseText);
+            if ($(loadingTarget).length > 0) {
+                $(loadingTarget).hide();
+            }
+            if (reset) {
+                EnableForm(formId);
+            }
+        };
         if ($("#" + formId).attr("data-ajax-success-action")) {
             successAction = function (e) {
                 if ($(loadingTarget).length > 0) {
@@ -246,7 +263,6 @@ getnet.Forms = (function () {
 
         //add ajax event
         $("#" + formId).ajaxForm({
-            target: formId,
             error: errorAction,
             target: updateTarget,
             type: 'POST',

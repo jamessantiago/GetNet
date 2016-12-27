@@ -60,6 +60,10 @@ html, body {
     background-color:  #f44336;
 }
 
+.mdl-textfield {
+    width: 80% !important;
+}
+
 .getnet-alert-warning {
     color: rgba(255,255,255, 0.84);
     background-color:   #ff5722;

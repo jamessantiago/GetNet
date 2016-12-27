@@ -8,10 +8,12 @@ using getnet.core.Model.Entities;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Identity;
 using getnet.Model;
+using Microsoft.AspNetCore.Http;
 using System.Threading;
 
 namespace getnet.Controllers
 {
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class InitController : BaseController
     {
 
@@ -64,6 +66,21 @@ namespace getnet.Controllers
                 HttpContext.Session.AddSnackMessage("Failed to ensure database creation: {0}", ex.Message);
                 return RedirectToAction("index", "init");
             }
+        }
+
+        [HttpPost]
+        public IActionResult AuthConfig(IFormCollection collection)
+        {
+            CoreCurrent.Configuration.Set("Security:Provider", collection["AuthChoice"]);
+            if (collection["AuthChoice"] == "ldap")
+            {
+                CoreCurrent.Configuration.Set("Security:Ldap:Host", collection["Host"]);
+                CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", collection["LoginDN"]);
+                CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", collection["Password"]);
+                CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
+                CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
+            }
+            return PartialView("_success", "Successfully configured authentication");
         }
     }
 }

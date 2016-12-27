@@ -31,7 +31,7 @@ namespace getnet.Controllers
         {
             if (Current.Security as EveryonesAnAdminProvider != null)
             {
-                await signInManager.SignInAsync(new Model.User("AdminUser@GetNet", Roles.GlobalAdmin), false);
+                await signInManager.SignInAsync(new Model.User("AdminUser@GetNet", Roles.GlobalAdmins), false);
                 return RedirectToAction("a", "index");
             }
             return View();

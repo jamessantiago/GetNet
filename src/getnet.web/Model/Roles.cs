@@ -7,7 +7,7 @@ namespace getnet.Model
     public static class Roles
     {
         public const string GlobalViewers = "GlobalViewers";
-        public const string GlobalAdmin = "GlobalAdmins";
+        public const string GlobalAdmins = "GlobalAdmins";
 
         private static Dictionary<string, string> configRoles;
         public static Dictionary<string, string> ConfigRoles => configRoles ?? (configRoles = LoadConfigRoles());
@@ -16,7 +16,7 @@ namespace getnet.Model
         {
             var roles = new Dictionary<string, string>();
             //ldap
-            roles.Add(GlobalAdmin, CoreCurrent.Configuration["Security:Ldap:Roles:" + GlobalAdmin]);
+            roles.Add(GlobalAdmins, CoreCurrent.Configuration["Security:Ldap:Roles:" + GlobalAdmins]);
             roles.Add(GlobalViewers, CoreCurrent.Configuration["Security:Ldap:Roles" + GlobalViewers]);
             return roles;
         }

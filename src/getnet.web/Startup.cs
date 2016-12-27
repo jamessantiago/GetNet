@@ -28,11 +28,12 @@ namespace getnet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            //CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
-            //CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
-            //CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
-            //CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
-            //CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmin, "Domain Users");
+
+            CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
+            CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
+            CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
+            CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmins, "Domain Users");
             switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
             {
                 case "ldap":
@@ -42,9 +43,17 @@ namespace getnet
                         .AddRoleStore<ActiveDirectoryProvider>();
                     services.AddSingleton<SecurityProvider, ActiveDirectoryProvider>();
                     break;
+                case "view":
+                    services.AddIdentity<User, Role>()
+                        .AddClaimsPrincipalFactory<EveryonesReadOnlyProvider>()
+                        .AddUserStore<EveryonesReadOnlyProvider>()
+                        .AddRoleStore<EveryonesReadOnlyProvider>();
+                    services.AddSingleton<SecurityProvider, EveryonesReadOnlyProvider>();
+                    break;
                 case "admin":
                 default:
                     services.AddIdentity<User, Role>()
+                        .AddClaimsPrincipalFactory<EveryonesAnAdminProvider>()
                         .AddUserStore<EveryonesAnAdminProvider>()
                         .AddRoleStore<EveryonesAnAdminProvider>();
                     services.AddSingleton<SecurityProvider, EveryonesAnAdminProvider>();
@@ -74,13 +83,10 @@ namespace getnet
 
             if (env.IsDevelopment())
             {
-                app.UseDeveloperExceptionPage();
                 app.UseBrowserLink();
             }
-            else
-            {
-                app.UseExceptionHandler("/a/Error");
-            }
+
+            app.UseExceptionHandler("/a/Error");
 
             app.UseStaticFiles();
             

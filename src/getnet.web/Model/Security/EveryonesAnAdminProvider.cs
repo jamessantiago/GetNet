@@ -9,11 +9,6 @@ namespace getnet.Model.Security
 {
     public class EveryonesAnAdminProvider : SecurityProvider
     {
-        //public override bool IsAdmin => true;
-
-        //internal override bool InAdminGroups(ISecurableModule settings) { return true; }
-        //public override bool InGroups(string groupNames, string accountName) { return true; }
-        //public override bool ValidateUser(string userName, string password) { return true; }
 
         public override Task<string> GetUserIdAsync(User user, CancellationToken cancellationToken)
         {
