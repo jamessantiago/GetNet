@@ -8,6 +8,6 @@ namespace getnet.core.ssh
     public interface ICommandResult
     {
         string GetStoredCommand();        
-        ICommandResult ConvertCommandResult<T>(string data);
+        List<ICommandResult> ConvertCommandResult<T>(string data);
     }
 }

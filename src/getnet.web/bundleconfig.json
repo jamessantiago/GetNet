@@ -1,30 +1,87 @@
-﻿// Configure bundling and minification for the project.
-// More info at https://go.microsoft.com/fwlink/?LinkId=808241
-[
+﻿[
+  /// CSS
   {
-    "outputFileName": "wwwroot/css/site.min.css",
-    // An array of relative input file paths. Globbing patterns supported
+    //getnet main with forms
+    "outputFileName": "wwwroot/css/gmf.min.css",
     "inputFiles": [
       "wwwroot/lib/material-design-lite/material.css",
       "wwwroot/css/site.css"
     ]
   },
   {
-    "outputFileName": "wwwroot/js/site.min.js",
+    //getnet main with forms and tables
+    "outputFileName": "wwwroot/css/gmft.min.css",
+    "inputFiles": [
+      "wwwroot/lib/material-design-lite/material.css",
+      "wwwroot/lib/datatables/media/css/dataTables.material.css",
+      "wwwroot/css/site.css"
+    ]
+  },
+  /// JS
+  {
+    //getnet main
+    "outputFileName": "wwwroot/js/gm.min.js",
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
-      //"wwwroot/lib/jquery-validation/jquery.validate.js",
-      //"wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+      "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true,
+      "preserveImportantComments": false
+    },
+    "sourceMap": false
+  },
+  {
+    //getnet main with forms
+    "outputFileName": "wwwroot/js/gmf.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/jquery-form/jquery.form.js",
       "wwwroot/lib/material-design-lite/material.js",
       "wwwroot/js/site.js"
     ],
-    // Optionally specify minification options
     "minify": {
       "enabled": true,
-      "renameLocals": true
+      "renameLocals": true,
+      "preserveImportantComments": false
     },
-    // Optinally generate .map file
+    "sourceMap": false
+  },
+  {
+    //getnet main with tables
+    "outputFileName": "wwwroot/js/gmt.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
+      "wwwroot/lib/datatables/media/js/dataTables.material.js",
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true,
+      "preserveImportantComments": false
+    },
+    "sourceMap": false
+  },
+  {
+    //getnet main with forms and tables
+    "outputFileName": "wwwroot/js/gmft.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery/dist/jquery.js",
+      "wwwroot/lib/jquery-form/jquery.form.js",
+      "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
+      "wwwroot/lib/datatables/media/js/dataTables.material.js",
+      "wwwroot/js/site.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true,
+      "preserveImportantComments": false
+    },
     "sourceMap": false
   }
 ]

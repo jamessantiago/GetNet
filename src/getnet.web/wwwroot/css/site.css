@@ -60,8 +60,12 @@ html, body {
     background-color:  #f44336;
 }
 
-.mdl-textfield {
+form .mdl-textfield {
     width: 80% !important;
+}
+
+.mdl-layout-title {
+    margin-left: 30px;
 }
 
 .getnet-alert-warning {
@@ -123,7 +127,6 @@ html, body {
       -ms-flex-pack: end;
           justify-content: flex-end;
   padding: 16px;
-  height: 151px;
 }
 .getnet-avatar-dropdown {
   display: -webkit-flex;

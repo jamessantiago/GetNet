@@ -22,13 +22,28 @@ namespace getnet.tests
 
             try
             {
-                var rawdata = (RawSshData)client.Execute<RawSshData>("show cats");
-                Assert.NotNull(rawdata.Data);
+                var rawdata = client.Execute<RawSshData>("show cats");
+                Assert.NotNull(rawdata.First().Data);
             }
             catch (Exception ex)
             {
                 Assert.Null(ex);
             }
+        }
+
+        [Fact]
+        public void CdpNeighborTest()
+        {
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "192.168.32.1",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var neighbors = client.Execute<CdpNeighbor>();
+            Assert.Equal(neighbors.Count, 2);
         }
     }
 }

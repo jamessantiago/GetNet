@@ -13,11 +13,13 @@ namespace getnet.core.ssh
 
         public string Data { get; private set; }
         
-        public ICommandResult ConvertCommandResult<T>(string data)
+        public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
+            var results = new List<ICommandResult>();
             var result = new RawSshData();
             result.Data = data;
-            return result;
+            results.Add(result);
+            return results;
         }
 
         public string GetStoredCommand()

@@ -7,6 +7,7 @@ namespace getnet.core.ssh
 {
     public interface IGsc
     {
-        ICommandResult Execute<T>(string command) where T : ICommandResult, new();
+        List<T> Execute<T>() where T : ICommandResult, new();
+        List<T> Execute<T>(string command) where T : ICommandResult, new();
     }
 }

@@ -629,5 +629,22 @@ namespace getnet
             File.WriteAllText(CoreCurrent.ConfigFile, output);
             config[key] = value;
         }
+
+        public static bool AllSame(this IEnumerable<int> list)
+        {
+            bool first = true;
+            int comparand = 0;
+            foreach (int i in list)
+            {
+                if (first) comparand = i;
+                else if (i != comparand) return false;
+                first = false;
+            }
+            return true;
+        }
+
+        
     }
+
+    
 }

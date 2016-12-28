@@ -8,6 +8,7 @@ using Microsoft.Extensions.Configuration.Json;
 using Newtonsoft.Json;
 using System.Text;
 using Microsoft.Extensions.Primitives;
+using getnet.core.ssh;
 
 namespace getnet
 {
@@ -30,5 +31,6 @@ namespace getnet
         public static string ConfigFile { get; private set; }
 
         public const string ENTROPY = "getnet";
+        
     }
 }

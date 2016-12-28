@@ -80,14 +80,15 @@ namespace getnet
             app.UseIdentity();
             app.UseSession();
             app.UseCookieAuthentication();
+            
 
             if (env.IsDevelopment())
             {
                 app.UseBrowserLink();
             }
 
-            app.UseExceptionHandler("/a/Error");
-
+            app.UseExceptionHandler("/error");
+            
             app.UseStaticFiles();
             
             app.UseMvc(routes =>

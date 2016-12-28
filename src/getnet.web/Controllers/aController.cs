@@ -23,6 +23,7 @@ namespace getnet.Controllers
             return View();
         }
 
+        [Route("/error")]
         public IActionResult Error()
         {
             var ex = HttpContext.Features.Get<IExceptionHandlerFeature>();
