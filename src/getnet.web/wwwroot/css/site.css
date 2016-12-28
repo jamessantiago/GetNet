@@ -68,6 +68,14 @@ form .mdl-textfield {
     margin-left: 30px;
 }
 
+.getnet-ajax-link i {
+    width: 25px;
+}
+
+.getnet-table-buttons {
+    text-align: left !important;
+}
+
 .getnet-alert-warning {
     color: rgba(255,255,255, 0.84);
     background-color:   #ff5722;

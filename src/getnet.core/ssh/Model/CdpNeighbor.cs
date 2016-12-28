@@ -15,20 +15,12 @@ namespace getnet.core.ssh
 
         }
 
-        public CdpNeighbor(IPAddress ip, string hostname, string model, string inPort, string outPort)
-        {
-            IP = ip;
-            Hostname = hostname;
-            Model = model;
-            InPort = inPort;
-            OutPort = outPort;
-        }
-
-        public IPAddress IP { get; private set; }
-        public string Hostname { get; private set; }
-        public string Model { get; private set; }
-        public string InPort { get; private set; }
-        public string OutPort { get; private set; }
+        public IPAddress IP { get; set; }
+        public string Hostname { get; set; }
+        public string Model { get; set; }
+        public string InPort { get; set; }
+        public string OutPort { get; set; }
+        public string[] Capabilities { get; set; }
         
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
@@ -38,26 +30,24 @@ namespace getnet.core.ssh
             var models = Regex.Matches(data, @"Platform: ([\w\. -]*)");
             var inPorts = Regex.Matches(data, @"Interface: ([\w\/]*)");
             var outPorts = Regex.Matches(data, @"\(outgoing port\): ([\w\/]*)");
+            var caps = Regex.Matches(data, @"Capabilities: ([\w, ]*)");
 
-            if (!AllSame(IPs.Count, hostnames.Count, models.Count, inPorts.Count, outPorts.Count))
+            if (!Util.AllSame(IPs.Count, hostnames.Count, models.Count, inPorts.Count, outPorts.Count))
                 throw new Exception("Parsing failed to parse properties in an equal ammount from the CDP table");
-            
+
             for (int i = 0; i < IPs.Count; i++)
             {
-                results.Add(new CdpNeighbor(
-                    ip: IPAddress.Parse(IPs[i].Groups[1].Value),
-                    hostname: hostnames[i].Groups[1].Value,
-                    model: models[i].Groups[1].Value,
-                    inPort: inPorts[i].Groups[1].Value,
-                    outPort: outPorts[i].Groups[1].Value));
+                results.Add(new CdpNeighbor() {
+                    IP = IPAddress.Parse(IPs[i].Groups[1].Value),
+                    Hostname = hostnames[i].Groups[1].Value,
+                    Model = models[i].Groups[1].Value,
+                    InPort = inPorts[i].Groups[1].Value,
+                    OutPort = outPorts[i].Groups[1].Value,
+                    Capabilities = caps[i].Groups[1].Value.Split(',').Select(d => d.Trim()).ToArray()
+                });
             }
             
             return results;
-        }
-
-        private static bool AllSame(params int[] list)
-        {
-            return (list as IEnumerable<int>).AllSame();
         }
 
         public string GetStoredCommand()

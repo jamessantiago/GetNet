@@ -1,8 +1,23 @@
 # getnet
 
-## Introduction
-
-getnet is yet another IP address management system.  The selling point is that getnet provides the logical grouping of subnets, network infratructure, and network devices.  Information such as where an IP resides and what switch port it is plugged into can be quickly ascertained.
+           -o/.             -/.`                  
+           Gooo/.`          -ooo/`                
+           Eoooooo/`        -ooooo/-`             
+           Toooooooo+:`     -oooooooo/`           
+           Nooooooooooo:/   -oooooooooo.          
+           Eoooooooooooooo:`-oooooooooo.          
+           Toooooooooooooooo+oooooooooo.          
+           `:+ooooooooooooooooooooooooo.          
+              -+ooooooooooooooooooooooo.          
+                 -+oooooooooooooooooooo.          
+                  `:++ooooooooooooooooo.          
+                     `-oooooooooooooooo.          
+                --      `:ooooooooooooo.          
+            .+oooooo+.    `:+oooooooooo.          
+           `/oooooooo:`      `:oooooooo.          
+           :soooooooo+`        ``/ooooo.          
+            :oooooooo-            `/soo.          
+             .--++--`                ./.  
 
 ## Development
 
@@ -17,3 +32,5 @@ getnet is currently under initial development.  Some design/functionality goals:
 *  Sites and services integration
 *  DHCP integration
 *  Disconnected network import capabilities
+
+ 

@@ -17,6 +17,7 @@ using System.IO;
 using System.Dynamic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using getnet.core.ssh;
 
 namespace getnet
 {
@@ -642,7 +643,6 @@ namespace getnet
             }
             return true;
         }
-
         
     }
 

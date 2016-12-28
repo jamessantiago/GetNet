@@ -1,0 +1,57 @@
+﻿@model List<CdpNeighbor>
+
+
+<div id="newsites-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+<div id="newsites-results"></div>
+<table id="newsites" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th></th>
+            <th>Local Port</th>
+            <th>Hostname</th>
+            <th>IP</th>
+            <th>Model</th>
+        </tr>
+    </thead>
+    <tbody>
+    @foreach (var nei in Model)
+    {
+        <tr>
+            <td>
+                <a href="/site/makesite?ip=@nei.IP.ToString()"
+                   id="@nei.GetHashCode().ToString()"
+                   class="getnet-ajax-link"
+                   data-ajax-loading="newsites-loading"
+                   data-ajax-results="newsites-results">
+                    <i class="material-icons">add circle</i>
+                </a>
+            </td>
+            <td>@nei.InPort</td>
+            <td>@nei.Hostname</td>
+            <td>@nei.IP.ToString()</td>
+            <td>@nei.Model</td>
+        </tr>
+    }
+    </tbody>
+</table>
+
+
+<script>
+    $(document).ready(function () {
+        var sitestbl = $('#newsites').DataTable({
+            order: [[1, "asc"]],
+            columnDefs: [
+                {
+                    className: 'mdl-data-table__cell--non-numeric'
+                },
+                {
+                    className: "getnet-table-buttons",
+                    orderable: false,
+                    targets: 0
+                }
+            ]
+        });
+        $("#select-title").html("Selection (" + sitestbl.context[0].aoData.length + ")");
+        getnet.Forms.enableLinks();
+    });
+</script>

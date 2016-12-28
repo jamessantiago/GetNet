@@ -13,7 +13,8 @@ namespace getnet.core.ssh
             {
                 Host = ip,
                 Username = CoreCurrent.Configuration.GetSecure("SSH:Username"),
-                Password = CoreCurrent.Configuration.GetSecure("SSH:Password")
+                Password = CoreCurrent.Configuration.GetSecure("SSH:Password"),
+                Port = 22
             });
             return client;
         }

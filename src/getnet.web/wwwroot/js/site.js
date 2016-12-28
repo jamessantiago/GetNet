@@ -189,6 +189,7 @@ getnet.Forms = (function () {
         //requires jquery-form
         getnet.Forms.options = options;
         EnableForms();
+        EnableLinks();
     }
 
     function EnableForms() {
@@ -206,6 +207,12 @@ getnet.Forms = (function () {
         });
     }
 
+    function EnableLinks() {
+        $(".getnet-ajax-link").each(function (i) {
+            EnableLink($(this).attr("id"));
+        });
+    }
+
     function EnableForm(formId) {
         if (formId.length === 0) {
             return;
@@ -214,10 +221,10 @@ getnet.Forms = (function () {
         //discover attributes            
         var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
         var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
-        var reset = false;
-        if ($("#" + formId).attr("data-ajax-reset"))
+        var reset = true;
+        if ($("#" + formId).attr("data-ajax-reset") === "false")
         {
-            reset = true;
+            reset = false;
         }
         var successAction = function () {
             console.log("success form");
@@ -277,6 +284,80 @@ getnet.Forms = (function () {
         console.log("Ajax submit loaded for " + formId);
     }
 
+    function EnableLink(formId) {
+        if (formId.length === 0) {
+            return;
+        }
+
+        //discover attributes            
+        var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
+        var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
+        var reset = true;
+        if ($("#" + formId).attr("data-ajax-reset") === "false") {
+            reset = false;
+        }
+        var successAction = function () {
+            console.log("success link");
+            if ($(loadingTarget).length > 0) {
+                $(loadingTarget).hide();
+            }
+            if (reset) {
+                EnableForm(formId);
+            }
+        };
+        var errorAction = function (data) {
+            console.log("error link");
+            $(updateTarget).html(data.responseText);
+            if ($(loadingTarget).length > 0) {
+                $(loadingTarget).hide();
+            }
+            if (reset) {
+                EnableForm(formId);
+            }
+        };
+        if ($("#" + formId).attr("data-ajax-success-action")) {
+            successAction = function (e) {
+                if ($(loadingTarget).length > 0) {
+                    $(loadingTarget).hide();
+                }
+                eval($("#" + formId).data("ajax-success-action"));
+                if (reset) {
+                    EnableForm(formId);
+                }
+            }
+        }
+        if ($("#" + formId).attr("data-ajax-success-action")) {
+            errorAction = function (data, status) {
+                if ($(loadingTarget).length > 0) {
+                    $(loadingTarget).hide();
+                }
+                eval($("#" + formId).data("ajax-error-action"));
+                if (reset) {
+                    EnableForm(formId);
+                }
+            }
+        }
+
+        //add ajax event
+        $("#" + formId).on("click", function (e) {
+            e.preventDefault();
+            $("#" + formId).ajaxSubmit({
+                url: $("#" + formId).attr("href"),
+                error: errorAction,
+                target: updateTarget,
+                type: 'GET',
+                success: successAction,
+                beforeSubmit: function () {
+                    console.log("Submitting link");
+                    if ($(loadingTarget).length > 0) {
+                        $(loadingTarget).show();
+                    }
+                }
+            });
+        });        
+        console.log("Ajax link submit loaded for " + formId);
+    }
+
     function GetIdOrData(id, dataTarget, dataid) {
         if ($("#" + id).length > 0)
         {
@@ -288,8 +369,53 @@ getnet.Forms = (function () {
         }
     }
 
+    function DisplaySuccess(target, message) {
+        var successAlert = " \
+            <div class ='getnet-alert getnet-alert-success getnet-alert-closable' id='SuccessAlertJs'> \
+                <button class ='mdl-button mdl-js-button mdl-button--icon getnet-alert-close' onclick='getnet.closeAlert(\"SuccessAlertJs\")'> \
+                    <i class ='material-icons'>close</i> \
+                </button>";
+        successAlert = successAlert + message + "</div>";
+        $("#" + target).html(successAlert);
+    }
+
     function Shutdown() {
         
+    }
+
+    return {
+        init: init,
+        success: DisplaySuccess,
+        enableLinks: EnableLinks,
+        enableLink: EnableLink
+    }
+})();
+
+getnet.Snacks = (function () {
+    function init(options) {
+        getnet.Snacks.options = options;
+        LoadSnacks();
+        if (options.refresh) {
+            getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 1000);
+        }
+    }
+    
+    function LoadSnacks() {
+        $.getJSON("/a/getsnacks", function (data) {
+            $.each(data, function (i, item) {
+                if (item.actionHandler) {
+                    var action = item.actionHandler;
+                    item.actionHandler = function () {
+                        eval(action);
+                    };
+                }
+                getnet.showSnack(item);
+            });
+        });
+    }
+
+    function Shutdown() {
+        getnet.refresh.pause("Snacks");
     }
 
     return {

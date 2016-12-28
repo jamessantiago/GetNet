@@ -161,10 +161,21 @@
 
     <script>
         getnet.init({});
-    @foreach (var message in Context.Session.GetSnackMessages())
-    {
-        @:getnet.showSnack(@Html.Raw(message.AsJson()));
-    }
+        @foreach (var message in Context.Session.GetSnackMessages())
+        {
+            @if (message.actionHandler.HasValue())
+            {
+                @:var data = @Html.Raw(message.AsJson());
+                @:var action = data.actionHandler;
+                @:data.actionHandler = function() {
+                @:  eval(action);
+                @:};
+                @:getnet.showSnack(data);
+            } else {
+            @:getnet.showSnack(@Html.Raw(message.AsJson()));
+            }
+        }
+        getnet.Snacks.init({ refresh: 10 });
     </script>
 
     @RenderSection("scripts", required: false)

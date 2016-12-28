@@ -20,6 +20,12 @@ namespace getnet.Controllers
 
         public IActionResult Index()
         {
+            HttpContext.Session.AddSnackMessage(new SnackMessage()
+            {
+                actionHandler = "alert('hello there')",
+                actionText = "say hi",
+                message = "hello there"
+            });
             return View();
         }
 
@@ -38,6 +44,11 @@ namespace getnet.Controllers
             {
                 return View(error);
             }
+        }
+
+        public IActionResult GetSnacks()
+        {
+            return Json(HttpContext.Session.GetSnackMessages());
         }
     }
 }
