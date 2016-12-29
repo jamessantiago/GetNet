@@ -11,6 +11,22 @@ namespace getnet.Controllers
 {
     public class SiteController : BaseController
     {
+        [Route("/sites")]
+        public IActionResult Sites()
+        {
+            return View();
+        }
+
+        [Route("/s/{id}")]
+        public IActionResult Details(string id)
+        {
+            int siteId;
+            if (int.TryParse(id, out siteId))
+                return View(uow.Repo<Site>().GetByID(siteId));
+            else
+                return View(uow.Repo<Site>().Get(d => d.Name == id));
+        }
+
         [Route("/newsite")]
         public IActionResult New()
         {
@@ -37,7 +53,7 @@ namespace getnet.Controllers
             var siteId = uow.Repo<Site>().Get(d => d.Name == site.Name).First().SiteId;
             HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
             {
-                actionHandler = "window.location = '/site/" + siteId.ToString() + "';",
+                actionHandler = "window.location = '/s/" + siteId.ToString() + "';",
                 actionText = "open",
                 message = "Successfully created new skeleton site for " + version.Hostname + ".  Open site to configure"
             });

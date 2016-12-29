@@ -89,6 +89,11 @@ window.getnet = (function () {
         document.querySelector('#global-snack').MaterialSnackbar.showSnackbar(data);
     }
 
+    function ToggleDrawer() {
+        var layout = document.querySelector('.mdl-layout');
+        layout.MaterialLayout.toggleDrawer();
+    }
+
     function CopyToClipboard(elem) {
         var targetId = "_hiddenCopyText_";
         var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
@@ -180,7 +185,8 @@ window.getnet = (function () {
         copy: CopyToClipboard,
         selectText: SelectElementText,
         showSnack: ShowSnack,
-        closeAlert: CloseAlert
+        closeAlert: CloseAlert,
+        toggleDrawer: ToggleDrawer
     }
 })();
 
@@ -220,7 +226,7 @@ getnet.Forms = (function () {
 
         //discover attributes            
         var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
-        var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
+        var loadingTarget = GetIdOrData("fullpage-loading", formId, "ajax-loading");
         var reset = true;
         if ($("#" + formId).attr("data-ajax-reset") === "false")
         {
@@ -291,7 +297,7 @@ getnet.Forms = (function () {
 
         //discover attributes            
         var updateTarget = GetIdOrData(formId + "-results", formId, "ajax-results");
-        var loadingTarget = GetIdOrData(formId + "-loading", formId, "ajax-loading");
+        var loadingTarget = GetIdOrData("fullpage-loading", formId, "ajax-loading");
         var reset = true;
         if ($("#" + formId).attr("data-ajax-reset") === "false") {
             reset = false;
@@ -419,6 +425,7 @@ getnet.Snacks = (function () {
     }
 
     return {
-        init: init
+        init: init,
+        loadSnacks: LoadSnacks
     }
 })();

@@ -1,5 +1,6 @@
 ﻿@{
     ViewData["Title"] = "Configuration";
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
 }
 
 @section Tabs {
@@ -30,7 +31,6 @@
         <div class="mdl-cell--12-col">
 
             <h3>Connection String Configuration</h3>
-            <div id="thisform-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             <div id="thisform-results"></div>
             <form action="/init/configure" id="thisform" class="getnet-ajax-form" data-ajax-reset="true">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseMSSQL">
@@ -86,7 +86,6 @@
     <div class="page-content">
         <div class="mdl-cell--12-col">
             <h3>Web Authentication</h3>
-            <div id="authconfig-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             <div id="authconfig-results"></div>
             <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseLdap">

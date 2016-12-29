@@ -7,7 +7,6 @@
     <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
         <a href="#disc-tab" class="mdl-layout__tab is-active">Discovery</a>
         <a id="select-title" href="#conf-tab" class="mdl-layout__tab">Selection</a>
-        <a href="#site-tab" class="mdl-layout__tab">Site</a>
     </div>
 }
 
@@ -21,7 +20,6 @@
             </button>
             Discover includes the retrieval of neighboring devices using the cisco discovery protocol.  Tunnels such as GRE tunnels may not display if the tunnel interfaces have not been enabled for CDP.
         </div>
-        <div id="discform-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
         <form action="/site/discover" id="discform" class="getnet-ajax-form"
               data-ajax-success-action="getnet.Forms.success('discform-success','Successfully retrieved neighboring devices.  Review the results in the configuration tab.')">
 
@@ -41,19 +39,6 @@
 <section class="mdl-layout__tab-panel mdl-cell--12-col" id="conf-tab">
     <div class="page-content">
         <div id="discform-results">
-            <div class="getnet-alert getnet-alert-info getnet-alert-closable" id="InfoAlertNew">
-                <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('InfoAlertNew')">
-                    <i class="material-icons">close</i>
-                </button>
-                Use the discover tab to find new sites.
-            </div>
-        </div>
-    </div>
-</section>
-
-<section class="mdl-layout__tab-panel mdl-cell--12-col" id="site-tab">
-    <div class="page-content">
-        <div id="newsites-results">
             <div class="getnet-alert getnet-alert-info getnet-alert-closable" id="InfoAlertNew">
                 <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('InfoAlertNew')">
                     <i class="material-icons">close</i>

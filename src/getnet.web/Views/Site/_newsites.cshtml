@@ -1,7 +1,5 @@
 ﻿@model List<CdpNeighbor>
 
-
-<div id="newsites-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
 <div id="newsites-results"></div>
 <table id="newsites" class="mdl-data-table" width="100%" cellspacing="0">
     <thead>
@@ -21,9 +19,9 @@
                 <a href="/site/makesite?ip=@nei.IP.ToString()"
                    id="@nei.GetHashCode().ToString()"
                    class="getnet-ajax-link"
-                   data-ajax-loading="newsites-loading"
-                   data-ajax-results="newsites-results">
-                    <i class="material-icons">add circle</i>
+                   data-ajax-results="newsites-results"
+                   data-ajax-success-action="getnet.Snacks.loadSnacks()">
+                    <i class="material-icons">add_circle</i>
                 </a>
             </td>
             <td>@nei.InPort</td>

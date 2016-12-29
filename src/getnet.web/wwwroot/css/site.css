@@ -68,6 +68,33 @@ form .mdl-textfield {
     margin-left: 30px;
 }
 
+.getnet-col-right {
+    float: right;
+    width: auto;
+    overflow: hidden;
+    text-align:right;
+}
+
+.getnet-col-left {
+    float: none;
+    width: 180px;
+}
+
+.getnet-site-card {
+    width:90%;
+    margin: auto;
+}
+
+.getnet-site-card > .mdl-card__title {
+    background-color: #546e7a;
+    color: #fff;
+    height: 120px;
+}
+
+#fullpage-loading {
+    width: 100%;
+}
+
 .getnet-ajax-link i {
     width: 25px;
 }

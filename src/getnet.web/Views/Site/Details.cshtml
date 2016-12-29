@@ -1,0 +1,57 @@
+﻿@model Site
+@{
+    ViewData["Title"] = Model.Name;
+    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+}
+
+@section Tabs {
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <a href="#site-tab" class="mdl-layout__tab is-active">Site</a>
+        <a href="#subs-tab" class="mdl-layout__tab">Controlled Subnets</a>
+        <a href="#dev-tab" class="mdl-layout__tab">Network Devices</a>
+        <a href="#end-tab" class="mdl-layout__tab">Endpoints</a>
+        <a href="#dhcp-tab" class="mdl-layout__tab">DHCP</a>
+        <a href="#sas-tab" class="mdl-layout__tab">Sites and Subjets</a>
+        <a href="#events-tab" class="mdl-layout__tab">Events</a>
+    </div>
+}
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-cell--6-col">
+            <div class="getnet-site-card mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">@Model.Name</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    <div class="getnet-col-right">
+                        <p>@(Model.Owner ?? "?")</p>
+                        <p>@(Model.Building ?? "?")</p>
+                        <p>@Model.Priority.ToString()</p>
+                    </div>
+                    <div class="getnet-col-left">                        
+                        <p><b>Owner</b></p>
+                        <p><b>Building</b></p>
+                        <p><b>Priority</b></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="mdl-cell--4-col">
+            <div class="getnet-site-card mdl-card mdl-shadow--2dp">
+                <div class="mdl-card__title">
+                    <h2 class="mdl-card__title-text">This is a net?</h2>
+                </div>
+                <div class="mdl-card__supporting-text">
+                    This is a cool site
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
+    <div class="page-content">
+    </div>
+</section>
