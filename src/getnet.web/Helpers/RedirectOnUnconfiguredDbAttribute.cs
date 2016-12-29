@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc.Filters;
 using getnet.Controllers;
 using getnet.core;
+using getnet.Model;
 
 namespace getnet.Helpers
 {
@@ -15,7 +16,10 @@ namespace getnet.Helpers
             if (Current.ConfigurationRequired || Current.DatabaseConnectionError != null)
             {
                 var controller = (BaseController)filterContext.Controller;
-                filterContext.Result = controller.RedirectToAction("index", "init");
+                if (Current.User.InRoles(Roles.GlobalAdmins))
+                    filterContext.Result = controller.RedirectToAction("index", "init");
+                else
+                    filterContext.Result = controller.RedirectToAction("anon", "init");
             }
         }
     }

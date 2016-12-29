@@ -9,6 +9,8 @@ namespace getnet.core.Model.Entities
 {
     public class Site
     {
+        public int SiteId { get; set; }
+
         [StringLength(100)]
         public string Building { get; set; }
         
@@ -20,8 +22,7 @@ namespace getnet.core.Model.Entities
 
         [StringLength(500)]
         public string Details { get; set; }
-
-        public int SiteId { get; set; }
+        
         public SiteStatus Status { get; set; }
 
         public virtual Location Location { get; set; }
@@ -32,6 +33,7 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<PointOfContact> PointOfContacts { get; set; }
         public virtual ICollection<Diagram> Diagrams { get; set; }
         public virtual ICollection<AlertRule> AlertRules { get; set; }
+        public virtual ICollection<HotPath> HotPaths { get; set; }
     }
 
     public class SiteBuildItem : IModelBuildItem

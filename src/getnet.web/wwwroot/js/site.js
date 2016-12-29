@@ -8,6 +8,7 @@ window.getnet = (function () {
 
     function init(options) {
         getnet.options = options;
+
     }
 
     //#region Refresh
@@ -46,12 +47,12 @@ window.getnet = (function () {
         }
 
         if (name && registeredRefreshes[name]) {
-            console.log('Refresh paused for: ' + name);
+            getnet.log('Refresh paused for: ' + name);
             pauseSingleRefresh(registeredRefreshes[name]);
             return;
         }
 
-        console.log('Refresh paused');
+        getnet.log('Refresh paused');
         for (var key in registeredRefreshes) {
             if (registeredRefreshes.hasOwnProperty(key)) {
                 pauseSingleRefresh(registeredRefreshes[key]);
@@ -70,12 +71,12 @@ window.getnet = (function () {
         }
 
         if (name && registeredRefreshes[name]) {
-            console.log('Refresh resumed for: ' + name);
+            getnet.log('Refresh resumed for: ' + name);
             resumeSingleRefresh(registeredRefreshes[name]);
             return;
         }
 
-        console.log('Refresh resumed');
+        getnet.log('Refresh resumed');
         for (var key in registeredRefreshes) {
             if (registeredRefreshes.hasOwnProperty(key)) {
                 resumeSingleRefresh(registeredRefreshes[key]);
@@ -98,7 +99,7 @@ window.getnet = (function () {
         var targetId = "_hiddenCopyText_";
         var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
         var elemdata = elem.getAttribute("data-text");
-        console.log(elem);
+        getnet.log(elem);
         var hasData = elemdata.length > 0;
         var origSelectionStart, origSelectionEnd;
         if (hasData) {
@@ -173,6 +174,12 @@ window.getnet = (function () {
         }
     }
 
+    function LogMessage(message) {
+        if (getnet.options.enableLogging == true) {
+            console.log(message);
+        }
+    }
+
     return {
         init: init,
         refresh: {
@@ -186,7 +193,8 @@ window.getnet = (function () {
         selectText: SelectElementText,
         showSnack: ShowSnack,
         closeAlert: CloseAlert,
-        toggleDrawer: ToggleDrawer
+        toggleDrawer: ToggleDrawer,
+        log: LogMessage
     }
 })();
 
@@ -233,7 +241,7 @@ getnet.Forms = (function () {
             reset = false;
         }
         var successAction = function () {
-            console.log("success form");
+            getnet.log("success form");
             if ($(loadingTarget).length > 0) {
                 $(loadingTarget).hide();
             }
@@ -242,7 +250,7 @@ getnet.Forms = (function () {
             }
         };
         var errorAction = function (data) {
-            console.log("error form");
+            getnet.log("error form");
             $(updateTarget).html(data.responseText);
             if ($(loadingTarget).length > 0) {
                 $(loadingTarget).hide();
@@ -281,13 +289,13 @@ getnet.Forms = (function () {
             type: 'POST',
             success: successAction,
             beforeSubmit: function () {
-                console.log("Submitting form");
+                getnet.log("Submitting form");
                 if ($(loadingTarget).length > 0) {
                     $(loadingTarget).show();
                 }
             }
         });
-        console.log("Ajax submit loaded for " + formId);
+        getnet.log("Ajax form loaded for " + formId);
     }
 
     function EnableLink(formId) {
@@ -303,7 +311,7 @@ getnet.Forms = (function () {
             reset = false;
         }
         var successAction = function () {
-            console.log("success link");
+            getnet.log("success link");
             if ($(loadingTarget).length > 0) {
                 $(loadingTarget).hide();
             }
@@ -312,7 +320,7 @@ getnet.Forms = (function () {
             }
         };
         var errorAction = function (data) {
-            console.log("error link");
+            getnet.log("error link");
             $(updateTarget).html(data.responseText);
             if ($(loadingTarget).length > 0) {
                 $(loadingTarget).hide();
@@ -354,14 +362,14 @@ getnet.Forms = (function () {
                 type: 'GET',
                 success: successAction,
                 beforeSubmit: function () {
-                    console.log("Submitting link");
+                    getnet.log("Submitting link");
                     if ($(loadingTarget).length > 0) {
                         $(loadingTarget).show();
                     }
                 }
             });
         });        
-        console.log("Ajax link submit loaded for " + formId);
+        getnet.log("Ajax link submit loaded for " + formId);
     }
 
     function GetIdOrData(id, dataTarget, dataid) {
@@ -400,6 +408,8 @@ getnet.Forms = (function () {
 getnet.Snacks = (function () {
     function init(options) {
         getnet.Snacks.options = options;
+        getnet.Snacks.failureCount = 0;
+        getnet.Snacks.retryCount = 3;
         LoadSnacks();
         if (options.refresh) {
             getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 1000);
@@ -407,17 +417,30 @@ getnet.Snacks = (function () {
     }
     
     function LoadSnacks() {
-        $.getJSON("/a/getsnacks", function (data) {
-            $.each(data, function (i, item) {
-                if (item.actionHandler) {
-                    var action = item.actionHandler;
-                    item.actionHandler = function () {
-                        eval(action);
-                    };
+        $.ajax({
+            dataType: 'json',
+            type: 'GET',
+            url: 'a/getsnacks',
+            success: function (data) {
+                $.each(data, function (i, item) {
+                    if (item.actionHandler) {
+                        var action = item.actionHandler;
+                        item.actionHandler = function () {
+                            eval(action);
+                        };
+                    }
+                    getnet.showSnack(item);
+                });
+            },
+            error: function (reason) {
+                getnet.log(reason.responseText);
+                if (getnet.Snacks.failureCount >= getnet.Snacks.retryCount) {
+                    Shutdown();
+                } else {
+                    getnet.Snacks.failureCount++;
                 }
-                getnet.showSnack(item);
-            });
-        });
+            }
+        })
     }
 
     function Shutdown() {

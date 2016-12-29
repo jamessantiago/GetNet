@@ -10,24 +10,11 @@
 
             @if (ViewData["FailedLoginMessage"] != null)
             {
-                <span id="LoginError" class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--yellow">
-                    <span class="mdl-chip__contact"><i class="material-icons getnet-chip-icon">error</i></span>
-                    <span class="mdl-chip__text">@ViewData["FailedLoginMessage"]</span>
-
-                    <a href="#" onclick="$('#LoginError').hide()" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
-                </span>
-            }
-
-            @if (ViewData["LastError"] != null)
-            {
-                <span id="LastError" class="mdl-chip mdl-chip--contact mdl-chip--deletable mdl-color--red">
-                    <span class="mdl-chip__contact"><i class="material-icons getnet-chip-icon">error</i></span>
-                    <span class="mdl-chip__text">@(((Exception)ViewData["LastError"]).Message.TruncateWithEllipsis(80))</span>
-
-                    <a href="#" onclick="$('#LastError').hide()" class="mdl-chip__action"><i class="material-icons">cancel</i></a>
-                </span>
-                <div class="mdl-tooltip getnet-tooltip" data-mdl-for="LastError">
-                    @(((Exception)ViewData["LastError"]).ToString())
+                <div class="getnet-alert getnet-alert-error getnet-alert-closable" id="FailedLoginAlert">
+                    <button type="button" class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('FailedLoginAlert')">
+                        <i class="material-icons">close</i>
+                    </button>
+                    @ViewData["FailedLoginMessage"]
                 </div>
             }
 

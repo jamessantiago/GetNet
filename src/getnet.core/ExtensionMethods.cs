@@ -492,6 +492,11 @@ namespace getnet
             return ip;
         }
 
+        public static int IpToInt(this string ip)
+        {
+            return IPAddress.Parse(ip).ToInt();
+        }
+
         public static int ToInt(this IPAddress ip)
         {
             var address = ip.GetAddressBytes();

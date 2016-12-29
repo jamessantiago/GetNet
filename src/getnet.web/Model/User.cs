@@ -35,6 +35,16 @@ namespace getnet.Model
                 claims.Add(new Claim(ClaimTypes.Role, role));
             this.AddIdentity(new Identity(AccountName, claims));
         }
+
+        public bool InRoles(string roles)
+        {
+            foreach (var role in roles.Split(','))
+            {
+                if (UserRoles.Any(d => d.ToLower() == role.Trim().ToLower()))
+                    return true;
+            }
+            return false;
+        }
     }
 
     public class Identity : ClaimsIdentity

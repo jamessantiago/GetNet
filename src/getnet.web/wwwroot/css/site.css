@@ -18,10 +18,14 @@ html, body {
     width: 100%;
 }
 
+.getnet-cell {
+    padding: 8px;
+}
+
 .getnet-alert {
     border-radius: 1px;
     padding: 15px;
-    margin: 10px;
+    margin: 10px 0px 10px 0px;
     color: rgba(255,255,255, 0.84);
     background-color:  #03a9f4;
     overflow: hidden;

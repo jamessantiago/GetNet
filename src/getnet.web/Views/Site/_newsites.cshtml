@@ -16,7 +16,7 @@
     {
         <tr>
             <td>
-                <a href="/site/makesite?ip=@nei.IP.ToString()"
+                <a href="/site/makesite?ip=@nei.IP.ToString()&hubip=@ViewData["hubip"]"
                    id="@nei.GetHashCode().ToString()"
                    class="getnet-ajax-link"
                    data-ajax-results="newsites-results"

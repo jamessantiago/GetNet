@@ -158,27 +158,22 @@
             break;
     }
 
+    <environment names="Development">
+        <script>
+            getnet.init({
+                enableLogging: true
+            });
+            getnet.Snacks.init({ refresh: 5 });
+            getnet.log("Development mode");
+        </script>
+    </environment>
+    <environment names="Staging,Production">
+        <script>
+            getnet.init({});
+            getnet.Snacks.init({ refresh: 15 });
+        </script>
+    </environment>        
 
-
-    <script>
-        getnet.init({});
-        @foreach (var message in Context.Session.GetSnackMessages())
-        {
-            @if (message.actionHandler.HasValue())
-            {
-                @:var data = @Html.Raw(message.AsJson());
-                @:var action = data.actionHandler;
-                @:data.actionHandler = function() {
-                @:  eval(action);
-                @:};
-                @:getnet.showSnack(data);
-            } else {
-            @:getnet.showSnack(@Html.Raw(message.AsJson()));
-            }
-        }
-        getnet.Snacks.init({ refresh: 10 });
-    </script>
-
-    @RenderSection("scripts", required: false)
+        @RenderSection("scripts", required: false)
 </body>
 </html>

@@ -18,15 +18,13 @@ namespace getnet.core.Logging
     {
         public MailKitTarget()
         {
-            if (CoreCurrent.Configuration["Data:Smtp:Server"].HasValue() &&
-                CoreCurrent.Configuration["Data:Smtp:From"].HasValue() &&
-                CoreCurrent.Configuration["Data:Smtp:SubjectTemplate"].HasValue())
+            if (CoreCurrent.Configuration["Whistler:Smtp:Enabled"] == "True")
             {
                 try
                 {
                     client = new SmtpClient();
                     client.ServerCertificateValidationCallback = (s, c, h, e) => true;
-                    client.Connect(CoreCurrent.Configuration["Data:Smtp:Server"]);
+                    client.Connect(CoreCurrent.Configuration["Whistler:Smtp:Server"]);
                     IsConfigured = true;
                 } catch
                 {
@@ -44,8 +42,8 @@ namespace getnet.core.Logging
             var message = new MimeMessage();
             foreach (var ta in toAddresses.Split(';'))
                 message.To.Add(new MailboxAddress(ta));
-            message.To.Add(new MailboxAddress(CoreCurrent.Configuration["Data:Smtp:From"]));
-            generalLayout = CoreCurrent.Configuration["Data:Smtp:SubjectTemplate"];
+            message.To.Add(new MailboxAddress(CoreCurrent.Configuration["Whistler:Smtp:From"]));
+            generalLayout = CoreCurrent.Configuration["Whistler:Smtp:SubjectTemplate"];
             message.Subject = generalLayout.Render(logEvent);
             var mailLayout = new WhistlerMailRenderer();
             message.Body = new TextPart("plain")
@@ -61,7 +59,7 @@ namespace getnet.core.Logging
             get
             {
                 if (!client.IsConnected)
-                    client.Connect(CoreCurrent.Configuration["Data:Smtp:Server"]);
+                    client.Connect(CoreCurrent.Configuration["Whistler:Smtp:Server"]);
                 return client;
             }
         }

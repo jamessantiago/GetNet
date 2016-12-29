@@ -7,6 +7,8 @@ namespace getnet.core.Model.Entities
 {
     public class Switch
     {
+        public int SwitchId { get; set; }
+
         [StringLength(100)]
         public string ChassisSerial { get; set; }
 
@@ -22,7 +24,6 @@ namespace getnet.core.Model.Entities
         public string Model { get; set; }
 
         public int RawManagementIP { get; set; }
-        public int SwitchId { get; set; }
 
         public bool IsSwitchBlade { get; set; }
 

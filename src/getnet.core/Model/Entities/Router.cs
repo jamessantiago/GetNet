@@ -9,6 +9,8 @@ namespace getnet.core.Model.Entities
 {
     public class Router
     {
+        public int RouterId { get; set; }
+
         [StringLength(100)]
         public string ChassisSerial { get; set; }
         
@@ -25,7 +27,6 @@ namespace getnet.core.Model.Entities
 
         [Required]
         public int RawManagementIP { get; set; }
-        public int RouterId { get; set; }
 
         public virtual Tenant Tenant { get; set; }
         public virtual ICollection<RouterSwitchConnection> RouterSwitchConnections { get; set; }

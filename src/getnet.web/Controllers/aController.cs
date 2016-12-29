@@ -9,15 +9,17 @@ using Microsoft.AspNetCore.Identity;
 using getnet.Model;
 using Microsoft.AspNetCore.Diagnostics;
 using getnet.core;
+using System.Data.SqlClient;
 
 namespace getnet.Controllers
 {
     [RedirectOnDbIssue]
-    [Authorize(Roles = Roles.GlobalAdmins)]
     public class aController : BaseController
     {
         private Whistler logger = new Whistler();
 
+
+        [Authorize]
         public IActionResult Index()
         {
             return View();
@@ -30,6 +32,12 @@ namespace getnet.Controllers
             Exception error = ex?.Error;
             if (error != null)
                 logger.Error(error, WhistlerTypes.UnhandledException);
+            
+            if (error.GetType() == typeof(SqlException) || error.InnerException?.GetType() == typeof(SqlException))
+            {
+                Current.SetDbConfigurationState();
+            }
+
             if (HttpContext.Request.IsAjaxRequest())
             {
                 return PartialView("_error", error?.Message);
@@ -40,6 +48,7 @@ namespace getnet.Controllers
             }
         }
 
+        [Authorize]
         public IActionResult GetSnacks()
         {
             return Json(HttpContext.Session.GetSnackMessages());

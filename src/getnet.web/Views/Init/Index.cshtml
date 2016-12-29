@@ -7,15 +7,17 @@
     <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
         <a href="#db-tab" class="mdl-layout__tab is-active">Database</a>
         <a href="#auth-tab" class="mdl-layout__tab">Authentication</a>
+        <a href="#ssh-tab" class="mdl-layout__tab">SSH</a>
+        <a href="#logging-tab" class="mdl-layout__tab">Logging</a>
     </div>
 }
 
 <section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="db-tab">
-    <div class="page-content">
+    <div class="page-content mdl-grid">
 
         @if (ViewData["DbError"] != null)
         {
-            <div class="mdl-cell--12-col">
+            <div class="mdl-cell mdl-cell--12-col">
                 <div class="getnet-alert getnet-alert-error getnet-alert-closable" id="DbError">
                     <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('DbError')">
                         <i class="material-icons">close</i>
@@ -28,7 +30,7 @@
             </div>
         }
 
-        <div class="mdl-cell--12-col">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell @((bool)ViewData["DbExists"] ? "mdl-cell--12-col" : "mdl-cell--6-col")">
 
             <h3>Connection String Configuration</h3>
             <div id="thisform-results"></div>
@@ -56,7 +58,7 @@
                         <label class="mdl-textfield__label" for="PostgresConfigurationString">Database Connection</label>
                     </div>
                 </div>
-                
+
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                     Save
                 </button>
@@ -66,16 +68,16 @@
 
         @if (!(bool)ViewData["DbExists"])
         {
-            <div class="mdl-cell--12-col">
-                <h3>Database Creation</h3>
-                <form action="/init/createdb" method="post">
-                    <div class="getnet-alert getnet-alert-warning">
-                        <p>The GetNet database may not currently exist.  There may just be a connection issue or if the database may need to be created.  You can create the database here if GetNet has the proper credentials to do so either in the SQL connection string or through integrated security via GetNet's web service account.  If the database already exists no further action will be taken.  Be sure not to use the master db in your connection string otherwise GetNet will end up creating all the SQL objects there.</p>
-                    </div>
-                    <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                        Ensure DB Exists
-                    </button>
-                </form>
+            <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col">
+                <div class="mdl-card__title mdl-card--expand mdl-color--red-300">
+                    <div class="mdl-card__title-text">Database Creation</div>
+                </div>
+                <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+                    The GetNet database may not currently exist.  There may just be a connection issue or if the database may need to be created.  You can create the database here if GetNet has the proper credentials to do so either in the SQL connection string or through integrated security via GetNet's web service account.  If the database already exists no further action will be taken.  Be sure <b>not</b> to use the master db in your connection string otherwise GetNet will end up creating all the SQL objects there.
+                </div>
+                <div class="mdl-card__actions mdl-card--border">
+                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="/init/createdb">Ensure DB Exists</a>
+                </div>
             </div>
         }
 
@@ -83,8 +85,8 @@
 </section>
 
 <section class="mdl-layout__tab-panel" id="auth-tab">
-    <div class="page-content">
-        <div class="mdl-cell--12-col">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
             <h3>Web Authentication</h3>
             <div id="authconfig-results"></div>
             <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true">
@@ -134,6 +136,99 @@
                 <br />
                 <br />
 
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel" id="ssh-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <h3>Ssh Configuration</h3>
+            <div id="sshconfig-results"></div>
+            <form action="/init/sshconfig" id="sshconfig" class="getnet-ajax-form">
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="username" id="username" value="@CoreCurrent.Configuration.GetSecure("SSH:Username")">
+                    <label class="mdl-textfield__label" for="username">Ssh Username</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="password" name="password" id="password" value="">
+                    <label class="mdl-textfield__label" for="password">Ssh Password</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="port" id="port" value="@CoreCurrent.Configuration["SSH:Port"]">
+                    <label class="mdl-textfield__label" for="port">Ssh Port</label>
+                </div>
+                <br />
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Save
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel" id="logging-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <h3>Logging Configuration</h3>
+            <div id="logging-results"></div>
+            <form action="/init/logconfig" id="logging" class="getnet-ajax-form">
+                <h4>Console</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="consoleenabled">
+                    <input type="checkbox" id="consoleenabled" name="consoleenabled" class="mdl-switch__input" @(CoreCurrent.Configuration["Whistler:Console:Enabled"] == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="consolelayout" id="consolelayout" value="@CoreCurrent.Configuration["Whistler:Console:Layout"]">
+                    <label class="mdl-textfield__label" for="consolelayout">Layout</label>
+                </div>
+
+                <h4>File</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fileenabled">
+                    <input type="checkbox" id="fileenabled" name="fileenabled" class="mdl-switch__input" @(CoreCurrent.Configuration["Whistler:File:Enabled"] == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="filelayout" id="filelayout" value="@CoreCurrent.Configuration["Whistler:File:Layout"]">
+                    <label class="mdl-textfield__label" for="filelayout">Layout</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="filename" id="filename" value="@CoreCurrent.Configuration["Whistler:File:FileName"]">
+                    <label class="mdl-textfield__label" for="filename">File Name</label>
+                </div>
+
+                <h4>SMTP</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="smtpenabled">
+                    <input type="checkbox" id="smtpenabled" name="smtpenabled" class="mdl-switch__input" @(CoreCurrent.Configuration["Whistler:Smtp:Enabled"] == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpserver" id="smtpserver" value="@CoreCurrent.Configuration["Whistler:Smtp:Server"]">
+                    <label class="mdl-textfield__label" for="smtpserver">Relay Server</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpfrom" id="smtpfrom" value="@CoreCurrent.Configuration["Whistler:Smtp:From"]">
+                    <label class="mdl-textfield__label" for="smtpfrom">From Address</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpsubject" id="smtpsubject" value="@CoreCurrent.Configuration["Whistler:Smtp:SubjectLayout"]">
+                    <label class="mdl-textfield__label" for="smtpsubject">Subject Layout</label>
+                </div>
+
+                <br />
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                     Save
                 </button>

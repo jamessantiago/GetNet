@@ -8,6 +8,15 @@ namespace getnet
 {
     public static class Retry
     {
+        public static T Do<T>(
+            Func<T> action,
+            TimeSpan retryInterval,
+            int retryCount = 3
+            )
+        {
+            return Do<T>(action, retryInterval, null, retryCount);
+        }
+
         public static void Do(
             Action action,
             TimeSpan retryInterval,
@@ -17,12 +26,13 @@ namespace getnet
             {
                 action();
                 return null;
-            }, retryInterval, retryCount);
+            }, retryInterval, null, retryCount);
         }
 
         public static T Do<T>(
             Func<T> action,
             TimeSpan retryInterval,
+            Type breakOnExceptionType,
             int retryCount = 3)
         {
             var exceptions = new List<Exception>();
@@ -38,6 +48,8 @@ namespace getnet
                 catch (Exception ex)
                 {
                     exceptions.Add(ex);
+                    if (breakOnExceptionType != null && ex.GetType() == breakOnExceptionType)
+                        break;
                 }
             }
 

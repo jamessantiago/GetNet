@@ -5,6 +5,8 @@ using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;
+using getnet.core.Model.Entities;
+using getnet.core.Model.Repositories;
 
 namespace getnet.core.Model
 {
@@ -61,6 +63,23 @@ namespace getnet.core.Model
             return Services.GetRequiredService<IGenericRepository<T>>();
         }
 
+        public SiteRepository SiteRepo => Services.GetRequiredService<SiteRepository>();
+
+        public void Transaction(Action action, int retryIntervalMs = 1000, int retryCount = 1)
+        {
+            context.Database.BeginTransaction();
+            try
+            {
+                Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
+                context.Database.CommitTransaction();
+            }
+            catch (AggregateException ex)
+            {
+                context.Database.RollbackTransaction();
+                throw ex.InnerExceptions.Last();
+            }
+        }
+
         public void Save()
         {
             context.SaveChanges();
@@ -110,6 +129,7 @@ namespace getnet.core.Model
             {
                 services.AddTransient(Type.GetType(t.FullName), Type.GetType(t.FullName));
             }
+            services.AddSingleton(typeof(SiteRepository));
             services.AddSingleton(typeof(IGenericRepository<>), typeof(GenericRepository<>));
         }
 

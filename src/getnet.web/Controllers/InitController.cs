@@ -10,10 +10,13 @@ using Microsoft.AspNetCore.Identity;
 using getnet.Model;
 using Microsoft.AspNetCore.Http;
 using System.Threading;
+using System.ComponentModel.DataAnnotations;
+using Microsoft.AspNetCore.Authorization;
 
 namespace getnet.Controllers
 {
     [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    [Authorize(Roles = Roles.GlobalAdmins)]
     public class InitController : BaseController
     {
 
@@ -22,6 +25,7 @@ namespace getnet.Controllers
         {
             try {
                 ViewData["DbExists"] = uow.CheckIfDabaseExists();
+                Current.SetDbConfigurationState();
             } catch
             {
                 ViewData["DbExists"] = false;
@@ -49,8 +53,7 @@ namespace getnet.Controllers
             uow = new UnitOfWork();
             return PartialView("_success", "Successfully configured the SQL connection string");
         }
-
-        [HttpPost]
+        
         public IActionResult CreateDb()
         {
             try
@@ -81,6 +84,30 @@ namespace getnet.Controllers
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
             }
             return PartialView("_success", "Successfully configured authentication");
+        }
+
+        [HttpPost]
+        public IActionResult SshConfig(IFormCollection collection)
+        {
+            CoreCurrent.Configuration.SetSecure("SSH:Username", collection["username"]);
+            CoreCurrent.Configuration.SetSecure("SSH:Password", collection["password"]);
+            CoreCurrent.Configuration.Set("SSH:Port", collection["port"]);
+            return PartialView("_success", "Successfully configured ssh");
+        }
+
+        [HttpPost]
+        public IActionResult LogConfig(IFormCollection collection)
+        {
+            CoreCurrent.Configuration.Set("Whistler:Console:Enabled", collection["consoleenabled"] == "on" ? "true" : "false");
+            CoreCurrent.Configuration.Set("Whistler:Console:Layout", collection["consolelayout"]);
+            CoreCurrent.Configuration.Set("Whistler:File:Enabled", collection["fileenabled"] == "on" ? "true" : "false");
+            CoreCurrent.Configuration.Set("Whistler:File:Layout", collection["filelayout"]);
+            CoreCurrent.Configuration.Set("Whistler:File:FileName", collection["filename"]);
+            CoreCurrent.Configuration.Set("Whistler:Smtp:Enabled", collection["smtpenabled"] == "on" ? "true" : "false");
+            CoreCurrent.Configuration.Set("Whistler:Smtp:Server", collection["smtpserver"]);
+            CoreCurrent.Configuration.Set("Whistler:Smtp:From", collection["smtpfrom"]);
+            CoreCurrent.Configuration.Set("Whistler:Smtp:SubjectLayout", collection["smtpsubject"]);
+            return PartialView("_success", "Successfully configured ssh");
         }
     }
 }

@@ -10,11 +10,14 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using getnet.Model.Security;
+using Novell.Directory.Ldap;
 
 namespace getnet.Controllers
 {
     public class AccountController : BaseController
     {
+        private Whistler logger = new Whistler();
+
         protected UserManager<User> userManager;
         protected SignInManager<User> signInManager;
 
@@ -44,19 +47,30 @@ namespace getnet.Controllers
             email = email.ToLower();
             try
             {
-                if (Retry.Do(() => getnet.Model.Security.LdapServer.Current.Authenticate(email, password), TimeSpan.FromSeconds(1), 2))
+                if (Retry.Do(
+                    action: () => getnet.Model.Security.LdapServer.Current.Authenticate(email, password),
+                    retryInterval: TimeSpan.FromSeconds(2), 
+                    breakOnExceptionType: typeof(LdapException),
+                    retryCount: 3))
                 {
-                    var groups = (Current.Security as ActiveDirectoryProvider).GetRoles(email);
-                    var tempUser = new User(email, groups.ToArray());
-                    await signInManager.SignInAsync(tempUser, true);
-                    return RedirectToAction("index", "a");
+                    return await Login(email);
                 }
             } catch (AggregateException ex)
             {
-                ViewData["LastError"] = ex.InnerExceptions.Last();
+                if (ex.InnerExceptions.Last().GetType() == typeof(LdapException))
+                    ViewData["FailedLoginMessage"] = "Username or password is incorrect";
+                else
+                    ViewData["FailedLoginMessage"] = ex.InnerExceptions.Last().Message;
             }
-            ViewData["FailedLoginMessage"] = "Username or password is incorrect";
             return View();
+        }
+
+        private async Task<IActionResult> Login(string email)
+        {
+            var groups = (Current.Security as ActiveDirectoryProvider).GetRoles(email);
+            var tempUser = new User(email, groups.ToArray());
+            await signInManager.SignInAsync(tempUser, true);
+            return RedirectToAction("index", "a");
         }
 
         [Route("/logoff")]
