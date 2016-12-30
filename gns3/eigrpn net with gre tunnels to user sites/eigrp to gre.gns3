@@ -318,14 +318,15 @@
                     "idlemax": 500,
                     "idlepc": "0x607e3c28",
                     "idlesleep": 30,
-                    "image": "c2691-gns3-entservicesk9-mz.123-16.image",
-                    "image_md5sum": "1875a7c3e949fd72ea3454d4bfd8d512",
+                    "image": "C3725-AD.BIN",
+                    "image_md5sum": "504a6c27522d9e1db1cc246f84f5ebe3",
                     "iomem": 5,
                     "mac_addr": "c007.07e2.0000",
                     "mmap": true,
                     "name": "SW3-1",
                     "nvram": 256,
                     "platform": "c2691",
+                    "private_config": "configs/i7_private-config.cfg",
                     "ram": 192,
                     "slot0": "GT96100-FE",
                     "slot1": "NM-16ESW",
@@ -336,8 +337,8 @@
                 "server_id": 2,
                 "type": "C2691",
                 "vm_id": "e9a2c314-072a-4124-9e36-1ef2cb0bf4f0",
-                "x": -725.0,
-                "y": -73.0
+                "x": -726.0,
+                "y": -71.0
             },
             {
                 "description": "Router c7200",
@@ -521,7 +522,7 @@
                     "font": "TypeWriter,10,-1,5,75,0,0,0,0,0",
                     "text": "R4",
                     "x": 17.5,
-                    "y": -25.0
+                    "y": -26.0
                 },
                 "ports": [
                     {
@@ -645,7 +646,7 @@
                 "server_id": 2,
                 "type": "C7200",
                 "vm_id": "417e402b-f9b5-4870-89ce-def111514b26",
-                "x": -276.0,
+                "x": -277.0,
                 "y": -75.0
             },
             {
@@ -849,14 +850,15 @@
                     "idlemax": 500,
                     "idlepc": "0x607e3c28",
                     "idlesleep": 30,
-                    "image": "c2691-gns3-entservicesk9-mz.123-16.image",
-                    "image_md5sum": "1875a7c3e949fd72ea3454d4bfd8d512",
+                    "image": "C3725-AD.BIN",
+                    "image_md5sum": "504a6c27522d9e1db1cc246f84f5ebe3",
                     "iomem": 5,
                     "mac_addr": "c002.166d.0000",
                     "mmap": true,
                     "name": "SW5-1",
                     "nvram": 256,
                     "platform": "c2691",
+                    "private_config": "configs/i2_private-config.cfg",
                     "ram": 192,
                     "slot0": "GT96100-FE",
                     "slot1": "NM-16ESW",
@@ -974,8 +976,8 @@
                 "server_id": 2,
                 "type": "C7200",
                 "vm_id": "05a6ce9b-eb26-45a9-a789-244ff4b3c6ce",
-                "x": -422.0,
-                "y": -275.0
+                "x": -423.0,
+                "y": -276.0
             }
         ],
         "notes": [
@@ -997,7 +999,7 @@
                 "color": "#ff000000",
                 "font": "TypeWriter,10,-1,5,75,0,0,0,0,0",
                 "text": "192.168.33.1/24 D\ntu2 172.16.1.3\ntu4 172.16.2.3\nV1 172.16.100.1",
-                "x": -533.0,
+                "x": -534.0,
                 "y": -18.5
             },
             {
@@ -1045,7 +1047,7 @@
             {
                 "color": "#ff000000",
                 "font": "TypeWriter,10,-1,5,75,0,0,0,0,0",
-                "text": "Network backbone \n  192.168.31-35\nInternal network (mgmt) \n  172.16.1-4\nInternal network (user)\n172.16.100-101",
+                "text": "Network backbone \n  192.168.31-35\nInternal network (mgmt) \n  172.16.1-4\nInternal network (user)\n  172.16.100-101",
                 "x": -975.0,
                 "y": -468.5
             },
