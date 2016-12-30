@@ -2,6 +2,29 @@
 /// <reference path="../lib/jquery-form/jquery-form.js"/>
 /// <reference path="../lib/material-design-lite/material.js"/>
 
+//
+//                 GETNET Main JS
+//
+//           -o/.             -/.`                  
+//           Gooo/.`          -ooo/`                
+//           Eoooooo/`        -ooooo/-`             
+//           Toooooooo+:`     -oooooooo/`           
+//           Nooooooooooo:/   -oooooooooo.          
+//           Eoooooooooooooo:`-oooooooooo.          
+//           Toooooooooooooooo+oooooooooo.          
+//           `:+ooooooooooooooooooooooooo.          
+//              -+ooooooooooooooooooooooo.          
+//                 -+oooooooooooooooooooo.          
+//                  `:++ooooooooooooooooo.          
+//                     `-oooooooooooooooo.          
+//                --      `:ooooooooooooo.          
+//            .+oooooo+.    `:+oooooooooo.          
+//           `/oooooooo:`      `:oooooooo.          
+//           :soooooooo+`        ``/ooooo.          
+//            :oooooooo-            `/soo.          
+//             .--++--`                ./.  
+
+
 window.getnet = (function () {
 
     var registeredRefreshes = {};

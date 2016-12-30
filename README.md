@@ -1,27 +1,12 @@
-# getnet
+# GetNet
 
-           -o/.             -/.`                  
-           Gooo/.`          -ooo/`                
-           Eoooooo/`        -ooooo/-`             
-           Toooooooo+:`     -oooooooo/`           
-           Nooooooooooo:/   -oooooooooo.          
-           Eoooooooooooooo:`-oooooooooo.          
-           Toooooooooooooooo+oooooooooo.          
-           `:+ooooooooooooooooooooooooo.          
-              -+ooooooooooooooooooooooo.          
-                 -+oooooooooooooooooooo.          
-                  `:++ooooooooooooooooo.          
-                     `-oooooooooooooooo.          
-                --      `:ooooooooooooo.          
-            .+oooooo+.    `:+oooooooooo.          
-           `/oooooooo:`      `:oooooooo.          
-           :soooooooo+`        ``/ooooo.          
-            :oooooooo-            `/soo.          
-             .--++--`                ./.  
+[![GetNet Logo](/jamessantiago/getnet/raw/master/media/logo/logo_112.png)]
+
+GetNet is a highly focused network management tool.  Core components include network discovery, monitoring, dhcp, sites and services, and ip management.
 
 ## Development
 
-getnet is currently under initial development.  Some design/functionality goals:
+GetNet is currently under initial development.  Some design/functionality goals:
 
 *  .NET Core for cross platform capabilities
 *  Both MS SQL and PostgreSQL support
@@ -33,4 +18,8 @@ getnet is currently under initial development.  Some design/functionality goals:
 *  DHCP integration
 *  Disconnected network import capabilities
 
- 
+## Target Environment
+
+GetNet should more or less be generalized to most networks.  Here is the current network architecture GetNet is being built around:
+
+[![GNS Simulated Network](/jamessantiago/getnet/raw/master/gns3/eigrpn%20net%20with%20gre%20tunnels%20to%20user%20sites/screenshot.png)]
