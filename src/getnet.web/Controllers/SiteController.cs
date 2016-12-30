@@ -59,11 +59,12 @@ namespace getnet.Controllers
             uow.Transaction(() =>
             {
                 var version = ip.Ssh().Execute<DeviceVersion>()[0];
-                var neighbors = hubip.Ssh().Execute<CdpNeighbor>();
-                var thisSite = neighbors.Where(d => d.IP.ToString() == ip).First();
+                var neighbors = ip.Ssh().Execute<CdpNeighbor>();
+                var hotpaths = neighbors.Where(d => d.IP.ToString() == ip);
                 uow.Repo<Location>().Insert(new Location() { Name = "TestLocale" });
 
-                uow.Repo<HotPath>().Insert(new HotPath() { RawManagementIP = hubip.IpToInt(), Name = thisSite.InPort + "_Circuit", Interface = thisSite.InPort, IsOnline = true });
+                foreach (var hotpath in hotpaths)
+                    uow.Repo<HotPath>().Insert(new HotPath() { RawManagementIP = hotpath.IP.ToInt(), Name = hotpath.OutPort + "_Circuit", Interface = hotpath.OutPort, IsOnline = true });
                 uow.Save();
                 var site = new Site()
                 {
