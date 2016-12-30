@@ -109,5 +109,11 @@ namespace getnet.Controllers
             CoreCurrent.Configuration.Set("Whistler:Smtp:SubjectLayout", collection["smtpsubject"]);
             return PartialView("_success", "Successfully configured ssh");
         }
+        [AllowAnonymous]
+        [Route("/dbissue")]
+        public IActionResult Anon()
+        {
+            return View();
+        }
     }
 }

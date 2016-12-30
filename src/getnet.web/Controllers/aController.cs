@@ -33,18 +33,21 @@ namespace getnet.Controllers
             if (error != null)
                 logger.Error(error, WhistlerTypes.UnhandledException);
             
-            if (error.GetType() == typeof(SqlException) || error.InnerException?.GetType() == typeof(SqlException))
-            {
-                Current.SetDbConfigurationState();
-            }
-
             if (HttpContext.Request.IsAjaxRequest())
             {
                 return PartialView("_error", error?.Message);
             }
             else
             {
-                return View(error);
+                if (error?.GetType() == typeof(SqlException) || error?.InnerException?.GetType() == typeof(SqlException))
+                {
+                    Current.SetDbConfigurationState();
+                    return RedirectToAction("index", "a");
+                }
+                else
+                {
+                    return View(error);
+                }
             }
         }
 

@@ -1,0 +1,23 @@
+﻿@model IEnumerable<Site>
+@{ 
+    ViewData["Title"] = string.Format("Sites ({0})", Model.Count());
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithTables;
+}
+
+<div class="mdl-shadow--2dp mdl-color--grey-50 getnet-cell mdl-cell mdl-cell--12-col">
+    @Html.Partial("_sites", Model)
+</div>
+
+@section scripts {
+<script>
+    $(document).ready(function () {
+        var sitestbl = $('#sites').DataTable({
+            columnDefs: [
+                {
+                    className: 'mdl-data-table__cell--non-numeric'
+                }
+            ]
+        });
+    });
+</script>
+}

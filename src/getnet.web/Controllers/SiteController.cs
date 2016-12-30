@@ -9,15 +9,24 @@ using getnet.core.Model.Entities;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using getnet;
+using getnet.Model;
 
 namespace getnet.Controllers
 {
     public class SiteController : BaseController
     {
         [Route("/sites")]
-        public IActionResult Sites()
+        public IActionResult Index()
         {
-            return View();
+            var sites = uow.Repo<Site>().Get(includeProperties: "Location");
+            return View(sites);
+        }
+
+        public IActionResult Delete(int id)
+        {
+            uow.Repo<Site>().Delete(uow.Repo<Site>().Get(filter: d => d.SiteId == id, includeProperties: "HotPaths").First());
+            uow.Save();
+            return RedirectToAction("index", "site");
         }
 
         [Route("/s/{id}")]
@@ -26,9 +35,9 @@ namespace getnet.Controllers
             int siteId;
             Site site = null;
             if (int.TryParse(id, out siteId))
-                site = uow.Repo<Site>().Get(filter: d => d.SiteId == siteId, includeProperties: "Location,HotPaths").FirstOrDefault();
+                site = uow.Repo<Site>().Get(filter: d => d.SiteId == siteId, includeProperties: "Location,HotPaths,Priority").FirstOrDefault();
             else
-                site = uow.Repo<Site>().Get(filter: d => d.Name == id, includeProperties: "Location,HotPaths").FirstOrDefault();
+                site = uow.Repo<Site>().Get(filter: d => d.Name == id, includeProperties: "Location,HotPaths,Priority").FirstOrDefault();
             return View(site);
         }
 

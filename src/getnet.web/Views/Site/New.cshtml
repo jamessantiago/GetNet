@@ -10,40 +10,44 @@
     </div>
 }
 
-<section class="mdl-layout__tab-panel mdl-cell--6-col is-active" id="disc-tab">
-    <div class="page-content">
-        <h3>Discover New Sites</h3>
-        <div id="discform-success"></div>
-        <div class="getnet-alert getnet-alert-info getnet-alert-closable" id="InfoAlertNew">
-            <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('InfoAlertNew')">
-                <i class="material-icons">close</i>
-            </button>
-            Discover includes the retrieval of neighboring devices using the cisco discovery protocol.  Tunnels such as GRE tunnels may not display if the tunnel interfaces have not been enabled for CDP.
-        </div>
-        <form action="/site/discover" id="discform" class="getnet-ajax-form"
-              data-ajax-success-action="getnet.Forms.success('discform-success','Successfully retrieved neighboring devices.  Review the results in the configuration tab.')">
-
-            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                <input class="mdl-textfield__input" type="text" name="hubip" id="hubip">
-                <label class="mdl-textfield__label" for="hubip">Premise/Wan Router IP</label>
-            </div>
-            <br />
-
-            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                Find
-            </button>
-        </form>
-    </div>
-</section>
-
-<section class="mdl-layout__tab-panel mdl-cell--12-col" id="conf-tab">
-    <div class="page-content">
-        <div id="discform-results">
+<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
+            <h3>Discover New Sites</h3>
+            <div id="discform-success"></div>
             <div class="getnet-alert getnet-alert-info getnet-alert-closable" id="InfoAlertNew">
                 <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('InfoAlertNew')">
                     <i class="material-icons">close</i>
                 </button>
-                Use the discover tab to find new sites.
+                Discover includes the retrieval of neighboring devices using the cisco discovery protocol.  Tunnels such as GRE tunnels may not display if the tunnel interfaces have not been enabled for CDP.
+            </div>
+            <form action="/site/discover" id="discform" class="getnet-ajax-form"
+                  data-ajax-success-action="getnet.Forms.success('discform-success','Successfully retrieved neighboring devices.  Review the results in the configuration tab.')">
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="hubip" id="hubip">
+                    <label class="mdl-textfield__label" for="hubip">Premise/Wan Router IP</label>
+                </div>
+                <br />
+
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                    Find
+                </button>
+            </form>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="conf-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <div id="discform-results">
+                <div class="getnet-alert getnet-alert-info getnet-alert-closable" id="InfoAlertNew">
+                    <button class="mdl-button mdl-js-button mdl-button--icon getnet-alert-close" onclick="getnet.closeAlert('InfoAlertNew')">
+                        <i class="material-icons">close</i>
+                    </button>
+                    Use the discover tab to find new sites.
+                </div>
             </div>
         </div>
     </div>

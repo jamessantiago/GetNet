@@ -32,7 +32,7 @@ namespace getnet
         public static T Do<T>(
             Func<T> action,
             TimeSpan retryInterval,
-            Type breakOnExceptionType,
+            Func<Exception, bool> breakOnValidation,
             int retryCount = 3)
         {
             var exceptions = new List<Exception>();
@@ -48,7 +48,7 @@ namespace getnet
                 catch (Exception ex)
                 {
                     exceptions.Add(ex);
-                    if (breakOnExceptionType != null && ex.GetType() == breakOnExceptionType)
+                    if (breakOnValidation != null && breakOnValidation(ex))
                         break;
                 }
             }

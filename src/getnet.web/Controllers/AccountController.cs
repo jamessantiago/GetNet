@@ -50,14 +50,15 @@ namespace getnet.Controllers
                 if (Retry.Do(
                     action: () => getnet.Model.Security.LdapServer.Current.Authenticate(email, password),
                     retryInterval: TimeSpan.FromSeconds(2), 
-                    breakOnExceptionType: typeof(LdapException),
+                    breakOnValidation: ex => { return ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"); },
                     retryCount: 3))
                 {
                     return await Login(email);
                 }
             } catch (AggregateException ex)
             {
-                if (ex.InnerExceptions.Last().GetType() == typeof(LdapException))
+                logger.Error(ex.InnerExceptions.Last(), WhistlerTypes.LoginError);
+                if (ex.InnerExceptions.Last().GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"))
                     ViewData["FailedLoginMessage"] = "Username or password is incorrect";
                 else
                     ViewData["FailedLoginMessage"] = ex.InnerExceptions.Last().Message;

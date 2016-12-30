@@ -18,25 +18,28 @@
 
 <section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
     <div class="page-content mdl-grid">
-            <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
-                <h3>@Model.Name</h3>
+            <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
                 <div class="getnet-col-right">
+                    <h3><button class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">edit</i></button></h3>
                     <p>@Model.Priority.ToString()</p>
                     <p>@(Model.Owner ?? "?")</p>
                     <p>@(Model.Location?.Name ?? "?")</p>
-                    <p>@(Model.Building ?? "?")</p>
+                    <p>@(Model.Building ?? "?")</p>                    
                 </div>
                 <div class="getnet-col-left">
+                    <h3>@Model.Name</h3>
                     <p><b>Priority</b></p>
                     <p><b>Owner</b></p>
                     <p><b>Location</b></p>
                     <p><b>Building</b></p>
+                    <p><b>Details</b></p>
                 </div>
+                <p>@Model.Details</p>
             </div>
 
         @foreach (var hotpath in Model.HotPaths)
         {
-            <div class="mdl-card mdl-shadow--2dp getnet-cell mdl-cell mdl-cell--4-col">
+            <div class="mdl-card mdl-shadow--2dp getnet-cell mdl-cell mdl-cell--6-col">
                 <div class="mdl-card__title @(hotpath.IsOnline ? "mdl-color--green" : "mdl-color--red")">
                     <h2 class="mdl-card__title-text">@hotpath.Name</h2>
                 </div>

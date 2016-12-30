@@ -1,0 +1,28 @@
+﻿@model IEnumerable<Site>
+
+<table id="sites" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Location</th>
+            <th>Building</th>
+            <th>Priority</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var site in Model)
+        {
+            <tr>
+                <td>@site.Name</td>
+                <td>@site.Owner</td>
+                <td>@site.Location?.Name</td>
+                <td>@site.Building</td>
+                <td>@site.Priority</td>
+                <td>@site.Status</td>
+            </tr>
+
+        }
+    </tbody>
+</table>
