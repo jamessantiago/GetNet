@@ -1,6 +1,6 @@
 # GetNet
 
-[![GetNet Logo](/jamessantiago/getnet/raw/master/media/logo/logo_112.png)]
+![GetNet Logo](/jamessantiago/getnet/raw/master/media/logo/logo_112.png)
 
 GetNet is a highly focused network management tool.  Core components include network discovery, monitoring, dhcp, sites and services, and ip management.
 
@@ -22,4 +22,4 @@ GetNet is currently under initial development.  Some design/functionality goals:
 
 GetNet should more or less be generalized to most networks.  Here is the current network architecture GetNet is being built around:
 
-[![GNS Simulated Network](/jamessantiago/getnet/raw/master/gns3/eigrpn%20net%20with%20gre%20tunnels%20to%20user%20sites/screenshot.png)]
+![GNS Simulated Network](/jamessantiago/getnet/raw/master/gns3/eigrpn%20net%20with%20gre%20tunnels%20to%20user%20sites/screenshot.png)
