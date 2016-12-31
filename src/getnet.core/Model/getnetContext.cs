@@ -3,11 +3,9 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using System.Linq;
 using System.Reflection;
-using getnet;
 
 namespace getnet.core.Model
 {
-
     public interface IModelBuildItem
     {
         void Build(ref ModelBuilder modelBuilder);
@@ -18,15 +16,24 @@ namespace getnet.core.Model
         private Whistler logger = new Whistler();
 
         public event EventHandler ConfigurationComplete = delegate { };
+
+        public DbSet<AlertRule> AlertRules { get; set; }
         public DbSet<DeviceHistory> DeviceHistories { get; set; }
         public DbSet<Device> Devices { get; set; }
+        public DbSet<DhcpPool> DhcpPools { get; set; }
+        public DbSet<DhcpSubnet> DhcpSubnet { get; set; }
+        public DbSet<Diagram> Diagrams { get; set; }
+        public DbSet<HotPath> HotPaths { get; set; }
+        public DbSet<Location> Locations { get; set; }
         public bool IsConfigured { get; set; }
-        public DbSet<RouterRouterConnection> RouterRouterConnections { get; set; }
-        public DbSet<Router> Routers { get; set; }
+        public DbSet<NetworkDeviceNetworkDeviceConnection> NetworkDeviceNetworkDeviceConnections { get; set; }
+        public DbSet<NetworkDevice> NetworkDevices { get; set; }
+        public DbSet<PointOfContact> PointOfContacts { get; set; }
         public DbSet<Site> Sites { get; set; }
-        public DbSet<Switch> Switches { get; set; }
-        public DbSet<SwitchSwitchConnection> SwitchSwitchConnections { get; set; }
+        public DbSet<Tenant> Tenants { get; set; }
+        public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Vlan> Vlans { get; set; }
+        
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
             try

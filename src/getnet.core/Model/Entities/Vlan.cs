@@ -30,7 +30,7 @@ namespace getnet.core.Model.Entities
         [NotMapped]
         public IPNetwork IPNetwork => IPNetwork.Parse(VlanIP, VlanSM);
 
-        public virtual Router Router { get; set; }
+        public virtual NetworkDevice NetworkDevice { get; set; }
         public virtual ICollection<Device> Devices { get; set; }
         public virtual Tenant Tenant { get; set; }
     }

@@ -80,6 +80,21 @@ namespace getnet.core.Model
             }
         }
 
+        public async void TransactionAsync(Action action, int retryIntervalMs = 1000, int retryCount = 1)
+        {
+            await context.Database.BeginTransactionAsync();
+            try
+            {
+                Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
+                context.Database.CommitTransaction();
+            }
+            catch (AggregateException ex)
+            {
+                context.Database.RollbackTransaction();
+                throw ex.InnerExceptions.Last();
+            }
+        }
+
         public void Save()
         {
             context.SaveChanges();

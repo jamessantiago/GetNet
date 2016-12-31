@@ -18,6 +18,10 @@ html, body {
     width: 100%;
 }
 
+.getnet-hero {
+    background-image: url(../images/hero.jpg);
+}
+
 .getnet-cell {
     padding: 8px;
 }

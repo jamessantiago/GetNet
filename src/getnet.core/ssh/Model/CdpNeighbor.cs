@@ -43,7 +43,7 @@ namespace getnet.core.ssh
                     Model = models[i].Groups[1].Value,
                     InPort = inPorts[i].Groups[1].Value,
                     OutPort = outPorts[i].Groups[1].Value,
-                    Capabilities = caps[i].Groups[1].Value.Split(',').Select(d => d.Trim()).ToArray()
+                    Capabilities = caps[i].Groups[1].Value.Split(", ".ToCharArray()).Select(d => d.Trim()).ToArray()
                 });
             }
             

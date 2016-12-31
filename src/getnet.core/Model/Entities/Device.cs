@@ -43,7 +43,7 @@ namespace getnet.core.Model.Entities
         public string Port { get; set; }
 
         public virtual Tenant Tenant { get; set; }
-        public virtual Switch Switch { get; set; }
+        public virtual NetworkDevice NetworkDevice { get; set; }
         public virtual Vlan Vlan { get; set; }
         public virtual Site Site { get; set; }
         public virtual ICollection<Device> Devices { get; set; }

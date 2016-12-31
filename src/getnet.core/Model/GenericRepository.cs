@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Data;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
 using System.Linq.Expressions;
 
 namespace getnet.core.Model
@@ -12,7 +13,8 @@ namespace getnet.core.Model
             Func<IQueryable<TEntity>, IOrderedQueryable<TEntity>> orderBy = null,
             string includeProperties = "");
         TEntity GetByID(object id);
-        void Insert(TEntity entity);
+        EntityEntry Insert(TEntity entity);
+        void Insert(List<TEntity> entities);
         void Delete(object id);
         void Delete(TEntity entityToDelete);
         void Update(TEntity entityToUpdate);
@@ -62,9 +64,14 @@ namespace getnet.core.Model
             return dbSet.Find(id);
         }
 
-        public virtual void Insert(TEntity entity)
+        public virtual EntityEntry Insert(TEntity entity)
         {
-            dbSet.Add(entity);
+            return dbSet.Add(entity);
+        }
+
+        public virtual void Insert(List<TEntity> entities)
+        {
+            dbSet.AddRange(entities);
         }
 
         public virtual void Delete(object id)
