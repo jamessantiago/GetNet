@@ -10,10 +10,6 @@ namespace getnet.core.ssh
 {
     public class CdpNeighbor : ICommandResult
     {
-        public CdpNeighbor()
-        {
-
-        }
 
         public IPAddress IP { get; set; }
         public string Hostname { get; set; }

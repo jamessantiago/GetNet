@@ -90,5 +90,20 @@ namespace getnet.tests
             var ints = client.Execute<DeviceVersion>();
             Assert.Equal(ints.Count, 1);
         }
+
+        [Fact]
+        public void VlanTest()
+        {
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "172.16.100.241",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var ints = client.Execute<Vlan>();
+            Assert.Equal(ints.Count, 1);
+        }
     }
 }
