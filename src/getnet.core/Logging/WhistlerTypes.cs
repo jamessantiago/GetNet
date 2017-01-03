@@ -10,5 +10,6 @@ namespace getnet
         public const string DatabaseSetup = "Database Setup";
         public const string UnhandledException = "Unhandled Exception";
         public const string LoginError = "Login Error";
+        public const string NetworkDiscovery = "Network Discovery";
     }
 }

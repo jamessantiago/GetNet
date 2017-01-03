@@ -25,10 +25,10 @@ namespace getnet.core.Model.Entities
         [StringLength(50)]
         public string Model { get; set; }
 
-        public string Capabilities { get; set; }
+        public NetworkCapabilities Capabilities { get; set; }
 
         [Required]
-        public int RawManagementIP { get; set; }
+        public long RawManagementIP { get; set; }
 
         public virtual Tenant Tenant { get; set; }
 
@@ -37,6 +37,8 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<NetworkDeviceNetworkDeviceConnection> LocalNetworkDeviceNetworkDeviceConnections { get; set; }
 
         public virtual ICollection<Vlan> Vlans { get; set; }
+
+        public virtual Site Site { get; set; }
     }
 
     public class NetworkDeviceBuildItem : IModelBuildItem
@@ -44,6 +46,8 @@ namespace getnet.core.Model.Entities
         public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<NetworkDevice>().HasIndex("Model");
+            modelBuilder.Entity<NetworkDevice>().HasIndex("RawManagementIP")
+                .IsUnique();
             
         }
     }

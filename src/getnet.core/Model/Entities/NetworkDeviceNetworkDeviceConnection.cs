@@ -8,6 +8,8 @@ namespace getnet.core.Model.Entities
 {
     public class NetworkDeviceNetworkDeviceConnection
     {
+        public int NetworkDeviceNetworkDeviceConnectionId { get; set; }
+
         public int NetworkDeviceId { get; set; }
         
         public int ConnectedNetworkDeviceId { get; set; }

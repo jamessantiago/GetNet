@@ -492,17 +492,17 @@ namespace getnet
             return ip;
         }
 
-        public static int IpToInt(this string ip)
+        public static long IpToInt(this string ip)
         {
             return IPAddress.Parse(ip).ToInt();
         }
 
-        public static int ToInt(this IPAddress ip)
+        public static long ToInt(this IPAddress ip)
         {
             var address = ip.GetAddressBytes();
-            if (BitConverter.IsLittleEndian)
+            if (!BitConverter.IsLittleEndian)
                 Array.Reverse(address);
-            return BitConverter.ToInt32(address, 0);
+            return BitConverter.ToUInt32(address, 0);
         }
 
         public static string GetSecure(this IConfiguration config, string key)

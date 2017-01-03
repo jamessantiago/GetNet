@@ -6,6 +6,7 @@ using System;
 using System.Linq;
 using System.Reflection;
 using getnet.core.Model.Entities;
+using System.Threading.Tasks;
 using getnet.core.Model.Repositories;
 
 namespace getnet.core.Model
@@ -80,7 +81,7 @@ namespace getnet.core.Model
             }
         }
 
-        public async void TransactionAsync(Action action, int retryIntervalMs = 1000, int retryCount = 1)
+        public async Task TransactionAsync(Action action, int retryIntervalMs = 1000, int retryCount = 1)
         {
             await context.Database.BeginTransactionAsync();
             try
