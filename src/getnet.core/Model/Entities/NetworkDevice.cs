@@ -38,6 +38,8 @@ namespace getnet.core.Model.Entities
 
         public virtual ICollection<Vlan> Vlans { get; set; }
 
+        public virtual ICollection<Device> Devices { get; set; }
+
         public virtual Site Site { get; set; }
     }
 

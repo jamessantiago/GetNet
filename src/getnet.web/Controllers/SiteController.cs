@@ -137,16 +137,15 @@ namespace getnet.Controllers
             logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
             await DiscoverSubnets(site);
 
-            //await uow.TransactionAsync(async () =>
-            //{
-            //    //find network devics
-            //    //find hotpaths
-            //    //find vlans
-            //    //find subnets
-            //    //find endpoints
-            //    //diagram?
-            //    //
-            //});
+            logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
+            await DiscoverEndpoints(site);
+
+            HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
+            {
+                actionHandler = "window.location = '/s/" + siteId.ToString() + "';",
+                actionText = "open",
+                message = "Completed all discovery actions for the " + site.Name + " site."
+            });
         }
 
         

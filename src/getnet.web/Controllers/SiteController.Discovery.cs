@@ -11,6 +11,7 @@ using System.Net;
 using getnet;
 using getnet.core.Model;
 using getnet.Model;
+using System.Text.RegularExpressions;
 
 namespace getnet.Controllers
 {
@@ -109,11 +110,7 @@ namespace getnet.Controllers
                             });
                             uow.Save();
                             var dbsite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "HotPaths").First();
-                            if (dbsite.HotPaths == null)
-                                dbsite.HotPaths = new List<HotPath> {
-                                    uow.Repo<HotPath>().GetByID((int)change.CurrentValues["HotPathId"])};
-                            else
-                                dbsite.HotPaths.Add(uow.Repo<HotPath>().GetByID((int)change.CurrentValues["HotPathId"]));
+                            dbsite.HotPaths.AddOrNew(uow.Repo<HotPath>().GetByID((int)change.CurrentValues["HotPathId"]));
                             uow.Save();
                         }
                         else
@@ -150,14 +147,8 @@ namespace getnet.Controllers
                                 var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "Vlans").First();
                                 var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Vlans").First();
                                 var newVlan = uow.Repo<core.Model.Entities.Vlan>().GetByID((int)changes.CurrentValues["VlanId"]);
-                                if (thisRouter.Vlans != null)
-                                    thisRouter.Vlans.Add(newVlan);
-                                else
-                                    thisRouter.Vlans = new List<core.Model.Entities.Vlan> { newVlan };
-                                if (thisSite.Vlans != null)
-                                    thisSite.Vlans.Add(newVlan);
-                                else
-                                    thisSite.Vlans = new List<core.Model.Entities.Vlan> { newVlan };
+                                thisRouter.Vlans.AddOrNew(newVlan);
+                                thisSite.Vlans.AddOrNew(newVlan);
                                 uow.Save();
                             }
                         }
@@ -201,10 +192,7 @@ namespace getnet.Controllers
                             RawSubnetSM = vlan.RawVlanSM,
                             Type = SubnetTypes.Vlan
                         };
-                        if (thisSite.Subnets != null)
-                            thisSite.Subnets.Add(newSub);
-                        else
-                            thisSite.Subnets = new List<Subnet> { newSub };
+                        thisSite.Subnets.AddOrNew(newSub);
                         uow.Save();
                     }
                 }
@@ -219,12 +207,14 @@ namespace getnet.Controllers
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
+                    var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "RemoteNetworkDeviceConnections").First();
                     var arps = router.ManagementIP.Ssh().Execute<Arp>();
-                    var macs = RecurseMacs(router, new List<MacAddress>());
+                    var macs = RecurseMacs(thisRouter, new List<MacAddress>());
                     var neis = router.ManagementIP.Ssh().Execute<CdpNeighbor>();
                     foreach (var arp in arps)
                     {
-                        if (macs.Any(d => d.Mac == arp.Mac) && !neis.Any(d => d.InPort == arp.Interface || d.OutPort == arp.Interface))
+                        var mac = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault();
+                        if (mac != null && !Regex.IsMatch(mac.Interface, @"^[VTS]") && !neis.Any(d => d.InPort == mac.Interface || d.OutPort == mac.Interface))
                         {
                             var change = uow.Repo<Device>().Insert(new Device
                             {
@@ -235,12 +225,9 @@ namespace getnet.Controllers
                                 Port = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Interface
                             });
                             uow.Save();
-                            var newDevices = uow.Repo<Device>().GetByID((int)change.CurrentValues["DeviceId"]);
+                            var newDevice = uow.Repo<Device>().GetByID((int)change.CurrentValues["DeviceId"]);
                             var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices").First();
-                            if (thisSite.Devices != null)
-                                thisSite.Devices.Add(newDevices);
-                            else
-                                thisSite.Devices = new List<Device> { newDevices };
+                            thisSite.Devices.AddOrNew(newDevice);
                             uow.Save();
                         }
                     }
@@ -256,14 +243,21 @@ namespace getnet.Controllers
                 {
                     var devmacs = device.ManagementIP.Ssh().Execute<MacAddress>();
                     foreach (var m in devmacs)
-                        m.TableOwner = device.ManagementIP;
-                    macs.AddRange(devmacs);
+                        macs.Add(new MacAddress
+                        {
+                            Interface = m.Interface,
+                            Mac = m.Mac,
+                            TableOwner = device.ManagementIP
+                        });
                 } catch (Exception ex)
                 {
                     logger.Error(ex, WhistlerTypes.NetworkDiscovery);
                 }
             }
-            var connectedDevices = device.RemoteNetworkDeviceConnections.Select(d => d.NetworkDevice).Where(d => d.Capabilities == NetworkCapabilities.Switch);
+            var connectedDevices = device.RemoteNetworkDeviceConnections
+                ?.Select(d => d.ConnectedNetworkDevice)
+                .Where(d => d.Capabilities == NetworkCapabilities.Switch)
+                ?? new List<NetworkDevice>().AsEnumerable();
 
             foreach (var connectedDevice in connectedDevices)
             {

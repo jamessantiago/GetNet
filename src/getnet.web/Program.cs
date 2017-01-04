@@ -19,7 +19,7 @@ namespace getnet
                 .Build();
 
             Current.Services = host.Services;
-
+            
             host.Run(Current.AppCancellationSource.Token);
         }
     }

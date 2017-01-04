@@ -648,6 +648,14 @@ namespace getnet
             }
             return true;
         }
+
+        public static void AddOrNew<T>(this ICollection<T> entity, T item)
+        {
+            if (entity != null)
+                entity.Add(item);
+            else
+                entity = new List<T> { item };
+        }
         
     }
 

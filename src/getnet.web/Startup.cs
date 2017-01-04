@@ -36,6 +36,7 @@ namespace getnet
             //CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmins, "Domain Users");
             //CoreCurrent.Configuration.SetSecure("SSH:Username", "admin");
             //CoreCurrent.Configuration.SetSecure("SSH:Password", "password");
+            CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
             switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
             {
                 case "ldap":
