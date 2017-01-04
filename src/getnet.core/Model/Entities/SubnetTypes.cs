@@ -11,6 +11,7 @@ namespace getnet.core.Model.Entities
         RoutePrefix,
         Transport,
         Management,
-        Interface
+        Interface,
+        Vlan
     }
 }

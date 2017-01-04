@@ -26,10 +26,11 @@ namespace getnet.core.Model
         public DbSet<HotPath> HotPaths { get; set; }
         public DbSet<Location> Locations { get; set; }
         public bool IsConfigured { get; set; }
-        public DbSet<NetworkDeviceNetworkDeviceConnection> NetworkDeviceNetworkDeviceConnections { get; set; }
+        public DbSet<NetworkDeviceConnection> NetworkDeviceConnections { get; set; }
         public DbSet<NetworkDevice> NetworkDevices { get; set; }
         public DbSet<PointOfContact> PointOfContacts { get; set; }
         public DbSet<Site> Sites { get; set; }
+        public DbSet<Subnet> Subnets { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Vlan> Vlans { get; set; }

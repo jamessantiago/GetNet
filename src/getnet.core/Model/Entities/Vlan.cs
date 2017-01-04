@@ -16,10 +16,10 @@ namespace getnet.core.Model.Entities
         public int VlanNumber { get; set; }
 
         [Required]
-        public int RawVlanIP { get; set; }
+        public long RawVlanIP { get; set; }
 
         [Required]
-        public int RawVlanSM { get; set; }
+        public long RawVlanSM { get; set; }
 
         [NotMapped]
         public IPAddress VlanIP => new IPAddress(RawVlanIP);

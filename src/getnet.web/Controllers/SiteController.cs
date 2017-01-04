@@ -126,8 +126,16 @@ namespace getnet.Controllers
             logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
             await FindNetworkDevices(site);
 
+            site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
+
             logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
             await DiscoverHotPaths(site);
+
+            logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
+            await DiscoverVlans(site);
+
+            logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
+            await DiscoverSubnets(site);
 
             //await uow.TransactionAsync(async () =>
             //{

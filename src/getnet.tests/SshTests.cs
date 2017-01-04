@@ -105,5 +105,51 @@ namespace getnet.tests
             var ints = client.Execute<Vlan>();
             Assert.Equal(ints.Count, 1);
         }
+
+        [Fact]
+        public void IpIntTest()
+        {
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "192.168.33.1",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var ints = client.Execute<IpInterface>();
+            Assert.Equal(ints.Count, 4);
+        }
+
+        [Fact]
+        public void ArpTest()
+        {
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "192.168.33.1",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var ints = client.Execute<Arp>();
+            Assert.Equal(ints.Count, 4);
+        }
+
+        [Fact]
+        public void MacTest()
+        {
+            CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "172.16.100.241",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var ints = client.Execute<MacAddress>();
+            Assert.Equal(ints.Count, 3);
+        }
     }
 }

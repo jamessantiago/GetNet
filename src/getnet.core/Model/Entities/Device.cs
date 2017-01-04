@@ -15,7 +15,7 @@ namespace getnet.core.Model.Entities
         public DeviceType Type { get; set; }
 
         [Required]
-        public int RawIP { get; set; }
+        public long RawIP { get; set; }
 
         [NotMapped]
         public IPAddress IP => new IPAddress(RawIP);

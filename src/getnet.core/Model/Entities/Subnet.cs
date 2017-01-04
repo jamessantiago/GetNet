@@ -13,10 +13,10 @@ namespace getnet.core.Model.Entities
         public int SubnetId { get; set; }
 
         [Required]
-        public int RawSubnetIP { get; set; }
+        public long RawSubnetIP { get; set; }
 
         [Required]
-        public int RawSubnetSM { get; set; }
+        public long RawSubnetSM { get; set; }
 
         public SubnetTypes Type { get; set; }
 

@@ -11,7 +11,8 @@ namespace getnet.Controllers
 {
     public class BaseController : Controller
     {
-        protected UnitOfWork uow;
+        protected UnitOfWork _uow;
+        protected UnitOfWork uow => _uow ?? (_uow = new UnitOfWork());
 
         public BaseController() : this(new UnitOfWork())
         {
@@ -20,7 +21,7 @@ namespace getnet.Controllers
 
         public BaseController(UnitOfWork unitOfWork)
         {
-            uow = unitOfWork;
+            _uow = unitOfWork;
         }
 
         public new RedirectToActionResult RedirectToAction(string action, string controller)
@@ -45,10 +46,10 @@ namespace getnet.Controllers
         {
             if (disposing)
             {
-                if (uow != null)
+                if (_uow != null)
                 {
-                    uow.Dispose();
-                    uow = null;
+                    _uow.Dispose();
+                    _uow = null;
                 }
             }
         }

@@ -32,9 +32,9 @@ namespace getnet.core.Model.Entities
 
         public virtual Tenant Tenant { get; set; }
 
-        public virtual ICollection<NetworkDeviceNetworkDeviceConnection> RemoteNetworkDeviceNetworkDeviceConnections { get; set; }
+        public virtual ICollection<NetworkDeviceConnection> RemoteNetworkDeviceConnections { get; set; }
 
-        public virtual ICollection<NetworkDeviceNetworkDeviceConnection> LocalNetworkDeviceNetworkDeviceConnections { get; set; }
+        public virtual ICollection<NetworkDeviceConnection> LocalNetworkDeviceConnections { get; set; }
 
         public virtual ICollection<Vlan> Vlans { get; set; }
 

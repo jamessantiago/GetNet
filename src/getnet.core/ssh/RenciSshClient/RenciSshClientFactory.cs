@@ -20,8 +20,9 @@ namespace getnet.core.ssh
                     {
                         new PrivateKeyFile(settings.KeyFile, settings.Passphrase)
                     }));
+            con.Encoding = System.Text.Encoding.UTF8;
             var client = new SshClient(con); 
-            client.Connect();            
+            client.Connect();
             return client;
         }
     }

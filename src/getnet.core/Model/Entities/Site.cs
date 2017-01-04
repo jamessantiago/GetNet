@@ -33,6 +33,9 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<Diagram> Diagrams { get; set; }
         public virtual ICollection<AlertRule> AlertRules { get; set; }
         public virtual ICollection<HotPath> HotPaths { get; set; }
+        public virtual ICollection<Vlan> Vlans { get; set; }
+        public virtual ICollection<Subnet> Subnets { get; set; }
+        public virtual ICollection<Device> Devices { get; set; }
     }
 
     public class SiteBuildItem : IModelBuildItem

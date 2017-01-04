@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace getnet.core.Model.Entities
 {
-    public class NetworkDeviceNetworkDeviceConnection
+    public class NetworkDeviceConnection
     {
         public int NetworkDeviceNetworkDeviceConnectionId { get; set; }
 
@@ -28,19 +28,19 @@ namespace getnet.core.Model.Entities
     {
         public void Build(ref ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<NetworkDeviceNetworkDeviceConnection>()
+            modelBuilder.Entity<NetworkDeviceConnection>()
                 .HasKey(d => new { d.NetworkDeviceId, d.ConnectedNetworkDeviceId });
 
-            modelBuilder.Entity<NetworkDeviceNetworkDeviceConnection>()                
+            modelBuilder.Entity<NetworkDeviceConnection>()                
                 .HasOne(d => d.ConnectedNetworkDevice)
-                .WithMany(d => d.LocalNetworkDeviceNetworkDeviceConnections)
+                .WithMany(d => d.LocalNetworkDeviceConnections)
                 .HasPrincipalKey(d => d.NetworkDeviceId)
                 .HasForeignKey(d => d.ConnectedNetworkDeviceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
-            modelBuilder.Entity<NetworkDeviceNetworkDeviceConnection>()
+            modelBuilder.Entity<NetworkDeviceConnection>()
                 .HasOne(d => d.NetworkDevice)
-                .WithMany(d => d.RemoteNetworkDeviceNetworkDeviceConnections)
+                .WithMany(d => d.RemoteNetworkDeviceConnections)
                 .HasPrincipalKey(d => d.NetworkDeviceId)
                 .HasForeignKey(d => d.NetworkDeviceId);
         }

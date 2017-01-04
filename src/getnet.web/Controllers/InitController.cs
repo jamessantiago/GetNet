@@ -50,7 +50,7 @@ namespace getnet.Controllers
             else
                 CoreCurrent.Configuration.Set("Data:DataStore", "Postgres");
             Current.SetDbConfigurationState();
-            uow = new UnitOfWork();
+            _uow = new UnitOfWork();
             return PartialView("_success", "Successfully configured the SQL connection string");
         }
         
