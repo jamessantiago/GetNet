@@ -23,6 +23,7 @@ namespace getnet.core.Model
         public DbSet<DhcpPool> DhcpPools { get; set; }
         public DbSet<DhcpSubnet> DhcpSubnet { get; set; }
         public DbSet<Diagram> Diagrams { get; set; }
+        public DbSet<Event> Events { get; set; }
         public DbSet<HotPath> HotPaths { get; set; }
         public DbSet<Location> Locations { get; set; }
         public bool IsConfigured { get; set; }
@@ -39,17 +40,15 @@ namespace getnet.core.Model
         {
             try
             {
-                if (CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString").HasValue())
+                if (CoreCurrent.Configuration["Data:DataStore"] == "MSSQL" && CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString").HasValue())
                 {
                     optionsBuilder.UseSqlServer(CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString"));
                     IsConfigured = true;
-                    logger.Info("Database set to use a MS SQL server connection", WhistlerTypes.DatabaseSetup);
                 }
-                else if (CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString").HasValue())
+                else if (CoreCurrent.Configuration["Data:DataStore"] == "Postgres" && CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString").HasValue())
                 {
                     optionsBuilder.UseNpgsql(CoreCurrent.Configuration["Data:NpgsqlConnectionString"]);
                     IsConfigured = true;
-                    logger.Info("Database set to use a PostgreSQL server connection", WhistlerTypes.DatabaseSetup);
                 }
                 else
                 {

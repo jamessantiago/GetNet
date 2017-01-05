@@ -18,6 +18,8 @@ using System.Dynamic;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using getnet.core.ssh;
+using getnet.core.Model;
+using getnet.core.Model.Entities;
 
 namespace getnet
 {
@@ -655,6 +657,24 @@ namespace getnet
                 entity.Add(item);
             else
                 entity = new List<T> { item };
+        }
+
+        public static string Summary(this NetworkCapabilities caps)
+        {
+            List<string> capList = new List<string>();
+            foreach (int flag in Enum.GetValues(typeof(NetworkCapabilities)))
+            {
+                if (((int)caps & flag) != 0)
+                {
+                    capList.Add(Enum.GetName(typeof(NetworkCapabilities), flag));
+                }
+            }
+            return string.Join(", ", capList);
+        }
+
+        public static string Substring(this string value, string stopstring)
+        {
+            return value.Substring(0, value.IndexOf(stopstring));
         }
         
     }

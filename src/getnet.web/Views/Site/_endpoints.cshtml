@@ -1,0 +1,24 @@
+﻿@model IEnumerable<Device>
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Hostname</th>
+                <th>IP</th>
+                <th>MAC</th>
+                <th>Last Seen</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var device in Model)
+            {
+                <tr>
+                    <td>@device.Hostname</td>
+                    <td>@device.IP.ToString()</td>
+                    <td>@device.MAC</td>
+                    <td>@device.LastSeenOnline</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>

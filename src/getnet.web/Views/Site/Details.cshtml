@@ -1,33 +1,34 @@
 ﻿@model Site
 @{
-    ViewData["Title"] = Model.Name;
+    ViewData["Title"] = string.Format("{0} - ({1})", Model.Name, Model.Status);
     ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+    ViewData["SiteStatus"] = Model.Status;
 }
 
 @section Tabs {
     <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
         <a href="#site-tab" class="mdl-layout__tab is-active">Site</a>
-        <a href="#subs-tab" class="mdl-layout__tab">Controlled Subnets</a>
         <a href="#dev-tab" class="mdl-layout__tab">Network Devices</a>
-        <a href="#end-tab" class="mdl-layout__tab">Endpoints</a>
+        <a href="#vlans-tab" class="mdl-layout__tab">Vlans</a>
+        <a id="endpoints" href="#end-tab" class="mdl-layout__tab">Endpoints</a>
         <a href="#dhcp-tab" class="mdl-layout__tab">DHCP</a>
         <a href="#sas-tab" class="mdl-layout__tab">Sites and Subjets</a>
         <a href="#events-tab" class="mdl-layout__tab">Events</a>
     </div>
 }
 
-<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
+<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="site-tab">
     <div class="page-content mdl-grid">
-            <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
+            <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
                 <div class="getnet-col-right">
-                    <h3><button class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">edit</i></button></h3>
+                    <h4><button class="mdl-button mdl-js-button mdl-button--icon"><i class="material-icons">edit</i></button></h4>
                     <p>@Model.Priority.ToString()</p>
                     <p>@(Model.Owner ?? "?")</p>
                     <p>@(Model.Location?.Name ?? "?")</p>
                     <p>@(Model.Building ?? "?")</p>                    
                 </div>
                 <div class="getnet-col-left">
-                    <h3>@Model.Name</h3>
+                    <h4>@Model.Name</h4>
                     <p><b>Priority</b></p>
                     <p><b>Owner</b></p>
                     <p><b>Location</b></p>
@@ -39,19 +40,160 @@
 
         @foreach (var hotpath in Model.HotPaths)
         {
-            <div class="mdl-card mdl-shadow--2dp getnet-cell mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title @(hotpath.IsOnline ? "mdl-color--green" : "mdl-color--red")">
+            <div class="mdl-card mdl-shadow--2dp getnet-cell mdl-cell mdl-cell--4-col">
+                <div class="mdl-card__title mdl-color-text--white @(hotpath.IsOnline ? "mdl-color--green" : "mdl-color--red")">
                     <h2 class="mdl-card__title-text">@hotpath.Name</h2>
                 </div>
                 <div class="mdl-card__supporting-text">
-                    @hotpath.Interface
+                    <div class="getnet-col-right">
+                        <p>@hotpath.Type</p>
+                        <p>@hotpath.Interface</p>
+                        <p>@hotpath.MonitorIP.ToString()</p>
+                    </div>
+                    <div class="getnet-col-left">
+                        <p><b>Type</b></p>
+                        <p><b>Interface</b></p>
+                        <p><b>Monitor IP</b></p>
+                    </div>
                 </div>
             </div>
         }
+
+            <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
+                <h4>Controlled Subnets</h4>
+                <table id="subnets" class="mdl-data-table" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Type</th>
+                            <th>Network</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var subnet in Model.Subnets.OrderBy(d => d.Type))
+                        {
+                            <tr>
+                                <td>@subnet.Type</td>
+                                <td>@subnet.IPNetwork.Network.ToString()/@subnet.IPNetwork.Cidr.ToString()</td>
+                            </tr>
+                        }
+                    </tbody>
+
+                </table>
+            </div>
+
+        
     </div>
 </section>
 
-<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="disc-tab">
-    <div class="page-content">
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="dev-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <table id="networkdevices" class="mdl-data-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Capabilities</th>
+                        <th>Hostname</th>
+                        <th>Model</th>
+                        <th>Serial</th>
+                        <th>Management IP</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var dev in Model.NetworkDevices.OrderBy(d => d.Capabilities))
+                    {
+                        <tr>
+                            <td>@dev.Capabilities.Summary()</td>
+                            <td>@dev.Hostname</td>
+                            <td>@dev.Model</td>
+                            <td>@dev.ChassisSerial</td>
+                            <td>@dev.ManagementIP.ToString()</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="vlans-tab">
+    <div class="page-content mdl-grid">
+
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <table id="vlans" class="mdl-data-table" width="100%" cellspacing="0">
+                <thead>
+                    <tr>
+                        <th>Router</th>
+                        <th>Vlan</th>
+                        <th>Network</th>
+                        <th>First</th>
+                        <th>Last</th>
+                        <th>Used</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var vlan in Model.Vlans.OrderBy(d => d.VlanNumber))
+                    {
+                        <tr>
+                            <td>@vlan.NetworkDevice?.Hostname</td>
+                            <td>@vlan.VlanNumber</td>
+                            <td>@vlan.VlanIP/@vlan.IPNetwork.Cidr</td>
+                            <td>@vlan.IPNetwork.FirstUsable.ToString()</td>
+                            <td>@vlan.IPNetwork.LastUsable.ToString()</td>
+                            <td>@((vlan.Devices.Count / vlan.IPNetwork.Usable * 100).ToString("P0")) (@vlan.Devices.Count/@vlan.IPNetwork.Usable)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="end-tab">
+    <div class="page-content mdl-grid">
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="dhcp-tab">
+    <div class="page-content mdl-grid">
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="sas-tab">
+    <div class="page-content mdl-grid">
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="events-tab">
+    <div class="page-content mdl-grid">
+    </div>
+</section>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+            $('#subnets,#vlans,#networkdevices').DataTable({
+                columnDefs: [
+                    {
+                        targets: '_all',
+                        className: 'mdl-data-table__cell--non-numeric'
+                    }
+                ]
+            });
+
+            $("#endpoints").one('click', function () {
+                $("#fullpage-loading").show();
+                $("#end-tab").load('/site/endpoints/@Model.SiteId', function () {
+                    $("#fullpage-loading").hide();
+                    $('#end-table').DataTable({
+                        columnDefs: [
+                            {
+                                targets: '_all',
+                                className: 'mdl-data-table__cell--non-numeric'
+                            }
+                        ]
+                    });
+                });
+            });
+        });
+    </script>
+}

@@ -33,9 +33,12 @@ namespace getnet.core.ssh
 
             for (int i = 0; i < IPs.Count; i++)
             {
+                string thisHostname = hostnames[i].Groups[1].Value;
+                if (CoreCurrent.Configuration["Data:StripNetworkDeviceDomainNames"] != "false")
+                    thisHostname = thisHostname.Substring(".");
                 results.Add(new CdpNeighbor() {
                     IP = IPAddress.Parse(IPs[i].Groups[1].Value),
-                    Hostname = hostnames[i].Groups[1].Value,
+                    Hostname = thisHostname,
                     Model = models[i].Groups[1].Value,
                     InPort = inPorts[i].Groups[1].Value,
                     OutPort = outPorts[i].Groups[1].Value,

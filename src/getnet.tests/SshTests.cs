@@ -43,7 +43,8 @@ namespace getnet.tests
             });
 
             var neighbors = client.Execute<CdpNeighbor>();
-            Assert.Equal(neighbors.Count, 2);
+            Assert.Equal(neighbors.Count, 3);
+            Assert.True(!neighbors.First().Hostname.Contains("test.local"));
         }
 
         [Fact]

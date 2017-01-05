@@ -15,7 +15,7 @@
         @foreach (var site in Model)
         {
             <tr>
-                <td>@site.Name</td>
+                <td><a href="/s/@site.Name">@site.Name</a></td>
                 <td>@site.Owner</td>
                 <td>@site.Location?.Name</td>
                 <td>@site.Building</td>

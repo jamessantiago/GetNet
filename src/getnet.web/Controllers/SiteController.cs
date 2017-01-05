@@ -37,11 +37,17 @@ namespace getnet.Controllers
         {
             int siteId;
             Site site = null;
+            var includes = "Location,HotPaths,NetworkDevices,Subnets,Vlans,PointOfContacts,Vlans.Devices,Vlans.NetworkDevice";
             if (int.TryParse(id, out siteId))
-                site = uow.Repo<Site>().Get(filter: d => d.SiteId == siteId, includeProperties: "Location,HotPaths").FirstOrDefault();
+                site = uow.Repo<Site>().Get(filter: d => d.SiteId == siteId, includeProperties: includes).FirstOrDefault();
             else
-                site = uow.Repo<Site>().Get(filter: d => d.Name == id, includeProperties: "Location,HotPaths").FirstOrDefault();
+                site = uow.Repo<Site>().Get(filter: d => d.Name == id, includeProperties: includes).FirstOrDefault();
             return View(site);
+        }
+
+        public IActionResult Endpoints(int id)
+        {
+            return PartialView("_endpoints", uow.Repo<Device>().Get(d => d.Site.SiteId == id));
         }
 
         [Route("/newsite")]
@@ -54,6 +60,8 @@ namespace getnet.Controllers
         {
             ViewData["hubip"] = hubip;
             var neighbors = hubip.Ssh().Execute<CdpNeighbor>();
+            var networkdevices = uow.Repo<NetworkDevice>().Get(d => d.Capabilities.HasFlag(NetworkCapabilities.Router));
+            neighbors = neighbors.Where(d => d.Capabilities.Contains("Router") && !networkdevices.Any(n => n.RawManagementIP == d.IP.ToInt())).ToList();
             return PartialView("_newsites", neighbors);
         }
 

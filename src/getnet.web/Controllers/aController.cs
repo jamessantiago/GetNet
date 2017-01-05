@@ -51,7 +51,7 @@ namespace getnet.Controllers
             }
         }
 
-        [Authorize]
+        [AllowAnonymous]
         public IActionResult GetSnacks()
         {
             return Json(HttpContext.Session.GetSnackMessages());

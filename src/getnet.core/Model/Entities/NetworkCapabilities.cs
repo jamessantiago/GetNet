@@ -10,6 +10,7 @@ namespace getnet.core.Model.Entities
     {
         Device = 0,
         Router = 1 << 1,
-        Switch = 1 << 2
+        Switch = 1 << 2,
+        IGMP = 1 << 3
     }
 }

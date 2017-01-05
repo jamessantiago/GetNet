@@ -293,7 +293,7 @@ getnet.Forms = (function () {
                 }
             }
         }
-        if ($("#" + formId).attr("data-ajax-success-action")) {
+        if ($("#" + formId).attr("data-ajax-error-action")) {
             errorAction = function (data, status) {
                 if ($(loadingTarget).length > 0) {
                     $(loadingTarget).hide();

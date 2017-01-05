@@ -2,8 +2,6 @@
 
 GetNet is a highly focused network management tool.  Core components include network discovery, monitoring, dhcp, sites and services, and ip management.
 
-![GetNet Logo](/media/logo/logo_112.png)
-
 ## Development
 
 GetNet is currently under initial development.  Some design/functionality goals:

@@ -36,7 +36,7 @@ namespace getnet
 
             return false;
         }
-
+        
         public static List<SnackMessage> GetSnackMessages(this ISession session)
         {
             try
