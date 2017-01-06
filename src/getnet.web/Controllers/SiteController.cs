@@ -91,6 +91,7 @@ namespace getnet.Controllers
                     };
                     if (router.Capabilities.Contains("Router"))
                         device.Capabilities = NetworkCapabilities.Router;
+                    device.ChassisSerial = router.IP.Ssh().Execute<DeviceVersion>().First().Serial;
                     var devchanges = uow.Repo<NetworkDevice>().Insert(device);
                     uow.Save();
                     var site = new Site()
@@ -148,13 +149,12 @@ namespace getnet.Controllers
             logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
             await DiscoverEndpoints(site);
 
-            HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
-            {
-                actionHandler = "window.location = '/s/" + siteId.ToString() + "';",
-                actionText = "open",
-                message = "Completed all discovery actions for the " + site.Name + " site."
-            });
-        }
+            //todo DHCP
+
+            //todo sites and services
+
+            logger.Info("Complted network discovery actions", WhistlerTypes.NetworkDiscovery, siteId);
+    }
 
         
     }

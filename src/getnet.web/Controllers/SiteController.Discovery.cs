@@ -23,7 +23,6 @@ namespace getnet.Controllers
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
-                    UpdateDevice(router);
                     recurseDevices(router, new List<NetworkDevice>());
                 }
             });
@@ -73,6 +72,8 @@ namespace getnet.Controllers
                     uow.Save();
                     UpdateDevice(existingDevice);
                     devices = recurseDevices(existingDevice, devices);
+
+                    //todo do something for determining connections for existing devices
                 }
             }
             return devices;
@@ -80,13 +81,9 @@ namespace getnet.Controllers
 
         private void UpdateDevice(NetworkDevice device)
         {
-            using (UnitOfWork uow = new UnitOfWork())
-            {
-                var version = device.ManagementIP.Ssh().Execute<DeviceVersion>().First();
-                device.ChassisSerial = version.Serial;
-                uow.Repo<NetworkDevice>().Update(device);
-                uow.Save();
-            }
+            var version = device.ManagementIP.Ssh().Execute<DeviceVersion>().First();
+            device.ChassisSerial = version.Serial;
+            uow.Save();
         }
 
         private async Task DiscoverHotPaths(Site site)
@@ -226,7 +223,8 @@ namespace getnet.Controllers
                             });
                             uow.Save();
                             var newDevice = uow.Repo<Device>().GetByID((int)change.CurrentValues["DeviceId"]);
-                            var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices").First();
+                            var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices,Vlans,Vlans.Devices").First();
+                            thisSite.Vlans.FirstOrDefault(d => IPNetwork.Contains(d.IPNetwork, newDevice.IP))?.Devices.AddOrNew(newDevice);
                             thisSite.Devices.AddOrNew(newDevice);
                             uow.Save();
                         }

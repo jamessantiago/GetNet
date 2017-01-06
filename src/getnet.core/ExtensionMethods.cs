@@ -20,6 +20,7 @@ using Newtonsoft.Json.Linq;
 using getnet.core.ssh;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
+using System.Text.RegularExpressions;
 
 namespace getnet
 {
@@ -675,6 +676,11 @@ namespace getnet
         public static string Substring(this string value, string stopstring)
         {
             return value.Substring(0, value.IndexOf(stopstring));
+        }
+
+        public static string CamelToSpace(this string value)
+        {
+            return Regex.Replace(value, "(\\B[A-Z])", " $1");
         }
         
     }

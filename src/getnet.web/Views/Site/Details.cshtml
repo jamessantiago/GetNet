@@ -1,6 +1,6 @@
 ﻿@model Site
 @{
-    ViewData["Title"] = string.Format("{0} - ({1})", Model.Name, Model.Status);
+    ViewData["Title"] = string.Format("{0} - ({1})", Model.Name, Model.Status.ToString().CamelToSpace());
     ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
     ViewData["SiteStatus"] = Model.Status;
 }
