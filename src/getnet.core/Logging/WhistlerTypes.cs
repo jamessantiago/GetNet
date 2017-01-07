@@ -11,5 +11,6 @@ namespace getnet
         public const string UnhandledException = "Unhandled Exception";
         public const string LoginError = "Login Error";
         public const string NetworkDiscovery = "Network Discovery";
+        public const string Ssh = "Ssh";
     }
 }

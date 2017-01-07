@@ -682,7 +682,61 @@ namespace getnet
         {
             return Regex.Replace(value, "(\\B[A-Z])", " $1");
         }
-        
+
+        public static IPAddress DecrementIPbyOne(this IPAddress address)
+        {
+            IPAddress result;
+
+            byte[] bytes = address.GetAddressBytes();
+
+            for (int i = bytes.Length - 1; i >= 0; i--)
+            {
+                if (bytes[i] == byte.MaxValue)
+                {
+                    bytes[i] = 0;
+                    continue;
+                }
+                bytes[i]--;
+
+                result = new IPAddress(bytes);
+                return result;
+            }
+            //failure
+            return address;
+        }
+
+        public static IPAddress IncrementIPbyOne(this IPAddress address)
+        {
+            IPAddress result;
+
+            byte[] bytes = address.GetAddressBytes();
+
+            for (int i = bytes.Length - 1; i >= 0; i--)
+            {
+                if (bytes[i] == byte.MaxValue)
+                {
+                    bytes[i] = 0;
+                    continue;
+                }
+                bytes[i]++;
+
+                result = new IPAddress(bytes);
+                return result;
+            }
+            //failure
+            return address;
+        }
+
+        public static IPAddress IncrementIP(this IPAddress address, int numIPs)
+        {
+
+            for (int i = 0; i < numIPs; i++)
+            {
+                address = IncrementIPbyOne(address);
+            }
+            return address;
+        }
+
     }
 
     

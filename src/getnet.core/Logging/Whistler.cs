@@ -177,6 +177,17 @@ namespace getnet
             _logger.Log(ev);
         }
 
+        public void Error(Exception ex, string type, string details)
+        {
+            LogEventInfo ev = new LogEventInfo(LogLevel.Error, _logger.Name, ex.Message);
+            ev.Properties["details"] = details + "\n\n\n" + ex.ToString(); // ExceptionHelper.ParseErrorMessage(ex);
+            if (!string.IsNullOrEmpty(type))
+                ev.Properties["type"] = type;
+            else
+                ev.Properties["type"] = ex.GetType();
+            _logger.Log(ev);
+        }
+
         public void Error(string message, Exception ex, string type)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Error, _logger.Name, message);

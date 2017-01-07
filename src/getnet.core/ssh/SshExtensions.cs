@@ -26,6 +26,28 @@ namespace getnet.core.ssh
             return ip.ToString().Ssh();
         }
 
+        public static bool CanSsh(this string ip)
+        {
+            return IPAddress.Parse(ip).CanSsh();
+        }
+
+        public static bool CanSsh(this IPAddress ip)
+        {
+            try
+            {
+                using (var tc = new System.Net.Sockets.TcpClient())
+                {
+                    tc.ReceiveTimeout = 200;
+                    tc.SendTimeout = 200;
+                    tc.Client.Connect(ip, 22);
+                    return true;
+                }
+            } catch
+            {
+                return false;
+            }
+        }
+
         public static NetworkCapabilities GetCaps(this string[] capabilities)
         {
             NetworkCapabilities caps = 0;

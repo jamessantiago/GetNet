@@ -47,7 +47,7 @@ namespace getnet.Controllers
 
         public IActionResult Endpoints(int id)
         {
-            return PartialView("_endpoints", uow.Repo<Device>().Get(d => d.Site.SiteId == id));
+            return PartialView("_endpoints", uow.Repo<Device>().Get(d => d.Site.SiteId == id, includeProperties: "Vlan"));
         }
 
         [Route("/newsite")]
@@ -60,25 +60,44 @@ namespace getnet.Controllers
         {
             ViewData["hubip"] = hubip;
             var neighbors = hubip.Ssh().Execute<CdpNeighbor>();
+            var ipnets = hubip.Ssh().Execute<IpInterface>();
+            foreach (var ipnet in ipnets.Where(d => d.IPNetwork.Cidr >= 30 && neighbors.Any(n => n.InPort != d.Interface)))
+            {
+                var ip = ipnet.IPNetwork.Cidr == 31 ? ipnet.IPNetwork.Broadcast.IncrementIPbyOne() : ipnet.IPNetwork.LastUsable;
+                if (ip.CanSsh())
+                {
+                    var ver = ip.Ssh().Execute<DeviceVersion>();
+                    
+                    neighbors.Add(new CdpNeighbor
+                    {
+                        Capabilities = new string[] { "Router" },
+                        InPort = ipnet.Interface,
+                        OutPort = "Unknown",
+                        Hostname = ver.First().Hostname,
+                        IP = ip,
+                        Model = ver.First().Model
+                    });
+                }
+            }
             var networkdevices = uow.Repo<NetworkDevice>().Get(d => d.Capabilities.HasFlag(NetworkCapabilities.Router));
             neighbors = neighbors.Where(d => d.Capabilities.Contains("Router") && !networkdevices.Any(n => n.RawManagementIP == d.IP.ToInt())).ToList();
             return PartialView("_newsites", neighbors);
         }
 
-        public void MakeSite(string ip, string hubip)
+        public void MakeSite(string ip)
         {
             try
             {
                 int siteId = 0;
                 uow.Transaction(() =>
                 {
-                    var router = hubip.Ssh().Execute<CdpNeighbor>()?.Where(d => d.IP.ToInt() == IPAddress.Parse(ip).ToInt()).FirstOrDefault();
-                    var testRouter = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == router.IP.ToInt(), includeProperties: "Site").FirstOrDefault();
+                    var router = ip.Ssh().Execute<DeviceVersion>().First();
+                    var testRouter = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == ip.IpToInt(), includeProperties: "Site").FirstOrDefault();
                     if (testRouter != null)
                     {
                         HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
                         {
-                            message = string.Format("Unable to create site, the router with IP {0} already belongs to site {1}", router.IP.ToString(), testRouter.Site.Name)
+                            message = string.Format("Unable to create site, the router with IP {0} already belongs to site {1}", ip, testRouter.Site.Name)
                         });
                         return;
                     }
@@ -87,11 +106,10 @@ namespace getnet.Controllers
                     {
                         Hostname = router.Hostname,
                         Model = router.Model,
-                        RawManagementIP = router.IP.ToInt()
+                        RawManagementIP = ip.IpToInt(),
+                        Capabilities = NetworkCapabilities.Router,
+                        ChassisSerial = router.Serial
                     };
-                    if (router.Capabilities.Contains("Router"))
-                        device.Capabilities = NetworkCapabilities.Router;
-                    device.ChassisSerial = router.IP.Ssh().Execute<DeviceVersion>().First().Serial;
                     var devchanges = uow.Repo<NetworkDevice>().Insert(device);
                     uow.Save();
                     var site = new Site()
@@ -132,30 +150,34 @@ namespace getnet.Controllers
                     return;
             }
 
-            logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
-            await FindNetworkDevices(site);
+            try
+            {
+                logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
+                await FindNetworkDevices(site);
 
-            site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
+                site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
 
-            logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
-            await DiscoverHotPaths(site);
+                logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
+                await DiscoverHotPaths(site);
 
-            logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
-            await DiscoverVlans(site);
+                logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
+                await DiscoverVlans(site);
 
-            logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
-            await DiscoverSubnets(site);
+                logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
+                await DiscoverSubnets(site);
 
-            logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
-            await DiscoverEndpoints(site);
+                logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
+                await DiscoverEndpoints(site);
 
-            //todo DHCP
+                //todo DHCP
 
-            //todo sites and services
+                //todo sites and services
 
-            logger.Info("Complted network discovery actions", WhistlerTypes.NetworkDiscovery, siteId);
-    }
+                logger.Info("Completed network discovery actions", WhistlerTypes.NetworkDiscovery, siteId);
+            } catch (Exception ex) {
+                logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);
+            }
+        }
 
-        
     }
 }

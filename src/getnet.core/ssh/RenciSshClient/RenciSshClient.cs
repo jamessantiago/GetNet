@@ -10,6 +10,8 @@ namespace getnet.core.ssh
     {
         private readonly IGscFactory gscFactory;
         private readonly IGscSettings gscSettings;
+        private Whistler logger = new Whistler();
+        public SshCommand LastCommand;
         
         public RenciSshClient(IGscSettings settings) : this(new RenciSshClientFactory(), settings)
         {
@@ -33,13 +35,19 @@ namespace getnet.core.ssh
             List<T> results = new List<T>();
             var executor = new T();
             var cmdResults = client.RunCommand(command);
+            LastCommand = cmdResults;
             if (cmdResults.ExitStatus != 0)
             {
-                throw new Exception(cmdResults.Error);
+                logger.Error(string.Format("Execution of command '{0}' against {1} resulted in exit status {2}: {3}", command, client.ConnectionInfo.Host, cmdResults.ExitStatus, cmdResults.Error), WhistlerTypes.Ssh);
             } else
             {
                 foreach (var result in executor.ConvertCommandResult<T>(cmdResults.Result))
                     results.Add((T)result);
+
+                if (results.Count == 0)
+                {
+                    logger.Error(string.Format("Execution and parsing of command '{0}' against {1} yielded no results", command, client.ConnectionInfo.Host), WhistlerTypes.Ssh, cmdResults.Result);
+                }
             }
             return results;
         }        
