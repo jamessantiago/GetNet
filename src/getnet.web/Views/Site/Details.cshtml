@@ -13,6 +13,7 @@
         <a id="endpoints" href="#end-tab" class="mdl-layout__tab">Endpoints</a>
         <a href="#dhcp-tab" class="mdl-layout__tab">DHCP</a>
         <a href="#sas-tab" class="mdl-layout__tab">Sites and Subjets</a>
+        <a id="digs" href="#dig-tab" class="mdl-layout__tab">Diagram</a>
         <a href="#events-tab" class="mdl-layout__tab">Events</a>
     </div>
 }
@@ -161,6 +162,17 @@
     </div>
 </section>
 
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="dig-tab">
+    <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <h3>Network Diagram</h3>
+            <div class="mdl-typography--text-center" id="viz-graph">
+
+            </div>
+        </div>
+    </div>
+</section>
+
 <section class="mdl-layout__tab-panel mdl-cell--12-col" id="events-tab">
     <div class="page-content mdl-grid">
     </div>
@@ -190,6 +202,13 @@
                             }
                         ]
                     });
+                });
+            });
+
+            $("#digs").one('click', function () {
+                $("#fullpage-loading").show();
+                $("#viz-graph").load('/diagram/viz/@Model.SiteId', function () {
+                    $("#fullpage-loading").hide();
                 });
             });
         });

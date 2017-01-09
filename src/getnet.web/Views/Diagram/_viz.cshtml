@@ -1,0 +1,10 @@
+﻿@model string
+<div id="container">
+
+</div>
+
+<script src="~/lib/viz/viz.js"></script>
+<script>
+    var result = Viz('@Html.Raw(Model)', { engine: "dot" });
+    $("#container").html(result);
+</script>

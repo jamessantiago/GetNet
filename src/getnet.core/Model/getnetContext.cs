@@ -32,6 +32,7 @@ namespace getnet.core.Model
         public DbSet<PointOfContact> PointOfContacts { get; set; }
         public DbSet<Site> Sites { get; set; }
         public DbSet<Subnet> Subnets { get; set; }
+        public DbSet<TaskSchedule> TaskSchedules { get; set; }
         public DbSet<Tenant> Tenants { get; set; }
         public DbSet<UserProfile> UserProfiles { get; set; }
         public DbSet<Vlan> Vlans { get; set; }

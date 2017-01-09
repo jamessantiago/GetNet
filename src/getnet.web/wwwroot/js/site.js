@@ -443,7 +443,7 @@ getnet.Snacks = (function () {
         $.ajax({
             dataType: 'json',
             type: 'GET',
-            url: 'a/getsnacks',
+            url: '/a/getsnacks',
             success: function (data) {
                 $.each(data, function (i, item) {
                     if (item.actionHandler) {

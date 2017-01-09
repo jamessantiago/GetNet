@@ -4,6 +4,7 @@ using System.Net;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System;
+using System.Text;
 
 namespace getnet.core.Model.Entities
 {
@@ -41,6 +42,16 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<Device> Devices { get; set; }
 
         public virtual Site Site { get; set; }
+
+        public override string ToString()
+        {
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine(this.Hostname);
+            sb.AppendLine(this.ManagementIP.ToString());
+            sb.AppendLine(this.Model);
+            sb.AppendLine(this.ChassisSerial);
+            return sb.ToString();
+        }
     }
 
     public class NetworkDeviceBuildItem : IModelBuildItem

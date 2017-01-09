@@ -12,5 +12,7 @@ namespace getnet
         public const string LoginError = "Login Error";
         public const string NetworkDiscovery = "Network Discovery";
         public const string Ssh = "Ssh";
+        public const string ServiceControl = "Service Control";
+        public const string ServiceScheduling = "Service Scheduling";
     }
 }

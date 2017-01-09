@@ -18,7 +18,7 @@ namespace getnet.core.Model.Entities
         public long RawMonitorIP { get; set; }
         public string Interface { get; set; }
 
-        public string Type { get; set; }
+        public HotpathType Type { get; set; }
 
         public string Name { get; set; }
 

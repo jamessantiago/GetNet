@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "getnet.service": {
+      "commandName": "Project",
+      "commandLineArgs": "-s"
+    }
+  }
+}

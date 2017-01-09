@@ -102,7 +102,7 @@ namespace getnet.Controllers
                                 RawMonitorIP = tunnel.IP.ToInt(),
                                 Name = tunnel.OutPort,
                                 Interface = tunnel.OutPort,
-                                Type = "Tunnel Interface",
+                                Type = HotpathType.Tunnel,
                                 IsOnline = true
                             });
                             uow.Save();
