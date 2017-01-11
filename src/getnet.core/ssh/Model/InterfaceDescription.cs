@@ -18,14 +18,14 @@ namespace getnet.core.ssh
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
             var results = new List<ICommandResult>();
-            foreach (Match match in Regex.Matches(data, @"([FGSTV]\w+?\d\/?\d? +(\w+\s?\w+?) +(\w+\s?\w+?) +([.\s]+)"))
+            foreach (Match match in Regex.Matches(data, @"([FGSTV]\w+?\d\/?\d?) +(\w+\s?\w+?) +(\w+\s?\w+?) +(.*)"))
             {
                 results.Add(new InterfaceDescription
                 {
                     Interface = match.Groups[1].Value,
                     Status = match.Groups[2].Value,
                     Protocol = match.Groups[3].Value,
-                    Description = match.Groups[4].Value
+                    Description = match.Groups[4].Value.Trim()
                 });
             }            
 

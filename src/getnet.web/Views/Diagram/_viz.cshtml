@@ -5,6 +5,6 @@
 
 <script src="~/lib/viz/viz.js"></script>
 <script>
-    var result = Viz('@Html.Raw(Model)', { engine: "dot" });
+    var result = Viz('@Html.Raw(Model)');
     $("#container").html(result);
 </script>

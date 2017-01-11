@@ -231,6 +231,21 @@ namespace getnet
             return sb.ToString().Trim();
         }
 
+        public static string ToLocalTimeString(this DateTime date, string format = "G")
+        {
+            if (!CoreCurrent.Configuration["Data:Timezone"].HasValue())
+                return date.ToLocalTime().ToString(format);
+
+            var timezones = TimeZoneInfo.GetSystemTimeZones();
+            foreach (var tz in timezones)
+            {
+                if (tz.DisplayName == CoreCurrent.Configuration["Data:LocalOffset"])
+                    return TimeZoneInfo.ConvertTime(date, tz).ToString(format);
+            }
+
+            return date.ToLocalTime().ToString(format);
+        }
+
         public static string ToHumanReadableSize(this long size)
         {
             return string.Format(new FileSizeFormatProvider(), "{0:fs}", size);
@@ -735,6 +750,11 @@ namespace getnet
                 address = IncrementIPbyOne(address);
             }
             return address;
+        }
+
+        public static bool Like(this string value, string expression)
+        {
+            return value.ToLower().Contains(expression);
         }
 
     }

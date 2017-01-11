@@ -45,11 +45,6 @@ namespace getnet.Controllers
             return View(site);
         }
 
-        public IActionResult Endpoints(int id)
-        {
-            return PartialView("_endpoints", uow.Repo<Device>().Get(d => d.Site.SiteId == id, includeProperties: "Vlan"));
-        }
-
         [Route("/newsite")]
         public IActionResult New()
         {

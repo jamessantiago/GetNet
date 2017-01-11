@@ -18,6 +18,7 @@ namespace getnet.core.Model
         void Delete(object id);
         void Delete(TEntity entityToDelete);
         void Update(TEntity entityToUpdate);
+        IEnumerable<TEntity> FromSql(string sql, params object[] parameters);
     }
 
     public class GenericRepository<TEntity> : IGenericRepository<TEntity> where TEntity : class
@@ -30,6 +31,8 @@ namespace getnet.core.Model
             this.context = context;
             this.dbSet = context.Set<TEntity>();
         }
+
+        public virtual IEnumerable<TEntity> FromSql(string sql, params object[] parameters) => dbSet.FromSql(sql, parameters);
 
         public virtual IEnumerable<TEntity> Get(
             Expression<Func<TEntity, bool>> filter = null,
@@ -51,11 +54,11 @@ namespace getnet.core.Model
 
             if (orderBy != null)
             {
-                return orderBy(query).ToList();
+                return orderBy(query).AsEnumerable();
             }
             else
             {
-                return query.ToList();
+                return query.AsEnumerable();
             }
         }
 

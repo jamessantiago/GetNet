@@ -94,16 +94,25 @@ namespace getnet.Controllers
                 {
                     foreach (var tunnel in router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu")))
                     {
-                        var existingPath = uow.Repo<HotPath>().Get(d => d.Site == site && d.Interface == tunnel.OutPort).FirstOrDefault();
+                        long thisIp = 0;
+                        try
+                        {
+                            var ipints = tunnel.IP.Ssh().Execute<IpInterface>();
+                            var tunnelip = ipints.FirstOrDefault(d => d.Interface.StartsWith("l", StringComparison.CurrentCultureIgnoreCase));
+                            thisIp = tunnelip != null ? tunnelip.IP.ToInt() : tunnel.IP.ToInt();
+                        }
+                        catch { }
+                        var existingPath = uow.Repo<HotPath>().Get(d => d.Site == site && d.Interface == tunnel.OutPort && d.RawMonitorIP == thisIp).FirstOrDefault();
                         if (existingPath == null)
                         {
                             var change = uow.Repo<HotPath>().Insert(new HotPath()
                             {
-                                RawMonitorIP = tunnel.IP.ToInt(),
+                                MonitorDeviceHostname = tunnel.Hostname,
+                                RawMonitorIP = thisIp,
                                 Name = tunnel.OutPort,
                                 Interface = tunnel.OutPort,
                                 Type = HotpathType.Tunnel,
-                                IsOnline = true
+                                Status = HotPathStatus.Online
                             });
                             uow.Save();
                             var dbsite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "HotPaths").First();
@@ -112,7 +121,10 @@ namespace getnet.Controllers
                         }
                         else
                         {
-                            //update?
+                            existingPath.MonitorDeviceHostname = tunnel.Hostname;
+                            existingPath.Status = HotPathStatus.Online;
+                            existingPath.RawMonitorIP = thisIp;
+                            uow.Save();
                         }
                     }
                 }
@@ -191,6 +203,40 @@ namespace getnet.Controllers
                         };
                         thisSite.Subnets.AddOrNew(newSub);
                         uow.Save();
+                    }
+                }
+                foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
+                {
+                    try
+                    {
+                        var ints = router.ManagementIP.Ssh().Execute<IpInterface>();
+                        var intsToAdd = new List<IpInterface>();
+                        foreach (var i in ints)
+                        {
+                            if (!oldSubnets.Any(d => d.RawSubnetIP == i.IPNetwork.Network.ToInt() && d.RawSubnetSM == d.IPNetwork.Netmask.ToInt()))
+                            {
+                                var newSub = new Subnet
+                                {
+                                    RawSubnetIP = i.IPNetwork.Network.ToInt(),
+                                    RawSubnetSM = i.IPNetwork.Netmask.ToInt()
+                                };
+                                switch (i.Interface[0].ToString().ToLower())
+                                {
+                                    case "l":
+                                        newSub.Type = SubnetTypes.Loopback;
+                                        thisSite.Subnets.AddOrNew(newSub);
+                                        break;
+                                    default:
+                                        newSub.Type = SubnetTypes.Interface;
+                                        thisSite.Subnets.AddOrNew(newSub);
+                                        break;
+                                }
+
+                            }
+                        }
+                    } catch
+                    {
+
                     }
                 }
 

@@ -11,6 +11,7 @@ namespace getnet.core.ssh
     public class IpInterface : ICommandResult
     {
         public string Interface { get; set; }
+        public IPAddress IP { get; set; }
         public IPNetwork IPNetwork { get; set; }
 
         public List<ICommandResult> ConvertCommandResult<T>(string data)
@@ -27,6 +28,7 @@ namespace getnet.core.ssh
                     results.Add(new IpInterface
                     {
                         Interface = port,
+                        IP = IPAddress.Parse(m.Groups[3].Value),
                         IPNetwork = IPNetwork.Parse(network)
                     });
                 }

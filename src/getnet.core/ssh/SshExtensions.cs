@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
 using getnet.core.Model.Entities;
+using System.Text.RegularExpressions;
 
 namespace getnet.core.ssh
 {
@@ -66,6 +67,23 @@ namespace getnet.core.ssh
                 }
             }
             return caps;
+        }
+
+        public static bool IntMatch(this string intA, string intB)
+        {
+            var reg = new Regex(@"(\w)\w+(\d+\/?\d+?)");
+            Match intAMatch = reg.Match(intA);
+            intA = intAMatch.Groups[1].Value + intAMatch.Groups[2].Value;
+            Match intBMatch = reg.Match(intB);
+            intB = intBMatch.Groups[1].Value + intBMatch.Groups[2].Value;
+            return intA.Equals(intB, StringComparison.CurrentCultureIgnoreCase);
+        }
+
+        public static string ShortIntName(this string intf)
+        {
+            var reg = new Regex(@"(\w\w?)\w+?(\d+\/?\d+?)");
+            Match intAMatch = reg.Match(intf);
+            return intAMatch.Groups[1].Value + intAMatch.Groups[2].Value;
         }
     }
 }

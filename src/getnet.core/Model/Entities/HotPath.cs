@@ -15,6 +15,7 @@ namespace getnet.core.Model.Entities
         [NotMapped]
         public IPAddress MonitorIP => new IPAddress(RawMonitorIP);
 
+        public string MonitorDeviceHostname { get; set; }
         public long RawMonitorIP { get; set; }
         public string Interface { get; set; }
 
@@ -22,7 +23,7 @@ namespace getnet.core.Model.Entities
 
         public string Name { get; set; }
 
-        public bool IsOnline { get; set; }
+        public HotPathStatus Status { get; set; }
         
         public Site Site { get; set; }
     }

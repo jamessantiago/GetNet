@@ -11,7 +11,7 @@
 @section scripts {
     <script src="~/lib/viz/viz.js"></script>
     <script>
-        var result = Viz('@Html.Raw(ViewData["VizGraph"])', { engine: "dot" });
+        var result = Viz('@Html.Raw(ViewData["VizGraph"])', { format="svg", engine: "dot", scale });
         $("#container").html(result);
     </script>
 }

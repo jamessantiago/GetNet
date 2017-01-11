@@ -152,5 +152,21 @@ namespace getnet.tests
             var ints = client.Execute<MacAddress>();
             Assert.Equal(ints.Count, 3);
         }
+
+        [Fact]
+        public void IntDesTest()
+        {
+            CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
+            IGsc client = new RenciSshClient(new RenciSshClientSettings()
+            {
+                Host = "192.168.32.1",
+                Username = "admin",
+                Password = "password",
+                Port = 22
+            });
+
+            var ints = client.Execute<InterfaceDescription>();
+            Assert.Equal(ints.Count, 4);
+        }
     }
 }

@@ -1,0 +1,25 @@
+﻿<table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Vlan</th>
+            <th>Hostname</th>
+            <th>IP</th>
+            <th>MAC</th>
+            <th>Last Seen</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+    var table = $('#end-table').DataTable({
+        ajax: "/endpoint/endpointhandler/searchText=@ViewData["SearchText"]",
+        processing: true,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ]
+    });
+</script>

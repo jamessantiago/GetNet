@@ -12,6 +12,7 @@ namespace getnet.core.Model.Entities
         Transport,
         Management,
         Interface,
+        Loopback,
         Vlan
     }
 }

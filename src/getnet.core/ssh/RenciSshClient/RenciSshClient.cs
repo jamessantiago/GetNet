@@ -38,7 +38,9 @@ namespace getnet.core.ssh
             LastCommand = cmdResults;
             if (cmdResults.ExitStatus != 0)
             {
-                logger.Error(string.Format("Execution of command '{0}' against {1} resulted in exit status {2}: {3}", command, client.ConnectionInfo.Host, cmdResults.ExitStatus, cmdResults.Error), WhistlerTypes.Ssh);
+                logger.Error(
+                    message: string.Format("Execution of command '{0}' against {1} resulted in exit status {2}: {3}", command, client.ConnectionInfo.Host, cmdResults.ExitStatus, cmdResults.Error),
+                    type: WhistlerTypes.Ssh);
             } else
             {
                 foreach (var result in executor.ConvertCommandResult<T>(cmdResults.Result))
@@ -46,7 +48,9 @@ namespace getnet.core.ssh
 
                 if (results.Count == 0)
                 {
-                    logger.Error(string.Format("Execution and parsing of command '{0}' against {1} yielded no results", command, client.ConnectionInfo.Host), WhistlerTypes.Ssh, cmdResults.Result);
+                    logger.Error(message: string.Format("Execution and parsing of command '{0}' against {1} yielded no results", command, client.ConnectionInfo.Host),
+                        type: WhistlerTypes.Ssh,
+                        details: cmdResults.Result);
                 }
             }
             return results;

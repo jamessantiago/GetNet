@@ -61,7 +61,7 @@ namespace getnet
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@logger", new NLog.Layouts.SimpleLayout("${logger}")));
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@details", new NLog.Layouts.SimpleLayout("${event-context:item=details}")));
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@siteid", new NLog.Layouts.SimpleLayout("${event-context:item=siteid}")));
-            dbTarget.DBProvider = CoreCurrent.Configuration["Data:DataStore"];
+            dbTarget.DBProvider = CoreCurrent.Configuration["Data:DataStore"] ?? "MSSQL";
 
             if (CoreCurrent.Configuration["Whistler:Console:Enabled"] == "true")
             {

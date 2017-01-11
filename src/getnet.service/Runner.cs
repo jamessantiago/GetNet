@@ -23,7 +23,14 @@ namespace getnet.service
             Current.Scheduler = await sf.GetScheduler();
             UnitOfWork uow = new UnitOfWork();
 
-            foreach (var task in uow.Repo<TaskSchedule>().Get())
+            var tasks = uow.Repo<TaskSchedule>().Get();
+            if (!tasks.Any())
+            {
+                AddDefaultTasks(uow);
+                tasks = uow.Repo<TaskSchedule>().Get();
+            }
+
+            foreach (var task in tasks)
             {
                 if (!task.Enabled)
                     continue;
@@ -55,6 +62,18 @@ namespace getnet.service
             _resetEvent.WaitOne();
             await Current.Scheduler.Shutdown();
             uow.Dispose();
+        }
+
+        private static void AddDefaultTasks(UnitOfWork uow)
+        {
+            uow.Repo<TaskSchedule>().Insert(new TaskSchedule
+            {
+                Name = "Hotpath Checks Every 5 Min",
+                Enabled = true,
+                CronSchedule = "0 0/5 * * * ?",
+                Type = ScheduleType.HotpathCheck
+            });
+            uow.Save();
         }
     }
 }

@@ -1,0 +1,55 @@
+﻿@model IEnumerable<getnet.core.Model.Entities.Vlan>
+
+<div class="page-content mdl-grid">
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--2-col mdl-typography--text-center">
+        @foreach (var vlan in Model.OrderBy(d => d.VlanNumber))
+        {
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="vlan_@vlan?.VlanNumber">
+                <input type="checkbox" id="vlan_@vlan?.VlanNumber" data-vlan="@vlan?.VlanNumber" class="mdl-switch__input vlans" checked>
+                <span class="mdl-switch__label">Vlan @vlan?.VlanNumber</span>
+            </label>
+        }
+    </div>
+
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--10-col">
+        <table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th>Vlan</th>
+                    <th>Hostname</th>
+                    <th>IP</th>
+                    <th>MAC</th>
+                    <th>Last Seen</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
+<script>
+    componentHandler.upgradeElement(document.querySelector('.mdl-switch'))
+    var table = $('#end-table').DataTable({
+        ajax: "/endpoint/endpointhandler/@ViewData["SiteId"]",
+        processing: true,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ]
+    });
+    $(".vlans").on("click", function () {
+        var filter = '';
+        $(".vlans").each(function () {
+            if ($(this).is(":checked")) {
+                console.log("vlan " + $(this).data("vlan") + " is checked");
+                filter = filter + $(this).data("vlan") + ",";
+            }
+            filter = filter.slice(0, -1);
+            if (filter === '')
+                filter = 'none';
+            table.column(0).search(filter).draw();
+        });
+    });
+</script>

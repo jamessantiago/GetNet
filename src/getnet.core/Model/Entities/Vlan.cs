@@ -21,6 +21,7 @@ namespace getnet.core.Model.Entities
         [Required]
         public long RawVlanSM { get; set; }
 
+
         [NotMapped]
         public IPAddress VlanIP => new IPAddress(RawVlanIP);
 
@@ -30,8 +31,10 @@ namespace getnet.core.Model.Entities
         [NotMapped]
         public IPNetwork IPNetwork => IPNetwork.Parse(VlanIP, VlanSM);
 
+
         public virtual NetworkDevice NetworkDevice { get; set; }
         public virtual ICollection<Device> Devices { get; set; }
         public virtual Tenant Tenant { get; set; }
+        public virtual Site Site { get; set; }
     }
 }
