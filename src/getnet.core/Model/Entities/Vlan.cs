@@ -5,6 +5,8 @@ using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.Threading.Tasks;
 using System.Net;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace getnet.core.Model.Entities
 {
@@ -36,5 +38,34 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<Device> Devices { get; set; }
         public virtual Tenant Tenant { get; set; }
         public virtual Site Site { get; set; }
+
+        public static Expression<Func<Vlan, bool>> SearchPredicates(string text)
+        {
+            var predicates = PredicateBuilder.False<Vlan>();
+            
+            foreach (var term in text.Split(' '))
+            {
+                Regex ip = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+                IPAddress searchIp = null;
+                if (ip.IsMatch(term) && IPAddress.TryParse(term, out searchIp))
+                {
+                    predicates = predicates.Or(d => searchIp.ToInt() >= d.RawVlanIP && searchIp.ToInt() <= d.RawVlanSM);
+                }
+
+                Regex network = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$");
+                IPNetwork searchNet = null;
+                if (network.IsMatch(term) && IPNetwork.TryParse(term, out searchNet))
+                {
+                    predicates = predicates.Or(d => d.RawVlanIP >= searchNet.Network.ToInt() && d.RawVlanIP <= searchNet.Broadcast.ToInt());
+                }
+                int vlannum = 0;
+                if (int.TryParse(term, out vlannum))
+                {
+                    predicates = predicates.And(d => d.VlanNumber == vlannum);
+                }
+            }
+
+            return predicates;
+        }
     }
 }

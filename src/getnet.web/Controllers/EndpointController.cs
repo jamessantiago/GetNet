@@ -16,18 +16,14 @@ namespace getnet.Controllers
             var predicates = PredicateBuilder.True<Device>();
             if (id.HasValue)
                 predicates = predicates.And(d => d.Site.SiteId == id.Value);
-            else if (searchText.HasValue())
-                predicates = predicates.And(d =>
-                    d.Hostname.ToLower().Contains(searchText.ToLower()) ||
-                    d.MAC.ToLower().Contains(searchText.ToLower()));
+            if (searchText.HasValue())
+                predicates = predicates.And(Device.SearchPredicates(searchText));
             
-            var devices = uow.Repo<Device>().Get(predicates, includeProperties: "Vlan");
+            var devices = uow.Repo<Device>().Get(predicates, includeProperties: "Vlan,Site");
 
             if (param.search["value"].HasValue())
-                predicates = predicates.And(d => 
-                d.Hostname.ToLower().Contains(param.search["value"].ToLower()) || 
-                d.MAC.ToLower().Contains(param.search["value"].ToLower()));
-
+                    predicates = predicates.And(Device.SearchPredicates(param.search["value"]));
+            
             var filter = param.columns[0]["search"]["value"];
             if (filter.HasValue() && filter != "none")
                 foreach (var vn in ((string)filter).Split(','))
@@ -38,11 +34,12 @@ namespace getnet.Controllers
             var queriedDevices = devices.AsQueryable().Where(predicates);
 
             Func<Device, string> orderingFunction = (d =>
-                param.order[0]["column"] == "0" ? d.Vlan.VlanNumber.ToString() :
-                param.order[0]["column"] == "1" ? d.Hostname :
-                param.order[0]["column"] == "2" ? d.RawIP.ToString() :
-                param.order[0]["column"] == "3" ? d.MAC :
-                param.order[0]["column"] == "4" ? d.LastSeenOnline.ToString() : d.Hostname);
+                param.order[0]["column"] == "0" ? d.Site.Name :
+                param.order[0]["column"] == "1" ? d.Vlan.VlanNumber.ToString() :
+                param.order[0]["column"] == "2" ? d.Hostname :
+                param.order[0]["column"] == "3" ? d.RawIP.ToString() :
+                param.order[0]["column"] == "4" ? d.MAC :
+                param.order[0]["column"] == "5" ? d.LastSeenOnline.ToString() : d.Hostname);
 
             if (param.order[0]["dir"] == "asc")
                 queriedDevices = queriedDevices.OrderBy(orderingFunction).AsQueryable();
@@ -54,6 +51,7 @@ namespace getnet.Controllers
 
             var results = from r in displayedResults
                           select new[] {
+                              r.Site.Name,
                               r.Vlan.VlanNumber.ToString(),
                               r.Hostname,
                               r.IP.ToString(),

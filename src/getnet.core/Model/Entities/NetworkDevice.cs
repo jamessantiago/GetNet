@@ -5,6 +5,8 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Text;
+using System.Linq.Expressions;
+using System.Text.RegularExpressions;
 
 namespace getnet.core.Model.Entities
 {
@@ -51,6 +53,33 @@ namespace getnet.core.Model.Entities
             sb.AppendLine(this.Model);
             sb.AppendLine(this.ChassisSerial);
             return sb.ToString();
+        }
+
+        public static Expression<Func<NetworkDevice, bool>> SearchPredicates(string text)
+        {
+            var predicates = PredicateBuilder.False<NetworkDevice>();
+            foreach (var term in text.Split(' '))
+            {
+                Regex ip = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$");
+                IPAddress searchIp = null;
+                if (ip.IsMatch(term) && IPAddress.TryParse(term, out searchIp))
+                {
+                    predicates = predicates.Or(d => d.RawManagementIP == searchIp.ToInt());
+                }
+
+                Regex network = new Regex(@"^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$");
+                IPNetwork searchNet = null;
+                if (network.IsMatch(term) && IPNetwork.TryParse(term, out searchNet))
+                {
+                    predicates = predicates.Or(d => d.RawManagementIP >= searchNet.Network.ToInt() && d.RawManagementIP <= searchNet.Broadcast.ToInt());
+                }
+
+                var st = term.ToLower();
+                predicates = predicates.Or(d => d.Hostname.ToLower().Contains(st));
+                predicates = predicates.Or(d => d.Model.ToLower().Contains(st));
+            }
+
+            return predicates;
         }
     }
 

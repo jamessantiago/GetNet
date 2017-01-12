@@ -20,11 +20,15 @@ namespace getnet
 
         private static IConfigurationRoot LoadConfiguration()
         {
+            ConfigFile = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            if (!File.Exists(ConfigFile))
+                File.Create(ConfigFile);
+
             var builder = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true)
                 .AddEnvironmentVariables();
-            ConfigFile = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
+            
             return builder.Build();
         }
         

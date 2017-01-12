@@ -1,0 +1,28 @@
+﻿<table id="nd-table" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Capabilities</th>
+            <th>Hostname</th>
+            <th>Model</th>
+            <th>Serial</th>
+            <th>Management IP</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+    var table = $('#nd-table').DataTable({
+        ajax: "/networkdevice/networkdevicehandler/searchText=@ViewData["SearchText"]",
+        processing: true,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ],
+        oLanguage: {
+            sSearch: "Filter:"
+        }
+    });
+</script>

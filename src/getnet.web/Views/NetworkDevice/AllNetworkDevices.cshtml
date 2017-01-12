@@ -1,0 +1,15 @@
+﻿@{
+    ViewData["Title"] = "Network Devices";
+    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+}
+
+<div id="networkdevices" class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col ">
+
+</div>
+
+@section scripts {
+    <script>
+        $("#networkdevices").load("/networkdevice/allnetworkdevicespartial");
+    </script>
+
+}

@@ -15,6 +15,7 @@
         <table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
             <thead>
                 <tr>
+                    <th>Site</th>
                     <th>Vlan</th>
                     <th>Hostname</th>
                     <th>IP</th>
@@ -36,6 +37,11 @@
             {
                 targets: '_all',
                 className: 'mdl-data-table__cell--non-numeric'
+            },
+            {
+                targets: 0,
+                visible: false
+
             }
         ]
     });
