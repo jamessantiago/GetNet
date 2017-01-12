@@ -74,7 +74,7 @@ namespace getnet.Controllers
         [HttpPost]
         public IActionResult AuthConfig(IFormCollection collection)
         {
-            CoreCurrent.Configuration.Set("Security:Provider", collection["AuthChoice"]);
+            CoreCurrent.Configuration.SetSecure("Security:Provider", collection["AuthChoice"]);
             if (collection["AuthChoice"] == "ldap")
             {
                 CoreCurrent.Configuration.Set("Security:Ldap:Host", collection["Host"]);
@@ -83,6 +83,7 @@ namespace getnet.Controllers
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
             }
+            HttpContext.Session.AddSnackMessage("Authentication and authorization provider changes will take effect next time GetNet restarts");
             return PartialView("_success", "Successfully configured authentication");
         }
 
@@ -107,8 +108,10 @@ namespace getnet.Controllers
             CoreCurrent.Configuration.Set("Whistler:Smtp:Server", collection["smtpserver"]);
             CoreCurrent.Configuration.Set("Whistler:Smtp:From", collection["smtpfrom"]);
             CoreCurrent.Configuration.Set("Whistler:Smtp:SubjectLayout", collection["smtpsubject"]);
-            return PartialView("_success", "Successfully configured ssh");
+            CoreCurrent.Configuration.Set("Whistler:Db:Enabled", collection["databaseenabled"] == "on" ? "true" : "false");
+            return PartialView("_success", "Successfully configured logging");
         }
+
         [AllowAnonymous]
         [Route("/dbissue")]
         public IActionResult Anon()

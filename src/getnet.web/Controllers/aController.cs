@@ -16,7 +16,7 @@ namespace getnet.Controllers
     [RedirectOnDbIssue]
     public class aController : BaseController
     {
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(aController).FullName);
 
 
         [Authorize]

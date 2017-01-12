@@ -16,7 +16,7 @@ namespace getnet.Controllers
 {
     public class AccountController : BaseController
     {
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(AccountController).FullName);
 
         protected UserManager<User> userManager;
         protected SignInManager<User> signInManager;
@@ -35,7 +35,7 @@ namespace getnet.Controllers
             if (Current.Security as EveryonesAnAdminProvider != null)
             {
                 await signInManager.SignInAsync(new Model.User("AdminUser@GetNet", Roles.GlobalAdmins), false);
-                return RedirectToAction("a", "index");
+                return RedirectToAction("index", "a");
             }
             return View();
         }

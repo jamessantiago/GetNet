@@ -27,6 +27,8 @@ namespace getnet
             ConfigFile = Path.Combine(Directory.GetCurrentDirectory(), "appsettings.json");
             return builder.Build();
         }
+        
+        public static DataProtect Protector;
 
         public static string ConfigFile { get; private set; }
 

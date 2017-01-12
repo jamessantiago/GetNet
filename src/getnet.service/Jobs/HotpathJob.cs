@@ -12,7 +12,7 @@ namespace getnet.service.Jobs
 {
     public class HotpathJob : IJob
     {
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(HotpathJob).FullName);
 
         public virtual Task Execute(IJobExecutionContext context)
         {

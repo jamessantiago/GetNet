@@ -13,7 +13,7 @@ namespace getnet.core.Model
 
     public class getnetContext : DbContext
     {
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(getnetContext).FullName);
 
         public event EventHandler ConfigurationComplete = delegate { };
 
@@ -39,6 +39,8 @@ namespace getnet.core.Model
         
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
+            //optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=GetNet;Integrated Security=true");
+            //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=GetNet;Pooling=true;");
             try
             {
                 if (CoreCurrent.Configuration["Data:DataStore"] == "MSSQL" && CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString").HasValue())
@@ -46,9 +48,9 @@ namespace getnet.core.Model
                     optionsBuilder.UseSqlServer(CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString"));
                     IsConfigured = true;
                 }
-                else if (CoreCurrent.Configuration["Data:DataStore"] == "Postgres" && CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString").HasValue())
+                else if (CoreCurrent.Configuration["Data:DataStore"] == "Postgres" && CoreCurrent.Configuration.GetSecure("Data:PostgresConnectionString").HasValue())
                 {
-                    optionsBuilder.UseNpgsql(CoreCurrent.Configuration["Data:NpgsqlConnectionString"]);
+                    optionsBuilder.UseNpgsql(CoreCurrent.Configuration.GetSecure("Data:PostgresConnectionString"));
                     IsConfigured = true;
                 }
                 else

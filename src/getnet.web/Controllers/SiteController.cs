@@ -16,7 +16,7 @@ namespace getnet.Controllers
 {
     public partial class SiteController : BaseController
     {
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(SiteController).FullName);
 
         [Route("/sites")]
         public IActionResult Index()

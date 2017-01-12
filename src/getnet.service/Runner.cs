@@ -15,7 +15,7 @@ namespace getnet.service
     public static class Runner
     {
         private static AutoResetEvent _resetEvent = new AutoResetEvent(false);
-        private static Whistler logger = new Whistler();
+        private static Whistler logger = new Whistler(typeof(Runner).FullName);
 
         public static async void Run()
         {

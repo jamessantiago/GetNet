@@ -11,10 +11,12 @@ using Microsoft.EntityFrameworkCore;
 using getnet.core.Model;
 using Microsoft.AspNetCore.Mvc;
 using getnet.Model;
+using System.IO;
 using getnet.Model.Security;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+using Microsoft.AspNetCore.DataProtection;
 
 namespace getnet
 {
@@ -28,8 +30,13 @@ namespace getnet
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            string pathToCryptoKeys = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar
+                    + "dp_keys" + Path.DirectorySeparatorChar;
+            services.AddDataProtection()
+                .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys));
+            CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(services.BuildServiceProvider());
 
-            //CoreCurrent.Configuration.SetSecure("Security:Provider", "ldap");
+            //CoreCurrent.Configuration.SetSecure("Security:Provider", "admin");
             //CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
             //CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
             //CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");

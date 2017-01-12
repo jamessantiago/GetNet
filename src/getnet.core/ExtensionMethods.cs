@@ -525,16 +525,20 @@ namespace getnet
 
         public static string GetSecure(this IConfiguration config, string key)
         {
-            var cipherText = config[key];
-            if (!cipherText.HasValue())
-                return string.Empty;
-            string description = string.Empty;
-            return DPAPI.Decrypt(cipherText, CoreCurrent.ENTROPY, out description);
+            //var cipherText = config[key];
+            //if (!cipherText.HasValue())
+            //    return string.Empty;
+            //string description = string.Empty;
+            //return DPAPI.Decrypt(cipherText, CoreCurrent.ENTROPY, out description);
+            if (CoreCurrent.Protector == null)
+                return "";
+            return CoreCurrent.Protector.UnProtect(config[key]);
         }
 
         public static void SetSecure(this IConfiguration config, string key, string value)
         {
-            var secureText = DPAPI.Encrypt(DPAPI.KeyType.MachineKey, value, CoreCurrent.ENTROPY);
+            //var secureText = DPAPI.Encrypt(DPAPI.KeyType.MachineKey, value, CoreCurrent.ENTROPY);
+            var secureText = CoreCurrent.Protector.Protect(value);
             config.Set(key, secureText);
         }
 

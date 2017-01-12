@@ -8,7 +8,7 @@ namespace getnet.service
 {
     public class Program
     {
-        private static Whistler logger = new Whistler();
+        private static Whistler logger = new Whistler(typeof(Program).FullName);
 
         public static void Main(string[] args)
         {

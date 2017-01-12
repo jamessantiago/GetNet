@@ -10,7 +10,7 @@ namespace getnet.core.ssh
     {
         private readonly IGscFactory gscFactory;
         private readonly IGscSettings gscSettings;
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(RenciSshClient).FullName);
         public SshCommand LastCommand;
         
         public RenciSshClient(IGscSettings settings) : this(new RenciSshClientFactory(), settings)

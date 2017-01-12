@@ -30,7 +30,7 @@
             </div>
         }
 
-        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell @((bool)ViewData["DbExists"] ? "mdl-cell--12-col" : "mdl-cell--6-col")">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
 
             <h3>Connection String Configuration</h3>
             <div id="thisform-results"></div>
@@ -66,20 +66,26 @@
         </div>
 
 
-        @if (!(bool)ViewData["DbExists"])
-        {
-            <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col">
-                <div class="mdl-card__title mdl-card--expand mdl-color--red-300">
-                    <div class="mdl-card__title-text">Database Creation</div>
-                </div>
-                <div class="mdl-card__supporting-text mdl-color-text--grey-600">
-                    The GetNet database may not currently exist.  There may just be a connection issue or if the database may need to be created.  You can create the database here if GetNet has the proper credentials to do so either in the SQL connection string or through integrated security via GetNet's web service account.  If the database already exists no further action will be taken.  Be sure <b>not</b> to use the master db in your connection string otherwise GetNet will end up creating all the SQL objects there.
-                </div>
-                <div class="mdl-card__actions mdl-card--border">
-                    <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="/init/createdb">Ensure DB Exists</a>
-                </div>
+        <div class="mdl-card mdl-shadow--2dp mdl-cell mdl-cell--6-col">
+            <div class="mdl-card__title mdl-card--expand @((bool)ViewData["DbExists"] ? "mdl-color--green" : "mdl-color--red-300")">
+                <div class="mdl-card__title-text">Database Creation</div>
             </div>
-        }
+            <div class="mdl-card__supporting-text mdl-color-text--grey-600">
+                @if ((bool)ViewData["DbExists"])
+                {
+                    <span>The GetNet database exists.  However, if you've created this database manually you may wish to run the below command to create the database schema.  Note that if the database is modified outside of GetNet then issues may occur with current operation and future upgrades.</span>
+                }
+                else
+                {
+                    <span>The GetNet database may not currently exist.There may just be a connection issue or if the database may need to be created.  You can create the database here if GetNet has the proper credentials to do so either in the SQL connection string or through integrated security via GetNet's web service account.  If the database already exists no further action will be taken.  Be sure <b>not</b> to use the master db in your connection string otherwise GetNet will end up creating all the SQL objects there.</span>
+                }
+                </div>
+
+
+            <div class="mdl-card__actions mdl-card--border">
+                <a class="mdl-button mdl-js-button mdl-js-ripple-effect" href="/init/createdb">Ensure DB Exists</a>
+            </div>
+        </div>
 
     </div>
 </section>
@@ -228,7 +234,14 @@
                     <label class="mdl-textfield__label" for="smtpsubject">Subject Layout</label>
                 </div>
 
-                <br />
+                <h4>Database</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="databaseenabled">
+                    <input type="checkbox" id="databaseenabled" name="databaseenabled" class="mdl-switch__input" @(CoreCurrent.Configuration["Whistler:Db:Enabled"] == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+
+                <br /><br />
                 <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
                     Save
                 </button>

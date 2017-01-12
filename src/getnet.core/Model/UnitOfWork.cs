@@ -17,7 +17,7 @@ namespace getnet.core.Model
 
         private bool disposed = false;
 
-        private Whistler logger = new Whistler();
+        private Whistler logger = new Whistler(typeof(UnitOfWork).FullName);
 
         public UnitOfWork()
         {
