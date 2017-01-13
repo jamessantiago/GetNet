@@ -63,7 +63,7 @@ namespace getnet.Controllers
         public IActionResult SiteNetworkDevices(int id)
         {
             ViewData["SiteId"] = id;
-            return PartialView("_sitenetworkdevices", uow.Repo<Vlan>().Get(d => d.Site.SiteId == id));
+            return PartialView("_sitenetworkdevices");
         }
 
         [Route("/networkdevices")]

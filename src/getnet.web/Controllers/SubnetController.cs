@@ -11,7 +11,7 @@ namespace getnet.Controllers
 {
     public class SubnetController : BaseController
     {
-        public ActionResult VlanHandler(int? id, string searchText, jQueryDataTableParamModel param)
+        public ActionResult SubnetHandler(int? id, string searchText, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<Subnet>();
             if (id.HasValue)
@@ -43,7 +43,7 @@ namespace getnet.Controllers
                           select new[] {
                               r.Site.Name,
                               r.Type.ToString(),
-                              r.IPNetwork.Network.ToString() + "/" + r.IPNetwork.Netmask.ToString()
+                              r.IPNetwork.Network.ToString() + "/" + r.IPNetwork.Cidr.ToString()
                           };
 
             return Json(new
@@ -52,6 +52,23 @@ namespace getnet.Controllers
                 recordsFiltered = devices.Count(),
                 data = results
             });
+        }
+
+        public IActionResult SiteSubnets(int id)
+        {
+            ViewData["SiteId"] = id;
+            return PartialView("_sitesubnets");
+        }
+
+        [Route("/subnets")]
+        public IActionResult AllSubnets()
+        {
+            return View();
+        }
+
+        public IActionResult AllSubnetsPartial()
+        {
+            return PartialView("_subnets");
         }
     }
 }

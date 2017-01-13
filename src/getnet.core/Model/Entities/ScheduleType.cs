@@ -8,7 +8,7 @@ namespace getnet.core.Model.Entities
     public enum ScheduleType
     {
         HotpathCheck,
-        NetworkDiscovery,
+        FullSiteDiscovery,
         DeviceDiscovery,
         DhcpDiscovery,
         SitesAndSubnetsDiscovery

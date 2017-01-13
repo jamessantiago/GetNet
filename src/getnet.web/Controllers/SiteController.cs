@@ -11,6 +11,7 @@ using System.Net;
 using getnet;
 using getnet.core.Model;
 using getnet.Model;
+using getnet.core;
 
 namespace getnet.Controllers
 {
@@ -148,27 +149,26 @@ namespace getnet.Controllers
             try
             {
                 logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
-                await FindNetworkDevices(site);
+                await Discovery.FindNetworkDevices(site);
 
                 site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
 
                 logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
-                await DiscoverHotPaths(site);
+                await Discovery.DiscoverHotPaths(site);
 
                 logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
-                await DiscoverVlans(site);
+                await Discovery.DiscoverVlans(site);
 
                 logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
-                await DiscoverSubnets(site);
+                await Discovery.DiscoverSubnets(site);
 
                 logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
-                await DiscoverEndpoints(site);
+                await Discovery.DiscoverEndpoints(site);
 
                 //todo DHCP
 
                 //todo sites and services
 
-                logger.Info("Completed network discovery actions", WhistlerTypes.NetworkDiscovery, siteId);
             } catch (Exception ex) {
                 logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);
             }

@@ -22,8 +22,9 @@ namespace getnet.core.Helpers
                 byte[] unprotectedBytes = dp.DangerousUnprotect(protectedBytes, ignoreRevocation, out requiresMigration, out wasRevoked);
 
                 return Encoding.UTF8.GetString(unprotectedBytes);
-            } catch
+            } catch (Exception ex)
             {
+                ex = null;
                 requiresMigration = false;
                 wasRevoked = false;
                 return "";

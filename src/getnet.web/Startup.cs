@@ -24,7 +24,7 @@ namespace getnet
     {
         public Startup(IHostingEnvironment env)
         {
-            Current.SetDbConfigurationState();
+
         }
 
         // This method gets called by the runtime. Use this method to add services to the container.
@@ -34,7 +34,6 @@ namespace getnet
                     + "dp_keys" + Path.DirectorySeparatorChar;
             services.AddDataProtection()
                 .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys));
-            CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(services.BuildServiceProvider());
 
             //CoreCurrent.Configuration.SetSecure("Security:Provider", "admin");
             //CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
@@ -44,7 +43,7 @@ namespace getnet
             //CoreCurrent.Configuration.SetSecure("SSH:Username", "admin");
             //CoreCurrent.Configuration.SetSecure("SSH:Password", "password");
             //CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
-            switch (CoreCurrent.Configuration.GetSecure("Security:Provider"))
+            switch (CoreCurrent.Configuration["Security:Provider"])
             {
                 case "ldap":
                     services.AddIdentity<User, Role>()

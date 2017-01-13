@@ -74,12 +74,13 @@ namespace getnet.Controllers
         [HttpPost]
         public IActionResult AuthConfig(IFormCollection collection)
         {
-            CoreCurrent.Configuration.SetSecure("Security:Provider", collection["AuthChoice"]);
+            CoreCurrent.Configuration.Set("Security:Provider", collection["AuthChoice"]);
             if (collection["AuthChoice"] == "ldap")
             {
                 CoreCurrent.Configuration.Set("Security:Ldap:Host", collection["Host"]);
                 CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", collection["LoginDN"]);
-                CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", collection["Password"]);
+                if (collection["Password"].Any())
+                    CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", collection["Password"]);
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
             }

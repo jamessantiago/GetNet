@@ -86,13 +86,16 @@
                         <label class="mdl-textfield__label" for="search">Enter your query...</label>
                     </div>
                 </div>
+                @if (Current.IsAdmin)
+                {
                 <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
-                    <i class="material-icons">more_vert</i>
+                    <i class="material-icons">settings</i>
                 </button>
                 <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
                     <li class="mdl-menu__item" onclick="window.location.href = '/newsite'">Discovery</li>
                     <li class="mdl-menu__item" onclick="window.location.href = '/configure'">Configuration</li>
                 </ul>
+                }
             </div>
             <div id="fullpage-loading" style="display:none" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
             @RenderSection("Tabs", false)
@@ -125,7 +128,7 @@
                 <a class="mdl-navigation__link" href="/networkdevices"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">router</i>Network Devices</a>
                 <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">desktop_windows</i>Endpoints</a>
                 @*<a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">leak_remove</i>Vlans</a>*@
-                <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">border_all</i>Subnets</a>
+                <a class="mdl-navigation__link" href="/subnets"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">border_all</i>Subnets</a>
                 <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">device_hub</i>Diagrams</a>
                 <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">assessment</i>Reports</a>
                 <div class="mdl-layout-spacer"></div>

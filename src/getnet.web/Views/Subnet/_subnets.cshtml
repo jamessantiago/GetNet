@@ -1,0 +1,26 @@
+﻿<table id="sub-table" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Site</th>
+            <th>Type</th>
+            <th>Network</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+    var table = $('#sub-table').DataTable({
+        ajax: "/subnet/subnethandler/searchText=@ViewData["SearchText"]",
+        processing: true,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ],
+        oLanguage: {
+            sSearch: "Filter:"
+        }
+    });
+</script>

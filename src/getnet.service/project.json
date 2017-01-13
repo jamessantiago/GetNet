@@ -5,6 +5,7 @@
   },
 
   "dependencies": {
+    "Colorful.Console": "1.0.6",
     "getnet.core": "1.0.0-*",
     "Microsoft.NETCore.App": "1.1.0",
     "Quartz": "3.0.0-alpha2",

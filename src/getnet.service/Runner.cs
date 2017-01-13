@@ -44,12 +44,18 @@ namespace getnet.service
                             .WithIdentity(task.Name)
                             .Build();
                         break;
+                    case ScheduleType.FullSiteDiscovery:
+                        job = JobBuilder.Create<FullSiteDiscoveryJob>()
+                            .WithIdentity(task.Name)
+                            .Build();
+                        break;
                     default:
                         break;
                 }
 
                 ITrigger trigger = TriggerBuilder.Create()
                             .WithIdentity(task.Name)
+                            .StartNow()
                             .WithCronSchedule(task.CronSchedule)
                             .Build();
 
@@ -72,6 +78,13 @@ namespace getnet.service
                 Enabled = true,
                 CronSchedule = "0 0/5 * * * ?",
                 Type = ScheduleType.HotpathCheck
+            });
+            uow.Repo<TaskSchedule>().Insert(new TaskSchedule
+            {
+                Name = "Site Rediscovery Every Saturday at 12PM",
+                Enabled = true,
+                CronSchedule = "0 0 12 ? * SAT *",
+                Type = ScheduleType.FullSiteDiscovery
             });
             uow.Save();
         }

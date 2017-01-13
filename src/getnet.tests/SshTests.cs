@@ -140,7 +140,7 @@ namespace getnet.tests
         [Fact]
         public void MacTest()
         {
-            CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
+            CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Production";
             IGsc client = new RenciSshClient(new RenciSshClientSettings()
             {
                 Host = "172.16.100.241",

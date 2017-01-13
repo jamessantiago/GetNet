@@ -23,7 +23,7 @@ Destination Address  Address Type  VLAN  Destination Port
 -------------------  ------------  ----  --------------------
 c007.07e2.0000          Self          1     Vlan1
 ca03.13b7.001c          Dynamic       1     FastEthernet1/0
-0050.7966.6801          Dynamic       1     FastEthernet1/1
+0050.7966.6800          Dynamic       1     FastEthernet1/1
 ";
             }
             var results = new List<ICommandResult>();

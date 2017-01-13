@@ -68,31 +68,35 @@ namespace getnet.core.Model
 
         public void Transaction(Action action, int retryIntervalMs = 1000, int retryCount = 1)
         {
-            context.Database.BeginTransaction();
-            try
+            using (var t = context.Database.BeginTransaction())
             {
-                Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
-                context.Database.CommitTransaction();
-            }
-            catch (AggregateException ex)
-            {
-                context.Database.RollbackTransaction();
-                throw ex.InnerExceptions.Last();
+                try
+                {
+                    Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
+                    t.Commit();
+                }
+                catch (AggregateException ex)
+                {
+                    t.Rollback();
+                    throw ex.InnerExceptions.Last();
+                }
             }
         }
 
         public async Task TransactionAsync(Action action, int retryIntervalMs = 1000, int retryCount = 1)
         {
-            await context.Database.BeginTransactionAsync();
-            try
+            using (var t = await context.Database.BeginTransactionAsync())
             {
-                Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
-                context.Database.CommitTransaction();
-            }
-            catch (AggregateException ex)
-            {
-                context.Database.RollbackTransaction();
-                throw ex.InnerExceptions.Last();
+                try
+                {
+                    Retry.Do(action, TimeSpan.FromMilliseconds(retryIntervalMs), retryCount);
+                    t.Commit();
+                }
+                catch (AggregateException ex)
+                {
+                    t.Rollback();
+                    throw ex.InnerExceptions.Last();
+                }
             }
         }
 

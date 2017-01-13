@@ -31,7 +31,8 @@ namespace getnet
             
             return builder.Build();
         }
-        
+
+
         public static DataProtect Protector;
 
         public static string ConfigFile { get; private set; }

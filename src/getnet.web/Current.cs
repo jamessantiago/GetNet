@@ -50,6 +50,8 @@ namespace getnet
 
         public static User User => new User(Context.User);
 
+        public static bool IsAdmin => User.IsInRole(Roles.GlobalAdmins);
+
         private static UnitOfWork unitOfWork;
         public static UnitOfWork uow => unitOfWork ?? (unitOfWork = new UnitOfWork());
     }

@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace getnet
 {
@@ -17,9 +18,13 @@ namespace getnet
                 .UseIISIntegration()
                 .UseStartup<Startup>()
                 .Build();
+            
+            CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(host.Services);
 
             Current.Services = host.Services;
-            
+
+            Current.SetDbConfigurationState();
+
             host.Run(Current.AppCancellationSource.Token);
         }
     }
