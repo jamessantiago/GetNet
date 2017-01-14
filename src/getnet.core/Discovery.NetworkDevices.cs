@@ -53,19 +53,20 @@ namespace getnet.core
                     uow.Repo<NetworkDeviceConnection>().Insert(ndc);
                     uow.Save();
                     UpdateDevice(newDevice);
+                    devices.Add(newDevice);
                     devices = recurseDevices(newDevice, devices);
                 }
-                else if (existingDevice != null)
+                else if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt()) && existingDevice != null)
                 {
                     existingDevice.Hostname = nei.Hostname;
                     existingDevice.Model = nei.Model;
-                    existingDevice.Site = device.Site;
+                    //existingDevice.Site = device.Site;
                     existingDevice.Capabilities = nei.Capabilities.GetCaps();
-                    uow.Repo<NetworkDevice>().Update(existingDevice);
                     uow.Save();
                     UpdateDevice(existingDevice);
+                    devices.Add(existingDevice);
                     devices = recurseDevices(existingDevice, devices);
-
+                    uow.Save();
                     //todo do something for determining connections for existing devices
                 }
             }

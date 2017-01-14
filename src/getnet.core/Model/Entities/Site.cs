@@ -43,7 +43,7 @@ namespace getnet.core.Model.Entities
         public void Build(ref ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Site>().HasIndex("Status");
-            
+            modelBuilder.Entity<Site>().HasIndex("Name").IsUnique();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿<table id="nd-table" class="mdl-data-table" width="100%" cellspacing="0">
     <thead>
         <tr>
+            <th>Site</th>
             <th>Capabilities</th>
             <th>Hostname</th>
             <th>Model</th>
@@ -17,12 +18,37 @@
         serverSide: true,
         columnDefs: [
             {
-                targets: '_all',
+                targets: [0,1,2,3,4],
                 className: 'mdl-data-table__cell--non-numeric'
             }
         ],
         oLanguage: {
             sSearch: "Filter:"
+        },
+        rowCallback: function (row, data) {
+            $(row).attr('id', data[2] + "_row");
+            $(row).children("td").last().addClass("pingme");
+            $(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
+            $(row).children("td").last().html(data[5] + '<button id="' + data[2] + '" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">' +
+                '<i class="material-icons" role="presentation">arrow_drop_down</i>' +
+                '<span class="visuallyhidden">NetworkDevice</span>' +
+                '</button>' +
+                '<ul class="netbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="' + data[2] + '">' +
+                '<li id="' + data[2] + '_ping" class="pingme mdl-menu__item" data-ip="' + data[5] + '" data-colortarget="#' + data[2] + '_row"' + ' onclick="getnet.ping(\'#' + data[2] + '_ping\')">Ping</li>' +
+                '<li class="mdl-menu__item" onclick="window.location.href = \'ssh:' + data[5] + '\'">Ssh</li>' +
+                '<li class="mdl-menu__item" onclick="window.location.href = \'/networkdevice/edit/' + encodeURIComponent(data[5]) + '\'">Edit</li>' +
+                '</ul>');
+        },
+        initComplete: function () {
+            componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
         }
     });
+    $(table.tables().containers()).children("div").first().children("div").first().children("div").first().append('<button id="ntblbut" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">' +
+                '<i class="material-icons" role="presentation">more_vert</i>' +
+                '<span class="visuallyhidden">NetworkDevice</span>' +
+                '</button>' +
+                '<ul id="ntlst" class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="ntblbut">' +
+                '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
+                '</ul>');
+    componentHandler.upgradeElement(document.querySelector('#ntlst'));
 </script>

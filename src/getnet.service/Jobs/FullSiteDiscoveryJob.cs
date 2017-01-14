@@ -18,14 +18,27 @@ namespace getnet.service.Jobs
 
         public virtual Task Execute(IJobExecutionContext context)
         {
+            List<Task> tasks = new List<Task>();
             using (UnitOfWork uow = new UnitOfWork())
             {
-                foreach (var site in uow.Repo<Site>().Get(d => d.NetworkDevices.Any(n => n.Capabilities.HasFlag(NetworkCapabilities.Router))))
+                foreach (var site in uow.Repo<Site>().Get(d => d.NetworkDevices.Any(n => n.Capabilities.HasFlag(NetworkCapabilities.Router)), 
+                    includeProperties: "NetworkDevices"))
                 {
                     logger.Info("Full site discovery called by getnet.service for " + site.Name, WhistlerTypes.NetworkDiscovery, site.SiteId);
-                    Task.Run(() => SiteDiscovery(site, uow));
-                    Thread.Sleep(10000);
+                    tasks.Add(Task.Run(() => SiteDiscovery(site, uow)));
                 }
+                
+                foreach (var task in tasks)
+                {
+                    try
+                    {
+                        task.Wait(600000);
+                    } catch (Exception ex)
+                    {
+                        logger.Error(ex, WhistlerTypes.ServiceControl);
+                    }
+                }
+                    
             }
             return Task.FromResult(0);
         }

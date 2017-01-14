@@ -21,53 +21,53 @@ namespace getnet.service
         {
             ISchedulerFactory sf = new StdSchedulerFactory();
             Current.Scheduler = await sf.GetScheduler();
-            UnitOfWork uow = new UnitOfWork();
-
-            var tasks = uow.Repo<TaskSchedule>().Get();
-            if (!tasks.Any())
+            using (UnitOfWork uow = new UnitOfWork())
             {
-                AddDefaultTasks(uow);
-                tasks = uow.Repo<TaskSchedule>().Get();
-            }
-
-            foreach (var task in tasks)
-            {
-                if (!task.Enabled)
-                    continue;
-
-                IJobDetail job = null;
-
-                switch (task.Type)
+                var tasks = uow.Repo<TaskSchedule>().Get();
+                if (!tasks.Any())
                 {
-                    case ScheduleType.HotpathCheck:
-                        job = JobBuilder.Create<HotpathJob>()
-                            .WithIdentity(task.Name)
-                            .Build();
-                        break;
-                    case ScheduleType.FullSiteDiscovery:
-                        job = JobBuilder.Create<FullSiteDiscoveryJob>()
-                            .WithIdentity(task.Name)
-                            .Build();
-                        break;
-                    default:
-                        break;
+                    AddDefaultTasks(uow);
+                    tasks = uow.Repo<TaskSchedule>().Get();
                 }
 
-                ITrigger trigger = TriggerBuilder.Create()
-                            .WithIdentity(task.Name)
-                            .StartNow()
-                            .WithCronSchedule(task.CronSchedule)
-                            .Build();
+                foreach (var task in tasks)
+                {
+                    if (!task.Enabled)
+                        continue;
 
-                logger.Info("Setting schedule for " + task.Name + " at " + task.CronSchedule, WhistlerTypes.ServiceScheduling);
-                await Current.Scheduler.ScheduleJob(job, trigger);
+                    IJobDetail job = null;
+
+                    switch (task.Type)
+                    {
+                        case ScheduleType.HotpathCheck:
+                            job = JobBuilder.Create<HotpathJob>()
+                                .WithIdentity(task.Name)
+                                .Build();
+                            break;
+                        case ScheduleType.FullSiteDiscovery:
+                            job = JobBuilder.Create<FullSiteDiscoveryJob>()
+                                .WithIdentity(task.Name)
+                                .Build();
+                            break;
+                        default:
+                            break;
+                    }
+
+                    ITrigger trigger = TriggerBuilder.Create()
+                                .WithIdentity(task.Name)
+                                //.StartNow()
+                                .WithCronSchedule(task.CronSchedule)
+                                .Build();
+
+                    logger.Info("Setting schedule for " + task.Name + " at " + task.CronSchedule, WhistlerTypes.ServiceScheduling);
+                    await Current.Scheduler.ScheduleJob(job, trigger);
+                }
             }
 
             await Current.Scheduler.Start();
 
-            _resetEvent.WaitOne();
+            try { _resetEvent.WaitOne(); } catch { }
             await Current.Scheduler.Shutdown();
-            uow.Dispose();
         }
 
         private static void AddDefaultTasks(UnitOfWork uow)

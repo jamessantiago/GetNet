@@ -2,7 +2,10 @@
   "profiles": {
     "getnet.service": {
       "commandName": "Project",
-      "commandLineArgs": "-s"
+      "commandLineArgs": "-s",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
     }
   }
 }

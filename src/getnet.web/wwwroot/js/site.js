@@ -113,6 +113,35 @@ window.getnet = (function () {
         document.querySelector('#global-snack').MaterialSnackbar.showSnackbar(data);
     }
 
+    function PingAllFromServer() {
+        $(".pingme").each(function (e) {
+            if ($(this).is(":visible")) {
+                $(this).trigger("click");
+            }
+        });
+    }
+
+    function PingFromServer(target) {
+        var address = $(target).data("ip");
+        getnet.log("pinging " + address);
+        $("#fullpage-loading").show();
+        $.getJSON("/ping/" + encodeURIComponent(address)).done(
+                function (data) {
+                    if (data.success) {
+                        getnet.log(address + " is up");
+                        $($(target).data("colortarget")).addClass("mdl-color--green-100");
+                    } else {
+                        getnet.log(address + " is down");
+                        $($(target).data("colortarget")).addClass("mdl-color--red-100");
+                    }
+                }
+            ).always(
+                function () {
+                    $("#fullpage-loading").hide();
+                }
+            );
+    }
+
     function ToggleDrawer() {
         var layout = document.querySelector('.mdl-layout');
         layout.MaterialLayout.toggleDrawer();
@@ -217,7 +246,9 @@ window.getnet = (function () {
         showSnack: ShowSnack,
         closeAlert: CloseAlert,
         toggleDrawer: ToggleDrawer,
-        log: LogMessage
+        log: LogMessage,
+        ping: PingFromServer,
+        pingall: PingAllFromServer
     }
 })();
 

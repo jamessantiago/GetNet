@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net;
+using System.Net.NetworkInformation;
 
 namespace getnet
 {
@@ -35,6 +36,36 @@ namespace getnet
             }
 
             return differencevals[3];
+        }
+
+        public static async Task<bool> PingHost(string host, int attempts, int timeout)
+        {
+            using (Ping ping = new Ping())
+            {
+                PingReply pingreply;
+
+                for (int i = 0; i < attempts; i++)
+                {
+                    try
+                    {
+                        pingreply = await ping.SendPingAsync(host, timeout);
+                        if (pingreply != null && pingreply.Status == IPStatus.Success)
+                            return true;
+                    }
+                    catch
+                    {
+                        //well
+                    }
+                    //well
+                }
+            }
+            //well
+            return false;
+        }
+
+        public static bool Ping(this IPAddress ip)
+        {
+            return PingHost(ip.ToString(), 1, 1000).Result;
         }
     }
 }

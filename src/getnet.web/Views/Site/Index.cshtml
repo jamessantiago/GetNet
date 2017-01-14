@@ -17,7 +17,17 @@
                     targets: '_all',
                     className: 'mdl-data-table__cell--non-numeric'
                 }
-            ]
+            ],
+            rowCallback: function (row, data, index) {
+                switch (data[5]) {
+                    case 'Online':
+                        $(row).addClass("mdl-color--green-100");
+                        break;
+                    case 'Offline':
+                        $(row).addClass("mdl-color--red-100");
+                        break;
+                }
+            }
         });
     });
 </script>
