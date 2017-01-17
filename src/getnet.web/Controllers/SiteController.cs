@@ -46,6 +46,22 @@ namespace getnet.Controllers
             return View(site);
         }
 
+        public IActionResult Edit(int id)
+        {
+            return View(uow.Repo<Site>().Get(d => d.SiteId == id, includeProperties: "Location").FirstOrDefault());
+        }
+
+        [HttpPost]
+        public IActionResult Edit(Site site)
+        {
+            if (ModelState.IsValid)
+            {
+
+            }
+
+            return View();
+        }
+
         [Route("/newsite")]
         public IActionResult New()
         {
@@ -168,6 +184,8 @@ namespace getnet.Controllers
                 //todo DHCP
 
                 //todo sites and services
+
+                logger.Info("Completed all site discovery actions.  Refresh the site details page to view added items", WhistlerTypes.NetworkDiscovery, siteId);
 
             } catch (Exception ex) {
                 logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);

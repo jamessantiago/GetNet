@@ -52,7 +52,7 @@ namespace getnet
                 dbTarget.ConnectionString = CoreCurrent.Configuration.GetSecure("Data:NpgsqlConnectionString");
             }
             dbTarget.CommandText = "INSERT INTO Events (TimeStamp, Host, Type, Source, Message, Level, Logger, Details, SiteId) VALUES(@date, @host, @type, @source, @message, @level, @logger, @details, @siteid)";
-            dbTarget.Parameters.Add(new DatabaseParameterInfo("@date", new NLog.Layouts.SimpleLayout("${date}")));
+            dbTarget.Parameters.Add(new DatabaseParameterInfo("@date", new NLog.Layouts.SimpleLayout("${date:universalTime=true}")));
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@host", new NLog.Layouts.SimpleLayout("${machinename}")));
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@type", new NLog.Layouts.SimpleLayout("${event-context:item=type}")));
             dbTarget.Parameters.Add(new DatabaseParameterInfo("@source", new NLog.Layouts.SimpleLayout("")));
@@ -83,7 +83,7 @@ namespace getnet
 
             if (CoreCurrent.Configuration["Whistler:Db:Enabled"] == "true")
             {
-                var rule4 = new LoggingRule("*", LogLevel.Debug, dbTarget);
+                var rule4 = new LoggingRule("*", LogLevel.Info, dbTarget);
                 config.LoggingRules.Add(rule4);
             }
             

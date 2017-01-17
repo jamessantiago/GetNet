@@ -84,7 +84,8 @@ namespace getnet.Controllers
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
                 CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
             }
-            HttpContext.Session.AddSnackMessage("Authentication and authorization provider changes will take effect next time GetNet restarts");
+            HttpContext.Session.AddSnackMessage("GetNet will reinitialize in roughly 1 second.  Existing sessions will need to be logged out of or wait until the session expires in 5 days.");
+            Current.AppCancellationSource.CancelAfter(1000);
             return PartialView("_success", "Successfully configured authentication");
         }
 

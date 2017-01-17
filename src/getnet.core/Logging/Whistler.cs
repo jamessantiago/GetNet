@@ -57,20 +57,20 @@ namespace getnet
             _logger.Log(ev);
         }
 
-        public void Info(string message, string type, int SiteId)
+        public void Info(string message, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Info, _logger.Name, message);
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 
-        public void Info(string message, string details, string type, int SiteId)
+        public void Info(string message, string details, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Info, _logger.Name, message);
             ev.Properties["details"] = details;
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 
@@ -93,20 +93,20 @@ namespace getnet
             _logger.Log(ev);
         }
 
-        public void Warn(string message, string type, int SiteId)
+        public void Warn(string message, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Warn, _logger.Name, message);
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 
-        public void Warn(string message, string details, string type, int SiteId)
+        public void Warn(string message, string details, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Warn, _logger.Name, message);
             ev.Properties["details"] = details;
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 
@@ -129,20 +129,20 @@ namespace getnet
             _logger.Log(ev);
         }
 
-        public void Debug(string message, string type, int SiteId)
+        public void Debug(string message, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Debug, _logger.Name, message);
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 
-        public void Debug(string message, string details, string type, int SiteId)
+        public void Debug(string message, string details, string type, int siteid)
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Debug, _logger.Name, message);
             ev.Properties["details"] = details;
             ev.Properties["type"] = type;
-            ev.Properties["SiteId"] = SiteId;
+            ev.Properties["siteid"] = siteid;
             _logger.Log(ev);
         }
 

@@ -7,9 +7,10 @@ namespace getnet.core.Model.Entities
 {
     public enum Priority
     {
-        P1 = 1,
-        P2 = 2,
-        P3 = 3,
-        P4 = 4 //haha wtf
+        Unknown,
+        P4,
+        P3,
+        P2,
+        P1
     }
 }

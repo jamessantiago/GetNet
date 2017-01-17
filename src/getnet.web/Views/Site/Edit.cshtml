@@ -1,0 +1,34 @@
+﻿@model Site
+@{
+    ViewData["Title"] = "Edit " + Model.Name;
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
+}
+
+<form action="/init/sshconfig" id="sshconfig" class="getnet-ajax-form">
+
+    <div mdl-textbox-for="Name" mdl-label="Name" mdl-value="@Model.Name" />
+
+    <div mdl-select-for="Priority" mdl-label="Priority" mdl-default-value="@Model.Priority" 
+         mdl-default-value-text="@Model.Priority.ToString()" 
+         mdl-values="typeof(Priority).EnumToSelectList()"></div>
+    
+    <div mdl-textbox-for="Owner" mdl-label="Owner" mdl-value="@Model.Owner" />
+
+    <div mdl-select-for="Location" mdl-label="Location" mdl-default-value="@Model.Location?.Name" 
+         mdl-default-value-text="@Model.Location?.Name" 
+         mdl-values="(new UnitOfWork()).Repo<Location>().Get().OrderBy(d => d.Name).ToSelectList(t => t.Name, v => v.Name)"></div>
+
+    <div mdl-textbox-for="Building" mdl-label="Building" mdl-value="@Model.Building" />
+
+    <div mdl-textarea-for="Details" mdl-label="Details" mdl-value="@Model.Details" mdl-rows="4" />
+    
+    <br />
+    <button mdl-submit-button="Save"></button>
+</form>
+
+
+@section scripts{
+    <script>
+        getnet.Forms.init({});
+    </script>
+}

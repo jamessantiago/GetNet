@@ -10,22 +10,24 @@ namespace getnet
 {
     public class Program
     {
-        public static void Main(string[] args)
-        {
-            var host = new WebHostBuilder()
-                .UseKestrel()
-                .UseContentRoot(Directory.GetCurrentDirectory())
-                .UseIISIntegration()
-                .UseStartup<Startup>()
-                .Build();
+    public static void Main(string[] args)
+    {
+        var host = new WebHostBuilder()
+            .UseKestrel()
+            .UseContentRoot(Directory.GetCurrentDirectory())
+            .UseIISIntegration()
+            .UseStartup<Startup>()
+            .Build();
             
-            CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(host.Services);
+        CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(host.Services);
 
-            Current.Services = host.Services;
+        Current.Services = host.Services;
 
-            Current.SetDbConfigurationState();
+        Current.SetDbConfigurationState();
 
-            host.Run(Current.AppCancellationSource.Token);
-        }
+        host.Run(Current.AppCancellationSource.Token);
+        Current.AppCancellationSource = new System.Threading.CancellationTokenSource();
+        Main(args);
+    }
     }
 }

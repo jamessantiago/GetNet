@@ -1,21 +1,18 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using getnet.core.Model.Repositories;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Linq;
 using System.Reflection;
-using getnet.core.Model.Entities;
 using System.Threading.Tasks;
-using getnet.core.Model.Repositories;
 
 namespace getnet.core.Model
 {
     public partial class UnitOfWork : IDisposable
     {
         public IServiceProvider Services;
-
-        private bool disposed = false;
 
         private Whistler logger = new Whistler(typeof(UnitOfWork).FullName);
 
@@ -44,27 +41,39 @@ namespace getnet.core.Model
                 return Services.GetRequiredService<getnetContext>();
             }
         }
+
         public bool CheckIfDabaseExists()
         {
             return (context.Database.GetService<IDatabaseCreator>() as RelationalDatabaseCreator).Exists();
-        }
-
-        public void Dispose()
-        {
-            Dispose(true);
-            GC.SuppressFinalize(this);
         }
 
         public bool EnsureDatabaseExists() => context.Database.EnsureCreated();
 
         public bool EnsureDatabaseIsDeleted() => context.Database.EnsureDeleted();
 
-        public IGenericRepository<T> Repo<T>()
+        public void Save()
         {
-            return Services.GetRequiredService<IGenericRepository<T>>();
+            context.SaveChanges();
         }
 
-        public SiteRepository SiteRepo => Services.GetRequiredService<SiteRepository>();
+        public bool TestDatabaseConnection(out Exception ex)
+        {
+            ex = null;
+            try
+            {
+                var conn = context.Database.GetDbConnection();
+                if (conn.State == System.Data.ConnectionState.Open)
+                    return true;
+                else
+                    conn.Open();   // check the database connection
+                return true;
+            }
+            catch (Exception e)
+            {
+                ex = e;
+                return false;
+            }
+        }
 
         public void Transaction(Action action, int retryIntervalMs = 1000, int retryCount = 1)
         {
@@ -100,42 +109,6 @@ namespace getnet.core.Model
             }
         }
 
-        public void Save()
-        {
-            context.SaveChanges();
-        }
-
-        public bool TestDatabaseConnection(out Exception ex)
-        {
-            ex = null;
-            try
-            {
-                var conn = context.Database.GetDbConnection();
-                if (conn.State == System.Data.ConnectionState.Open)
-                    return true;
-                else
-                    conn.Open();   // check the database connection
-                return true;
-            }
-            catch (Exception e)
-            {
-                ex = e;
-                return false;
-            }
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!this.disposed)
-            {
-                if (disposing)
-                {
-                    context.Dispose();
-                }
-            }
-            this.disposed = true;
-        }
-
         private void ConfigureServices(IServiceCollection services)
         {
             services.AddSingleton<getnetContext>();
@@ -160,5 +133,40 @@ namespace getnet.core.Model
             else
                 ConfigurationState = DatabaseConfigurationState.Unconfigured;
         }
+
+        #region Repos
+
+        public SiteRepository SiteRepo => Services.GetRequiredService<SiteRepository>();
+
+        public IGenericRepository<T> Repo<T>()
+        {
+            return Services.GetRequiredService<IGenericRepository<T>>();
+        }
+
+        #endregion Repos
+
+        #region Dispose
+
+        private bool disposed = false;
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (!this.disposed)
+            {
+                if (disposing)
+                {
+                    context.Dispose();
+                }
+            }
+            this.disposed = true;
+        }
+
+        #endregion Dispose
     }
 }

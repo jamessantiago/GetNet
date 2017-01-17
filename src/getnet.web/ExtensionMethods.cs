@@ -8,6 +8,7 @@ using System.Net;
 using getnet.Model;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace getnet
 {
@@ -84,6 +85,37 @@ namespace getnet
         public static bool IsAjaxRequest(this HttpRequest request)
         {
             return request != null && request.Headers["X-Requested-With"] == "XMLHttpRequest";
+        }
+
+        public static SelectList EnumToSelectList(this Type e) {
+            var values = Enum.GetValues(e);
+            var names = Enum.GetNames(e);
+            var items = new List<SelectListItem>();
+            for (int i = 0; i < names.Count(); i++)
+            {
+                items.Add(new SelectListItem
+                {
+                    Text = names[i],
+                    Value = ((int)values.GetValue(i)).ToString()
+                });
+            }
+            return new SelectList(items);
+
+        }
+
+        public static SelectList ToSelectList<T>(this IEnumerable<T> itemsToMap, Func<T, string> textProperty, Func<T, string> valueProperty)
+        {
+            var result = new List<SelectListItem>();
+
+            foreach (var item in itemsToMap)
+            {
+                result.Add(new SelectListItem
+                {
+                    Value = valueProperty(item),
+                    Text = textProperty(item)
+                });
+            }
+            return new SelectList(result);
         }
     }
 }

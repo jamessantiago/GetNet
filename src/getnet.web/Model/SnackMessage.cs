@@ -9,7 +9,7 @@ namespace getnet.Model
     public class SnackMessage
     {
         public string message { get; set; }
-        public int timeout = 30000;
+        public int timeout = 10000;
         public string actionHandler { get; set; }
         public string actionText { get; set; }
         public string AsJson()

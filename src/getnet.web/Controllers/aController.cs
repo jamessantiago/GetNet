@@ -54,7 +54,8 @@ namespace getnet.Controllers
         [AllowAnonymous]
         public IActionResult GetSnacks()
         {
-            return Json(HttpContext.Session.GetSnackMessages());
+            
+            return Json(HttpContext.Session.GetSnackMessages().Concat(HttpContext.Request.GetRefererSnacks(RouteData)));
         }
     }
 }
