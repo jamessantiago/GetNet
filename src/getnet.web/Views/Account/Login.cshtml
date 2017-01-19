@@ -18,19 +18,11 @@
                 </div>
             }
 
-            <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="text" name="email" id="email">
-                <label class="mdl-textfield__label" for="sample1">Email</label>
-            </div>
+            <div mdl-textbox-for="email" mdl-label="Email" mdl-errors="@ViewData.ModelState.ErrorsFor("email")" mdl-value=""></div>
 
-            <div class="mdl-textfield mdl-js-textfield">
-                <input class="mdl-textfield__input" type="password" name="password" id="password">
-                <label class="mdl-textfield__label" for="sample1">Password</label>
-            </div>
+            <div mdl-password-for="password" mdl-label="Password" mdl-errors="@ViewData.ModelState.ErrorsFor("password")" mdl-value=""></div>
 
-            <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
-                Login
-            </button>
+            <button mdl-submit-button="Login"></button>
         </form>
         <div class="mdl-layout-spacer"></div>
     </div>

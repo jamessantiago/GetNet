@@ -59,7 +59,7 @@
                     </div>
                 </div>
 
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                     Save
                 </button>
             </form>
@@ -97,52 +97,52 @@
             <div id="authconfig-results"></div>
             <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseLdap">
-                    <input type="radio" id="UseLdap" class="mdl-radio__button getnet-group-selector" data-group="ldap-group" name="AuthChoice" value="ldap" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "ldap" ? "checked" : "")>
+                    <input type="radio" id="UseLdap" class="mdl-radio__button getnet-group-selector" data-group="ldap-group" name="AuthChoice" value="ldap" @(CoreCurrent.Configuration["Security:Provider"] == "ldap" ? "checked" : "")>
                     <span class="mdl-radio__label">Use LDAP</span>
                 </label>
 
                 <div id="ldap-group" class="getnet-selection-group">
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="Host" id="Host" value="@CoreCurrent.Configuration["Security:Ldap:Host"]">
+                        <input @(CoreCurrent.Configuration["Security:Provider"] != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="Host" id="Host" value="@CoreCurrent.Configuration["Security:Ldap:Host"]">
                         <label class="mdl-textfield__label" for="Host">LDAP Host</label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="LoginDN" id="LoginDN" value="@CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN")">
+                        <input @(CoreCurrent.Configuration["Security:Provider"] != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="LoginDN" id="LoginDN" value="@CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN")">
                         <label class="mdl-textfield__label" for="LoginDN">LDAP Login DN</label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="password" name="Password" id="Password" value="************">
-                        <label class="mdl-textfield__label" for="Password">LDAP Password</label>
+                        <input @(CoreCurrent.Configuration["Security:Provider"] != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="password" name="Password" id="Password">
+                        <label class="mdl-textfield__label" for="Password">LDAP Password (hidden)</label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalAdmins" id="GlobalAdmins" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalAdmins"]">
+                        <input @(CoreCurrent.Configuration["Security:Provider"] != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalAdmins" id="GlobalAdmins" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalAdmins"]">
                         <label class="mdl-textfield__label" for="GlobalAdmins">Global Admin Groups</label>
                     </div>
 
                     <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
-                        <input @(CoreCurrent.Configuration.GetSecure("Security:Provider") != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalViewers" id="GlobalViewers" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalViewers"]">
+                        <input @(CoreCurrent.Configuration["Security:Provider"] != "ldap" ? "disabled" : "") class="mdl-textfield__input" type="text" name="GlobalViewers" id="GlobalViewers" value="@CoreCurrent.Configuration["Security:Ldap:Roles:GlobalViewers"]">
                         <label class="mdl-textfield__label" for="GlobalViewers">Global Viewer Groups</label>
                     </div>
                 </div>
 
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseAdmin">
-                    <input type="radio" id="UseAdmin" class="mdl-radio__button getnet-group-selector" data-group="admin-group" name="AuthChoice" value="admin" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "admin" ? "checked" : "")>
+                    <input type="radio" id="UseAdmin" class="mdl-radio__button getnet-group-selector" data-group="admin-group" name="AuthChoice" value="admin" @(CoreCurrent.Configuration["Security:Provider"] == "admin" ? "checked" : "")>
                     <span class="mdl-radio__label">Let everyone have admin rights</span>
                 </label>
                 <br />
                 <br />
 
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseView">
-                    <input type="radio" id="UseView" class="mdl-radio__button getnet-group-selector" data-group="view-group" name="AuthChoice" value="view" @(CoreCurrent.Configuration.GetSecure("Security:Provider") == "view" ? "checked" : "")>
+                    <input type="radio" id="UseView" class="mdl-radio__button getnet-group-selector" data-group="view-group" name="AuthChoice" value="view" @(CoreCurrent.Configuration["Security:Provider"] == "view" ? "checked" : "")>
                     <span class="mdl-radio__label">Let everyone have only view rights</span>
                 </label>
                 <br />
                 <br />
 
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                     Save
                 </button>
             </form>
@@ -163,7 +163,7 @@
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
                     <input class="mdl-textfield__input" type="password" name="password" id="password" value="">
-                    <label class="mdl-textfield__label" for="password">Ssh Password</label>
+                    <label class="mdl-textfield__label" for="password">Ssh Password (hidden)</label>
                 </div>
 
                 <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
@@ -172,7 +172,7 @@
                 </div>
                 <br />
 
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                     Save
                 </button>
             </form>
@@ -242,7 +242,7 @@
 
 
                 <br /><br />
-                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
                     Save
                 </button>
             </form>

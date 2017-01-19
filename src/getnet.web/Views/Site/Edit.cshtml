@@ -4,31 +4,35 @@
     ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
 }
 
-<form action="/init/sshconfig" id="sshconfig" class="getnet-ajax-form">
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <form action="/site/edit/@Model.SiteId" id="site-edit" method="post">
 
-    <div mdl-textbox-for="Name" mdl-label="Name" mdl-value="@Model.Name" />
+        <input type="hidden" name="SiteId" value="@Model.SiteId" />
+        <div mdl-textbox-for="Name" mdl-label="Name" mdl-value="@Model.Name" mdl-errors="@ViewData.ModelState.ErrorsFor("Name")" />
 
-    <div mdl-select-for="Priority" mdl-label="Priority" mdl-default-value="@Model.Priority" 
-         mdl-default-value-text="@Model.Priority.ToString()" 
-         mdl-values="typeof(Priority).EnumToSelectList()"></div>
-    
-    <div mdl-textbox-for="Owner" mdl-label="Owner" mdl-value="@Model.Owner" />
+        <div mdl-select-for="Priority" mdl-label="Priority" mdl-default-value="@Model.Priority"
+             mdl-default-value-text="@Model.Priority.ToString()"
+             mdl-values="typeof(Priority).EnumToSelectList()"></div>
 
-    <div mdl-select-for="Location" mdl-label="Location" mdl-default-value="@Model.Location?.Name" 
-         mdl-default-value-text="@Model.Location?.Name" 
-         mdl-values="(new UnitOfWork()).Repo<Location>().Get().OrderBy(d => d.Name).ToSelectList(t => t.Name, v => v.Name)"></div>
+        <div mdl-textbox-for="Owner" mdl-label="Owner" mdl-value="@Model.Owner" mdl-errors="@ViewData.ModelState.ErrorsFor("Owner")" />
 
-    <div mdl-textbox-for="Building" mdl-label="Building" mdl-value="@Model.Building" />
+        <div mdl-select-for="Location" mdl-label="Location" mdl-default-value="@Model.Location?.Name"
+             mdl-default-value-text="@Model.Location?.Name"
+             mdl-values="(new UnitOfWork()).Repo<Location>().Get().OrderBy(d => d.Name).ToSelectList(t => t.Name, v => v.Name)"></div>
 
-    <div mdl-textarea-for="Details" mdl-label="Details" mdl-value="@Model.Details" mdl-rows="4" />
-    
-    <br />
-    <button mdl-submit-button="Save"></button>
-</form>
+        <div mdl-textbox-for="Building" mdl-label="Building" mdl-value="@Model.Building" mdl-errors="@ViewData.ModelState.ErrorsFor("Building")" />
 
+        <div mdl-textarea-for="Details" mdl-label="Details" mdl-value="@Model.Details" mdl-rows="4" />
 
-@section scripts{
-    <script>
-        getnet.Forms.init({});
-    </script>
-}
+        <br />
+        <button mdl-submit-button="Save"></button>
+
+        <button mdl-cancel-button="Cancel" mdl-return-to="/s/@Model.Name"></button>
+    </form>
+</div>
+
+    @section scripts{
+        <script>
+            getnet.Forms.init({});
+        </script>
+    }

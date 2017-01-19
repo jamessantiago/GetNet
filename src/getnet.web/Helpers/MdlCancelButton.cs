@@ -8,16 +8,19 @@ using System.Text;
 
 namespace getnet.Helpers
 {
-    [HtmlTargetElement("button", Attributes = "mdl-submit-button")]
-    public class MdlSubmitButton : TagHelper
+    [HtmlTargetElement("button", Attributes = "mdl-cancel-button, mdl-return-to")]
+    public class MdlCancelButton : TagHelper
     {
-        [HtmlAttributeName("mdl-submit-button")]
+        [HtmlAttributeName("mdl-cancel-button")]
         public string Text { get; set; }
+
+        [HtmlAttributeName("mdl-return-to")]
+        public string ReturnAddress { get; set; }
 
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
-            output.Attributes.Add("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored");
-            output.Attributes.Add("type", "submit");
+            output.Attributes.Add("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent");
+            output.Attributes.Add("onclick", "window.location='" + ReturnAddress + "'");
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Content.SetContent(Text);
         }

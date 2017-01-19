@@ -48,7 +48,10 @@ namespace getnet.Controllers
             try
             {
                 if (Retry.Do(
-                    action: () => getnet.Model.Security.LdapServer.Current.Authenticate(email, password),
+                    action: () => {
+                        LdapServer.Current.EnsureBind();
+                        return LdapServer.Current.Authenticate(email, password);
+                    },
                     retryInterval: TimeSpan.FromSeconds(2), 
                     breakOnValidation: ex => { return ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"); },
                     retryCount: 3))
@@ -61,7 +64,9 @@ namespace getnet.Controllers
                 if (ex.InnerExceptions.Last().GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"))
                     ViewData["FailedLoginMessage"] = "Username or password is incorrect";
                 else
+                {
                     ViewData["FailedLoginMessage"] = ex.InnerExceptions.Last().Message;
+                }
             }
             return View();
         }

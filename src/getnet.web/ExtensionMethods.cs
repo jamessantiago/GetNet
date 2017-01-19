@@ -9,6 +9,7 @@ using getnet.Model;
 using Newtonsoft.Json;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace getnet
 {
@@ -116,6 +117,15 @@ namespace getnet
                 });
             }
             return new SelectList(result);
+        }
+
+        public static ModelErrorCollection ErrorsFor(this ModelStateDictionary modelState, string key)
+        {
+            var keypair = modelState.Where(d => d.Key == key).FirstOrDefault();
+            if (keypair.Value != null)
+                return keypair.Value.Errors;
+            else
+                return null;
         }
     }
 }

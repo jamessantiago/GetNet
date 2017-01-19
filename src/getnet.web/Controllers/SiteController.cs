@@ -52,14 +52,17 @@ namespace getnet.Controllers
         }
 
         [HttpPost]
-        public IActionResult Edit(Site site)
+        public IActionResult Edit(Site site, string Location)
         {
             if (ModelState.IsValid)
             {
-
+                site.Location = uow.Repo<Location>().Get(d => d.Name == Location).FirstOrDefault();
+                uow.Repo<Site>().Update(site);
+                uow.Save();
+                HttpContext.Session.AddSnackMessage("Updates saved");
+                return RedirectToAction("Details", new { id = site.Name });
             }
-
-            return View();
+            return View(site);
         }
 
         [Route("/newsite")]

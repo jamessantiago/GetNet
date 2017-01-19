@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace getnet.Helpers
 {
-    [HtmlTargetElement("div", Attributes = "mdl-textbox-for, mdl-label, mdl-value, mdl-errors")]
-    public class MdlTextboxFor : TagHelper
+    [HtmlTargetElement("div", Attributes = "mdl-password-for, mdl-label, mdl-value, mdl-errors")]
+    public class MdlPasswordFor : TagHelper
     {
-        [HtmlAttributeName("mdl-textbox-for")]
+        [HtmlAttributeName("mdl-password-for")]
         public string Field { get; set; }
 
         [HtmlAttributeName("mdl-label")]
@@ -26,7 +26,7 @@ namespace getnet.Helpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var html = string.Format(@"
-    <input class=""mdl-textfield__input"" type=""text"" name=""{0}"" id=""{0}"" value=""{2}"">
+    <input class=""mdl-textfield__input"" type=""password"" name=""{0}"" id=""{0}"" value=""{2}"">
     <label class=""mdl-textfield__label"" for=""{0}"">{1}</label>
 ", Field, Label, FieldValue);
             if (Errors != null && Errors.Any())

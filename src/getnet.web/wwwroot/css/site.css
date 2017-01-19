@@ -23,7 +23,12 @@ html, body {
 }
 
 .getnet-cell {
-    padding: 8px;
+    padding: 16px;
+}
+
+#fullpage-loading {
+    margin-top:-4px;
+    display:none
 }
 
 .getnet-alert {
@@ -130,6 +135,9 @@ form .mdl-textfield {
     text-align: left;
 }
 
+.mdl-button {
+    margin: 0 16px 0 0;
+}
 
 .getnet-layout .getnet-header .mdl-textfield .mdl-textfield__expandable-holder {
   bottom: 19px;

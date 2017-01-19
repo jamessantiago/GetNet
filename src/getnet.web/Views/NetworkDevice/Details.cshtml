@@ -1,0 +1,65 @@
+﻿@model NetworkDevice
+@{
+    ViewData["Title"] = Model.Hostname;
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithTables;
+}
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
+    <div class="getnet-col-right">
+        <h4><button class="mdl-button mdl-js-button mdl-button--icon" onclick="window.location='/networkdevice/edit/@Model.NetworkDeviceId'"><i class="material-icons">edit</i></button></h4>
+        <p><a href="/s/@Model.Site.Name">@Model.Site.Name</a></p>
+        <p>@Model.ManagementIP.ToString()</p>
+        <p>@Model.Capabilities.Summary()</p>
+        <p>@(Model.Model ?? "?")</p>
+        <p>@(Model.ChassisSerial ?? "?")</p>
+        <p></p>
+    </div>
+    <div class="getnet-col-left">
+        <h4>@Model.Hostname</h4>
+        <p><b>Site</b></p>
+        <p><b>Management IP</b></p>
+        <p><b>Capabilities</b></p>
+        <p><b>Model</b></p>
+        <p><b>Chassis Serial</b></p>
+        <p><b>Details</b></p>
+    </div>
+    <p>@Model.Details</p>
+</div>
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--6-col">
+    <h4>Connected Devices</h4>
+    <table id="subnets" class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Local Interface</th>
+                <th>Remote Interface</th>
+                <th>Remote Device</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var con in Model.RemoteNetworkDeviceConnections)
+            {
+                <tr>
+                    <td>@con.DevicePort</td>
+                    <td>@con.ConnectedDevicePort</td>
+                    <td><a href="/d/@con.ConnectedNetworkDevice.Hostname">@con.ConnectedNetworkDevice.Hostname</a></td>
+                </tr>
+            }
+            @foreach (var con in Model.LocalNetworkDeviceConnections)
+            {
+                <tr>
+                    <td>@con.ConnectedDevicePort</td>
+                    <td>@con.DevicePort</td>
+                    <td><a href="/d/@con.NetworkDevice.Hostname">@con.NetworkDevice.Hostname</a></td>
+                </tr>
+            }
+        </tbody>
+
+    </table>
+</div>
+
+
+
+@section scripts {
+
+}

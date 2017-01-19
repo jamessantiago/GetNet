@@ -11,13 +11,13 @@ namespace getnet.Controllers
 {
     public class NetworkDeviceController : BaseController
     {
-        public ActionResult NetworkDeviceHandler(int? id, string searchText, jQueryDataTableParamModel param)
+        public ActionResult NetworkDeviceHandler(int? siteid, string text, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<NetworkDevice>();
-            if (id.HasValue)
-                predicates = predicates.And(d => d.Site.SiteId == id.Value);
-            if (searchText.HasValue())
-                predicates = predicates.And(NetworkDevice.SearchPredicates(searchText));
+            if (siteid.HasValue)
+                predicates = predicates.And(d => d.Site.SiteId == siteid.Value);
+            if (text.HasValue())
+                predicates = predicates.And(NetworkDevice.SearchPredicates(text));
 
             var devices = uow.Repo<NetworkDevice>().Get(predicates, includeProperties: "Site");
 
@@ -51,6 +51,8 @@ namespace getnet.Controllers
                               r.ChassisSerial,
                               r.ManagementIP.ToString()
                           };
+            if (siteid.HasValue)
+                results = results.Select(d => d.SubArray(1, 5));
 
             return Json(new
             {
@@ -63,7 +65,7 @@ namespace getnet.Controllers
         public IActionResult SiteNetworkDevices(int id)
         {
             ViewData["SiteId"] = id;
-            return PartialView("_sitenetworkdevices");
+            return PartialView("_networkdevices");
         }
 
         [Route("/networkdevices")]
@@ -75,6 +77,20 @@ namespace getnet.Controllers
         public IActionResult AllNetworkDevicesPartial()
         {
             return PartialView("_networkdevices");
+        }
+
+        [Route("/d/{id}")]
+        public IActionResult Details(string id)
+        {
+            int netid = 0;
+            NetworkDevice device = null;
+            if (int.TryParse(id, out netid))
+                device = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == netid,
+                    includeProperties: "RemoteNetworkDeviceConnections,LocalNetworkDeviceConnections,Site,RemoteNetworkDeviceConnections.ConnectedNetworkDevice,LocalNetworkDeviceConnections.NetworkDevice").FirstOrDefault();
+            else
+                device = uow.Repo<NetworkDevice>().Get(d => d.Hostname == id,
+                    includeProperties: "RemoteNetworkDeviceConnections,LocalNetworkDeviceConnections,Site,RemoteNetworkDeviceConnections.ConnectedNetworkDevice,LocalNetworkDeviceConnections.NetworkDevice").FirstOrDefault();
+            return View(device);
         }
     }
 }
