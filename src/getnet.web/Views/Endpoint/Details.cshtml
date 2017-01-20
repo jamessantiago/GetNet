@@ -80,5 +80,31 @@
             </tbody>
         </table>
     </div>
-    </div>
+</div>
+
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <h4>MAC History</h4>
+    <table class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th class="mdl-data-table__cell--non-numeric">Hostname</th>
+                <th class="mdl-data-table__cell--non-numeric">IP</th>
+                <th class="mdl-data-table__cell--non-numeric">Discovery Date</th>
+                <th class="mdl-data-table__cell--non-numeric">Last Rediscovery</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var dh in Model.DeviceHistories.OrderBy(d => d.LastSeenOnline))
+            {
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">@dh.Hostname</td>
+                    <td class="mdl-data-table__cell--non-numeric">@dh.IP</td>
+                    <td class="mdl-data-table__cell--non-numeric">@dh.DiscoveryDate</td>
+                    <td class="mdl-data-table__cell--non-numeric">@dh.LastSeenOnline</td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
 </div>

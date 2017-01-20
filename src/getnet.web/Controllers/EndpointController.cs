@@ -11,13 +11,13 @@ namespace getnet.Controllers
 {
     public class EndpointController : BaseController
     {
-        public ActionResult EndpointHandler(int? id, string searchText, jQueryDataTableParamModel param)
+        public ActionResult EndpointHandler(int? siteid, string text, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<Device>();
-            if (id.HasValue)
-                predicates = predicates.And(d => d.Site.SiteId == id.Value);
-            if (searchText.HasValue())
-                predicates = predicates.And(Device.SearchPredicates(searchText));
+            if (siteid.HasValue)
+                predicates = predicates.And(d => d.Site.SiteId == siteid.Value);
+            if (text.HasValue())
+                predicates = predicates.And(Device.SearchPredicates(text));
             
             var devices = uow.Repo<Device>().Get(predicates, includeProperties: "Vlan,Site");
 
@@ -59,6 +59,9 @@ namespace getnet.Controllers
                               r.LastSeenOnline.ToLocalTimeString()
                           };
 
+            if (siteid.HasValue)
+                results = results.Select(d => d.SubArray(1, 5));
+
             return Json(new
             {
                 recordsTotal = devices.Count(),
@@ -70,7 +73,8 @@ namespace getnet.Controllers
         public IActionResult SiteEndpoints(int id)
         {
             ViewData["SiteId"] = id;
-            return PartialView("_siteendpoints", uow.Repo<Vlan>().Get(d => d.Site.SiteId == id));
+            ViewData["Vlans"] = uow.Repo<Vlan>().Get(d => d.Site.SiteId == id);
+            return PartialView("_endpoints");
         }
 
         [Route("/endpoints")]
@@ -91,10 +95,10 @@ namespace getnet.Controllers
             Device device = null;
             if (int.TryParse(id, out devid))
                 device = uow.Repo<Device>().Get(d => d.DeviceId == devid,
-                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice").FirstOrDefault();
+                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice,DeviceHistories").FirstOrDefault();
             else
                 device = uow.Repo<Device>().Get(d => d.MAC.ToLower() == id.ToLower(),
-                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice").FirstOrDefault();
+                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice,DeviceHistories").FirstOrDefault();
 
             return View(device);
         }

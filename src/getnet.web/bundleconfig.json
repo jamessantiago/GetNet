@@ -26,7 +26,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/material-design-lite/material.js",
-      "wwwroot/lib/getmdl-select/getmdl-select.min.js",
+      "wwwroot/lib/hipku/index.js",
       "wwwroot/js/site.js"
     ],
     "minify": {
@@ -44,6 +44,7 @@
       "wwwroot/lib/jquery-form/jquery.form.js",
       "wwwroot/lib/material-design-lite/material.js",
       "wwwroot/lib/getmdl-select/getmdl-select.min.js",
+      "wwwroot/lib/hipku/index.js",
       "wwwroot/js/site.js"
     ],
     "minify": {
@@ -59,7 +60,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/material-design-lite/material.js",
-      "wwwroot/lib/getmdl-select/getmdl-select.min.js",
+      "wwwroot/lib/hipku/index.js",
       "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
       "wwwroot/lib/datatables/media/js/dataTables.material.js",
       "wwwroot/js/site.js"
@@ -79,6 +80,7 @@
       "wwwroot/lib/jquery-form/jquery.form.js",
       "wwwroot/lib/material-design-lite/material.js",
       "wwwroot/lib/getmdl-select/getmdl-select.min.js",
+      "wwwroot/lib/hipku/index.js",
       "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
       "wwwroot/lib/datatables/media/js/dataTables.material.js",
       "wwwroot/js/site.js"

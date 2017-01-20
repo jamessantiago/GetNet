@@ -143,7 +143,7 @@ namespace getnet.Controllers
                         message = "Successfully created new skeleton site for " + router.Hostname + ".  A background job has been initiated to auto-configure the site."
                     });
                 });
-                Task.Run(() => ConfigureSite(siteId));
+                Task.Run(() => Discovery.RunFullSiteDiscovery(siteId));
             } catch (Exception ex)
             {
                 logger.Error("Failed to configure site", ex, WhistlerTypes.NetworkDiscovery);
@@ -154,45 +154,9 @@ namespace getnet.Controllers
             }
         }
 
-        public async void ConfigureSite(int siteId)
+        public void Rediscover(int id)
         {
-            logger.Info("Starting site configuration", WhistlerTypes.NetworkDiscovery, siteId);
-            Site site = null;
-            using (UnitOfWork buow = new UnitOfWork())
-            {
-                site = buow.Repo<Site>().Get(d => d.SiteId == siteId, includeProperties: "NetworkDevices").FirstOrDefault();
-                if (site == null)
-                    return;
-            }
-
-            try
-            {
-                logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.FindNetworkDevices(site);
-
-                site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
-
-                logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.DiscoverHotPaths(site);
-
-                logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.DiscoverVlans(site);
-
-                logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.DiscoverSubnets(site);
-
-                logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.DiscoverEndpoints(site);
-
-                //todo DHCP
-
-                //todo sites and services
-
-                logger.Info("Completed all site discovery actions.  Refresh the site details page to view added items", WhistlerTypes.NetworkDiscovery, siteId);
-
-            } catch (Exception ex) {
-                logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);
-            }
+            Task.Run(() => Discovery.RunFullSiteDiscovery(id));
         }
 
     }

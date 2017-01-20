@@ -14,7 +14,8 @@ namespace getnet.core
         {
             await uow.TransactionAsync(() =>
             {
-                foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
+                uow.DumpChanges();
+                foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)).ToList())
                 {
                     recurseDevices(router, new List<NetworkDevice>());
                 }

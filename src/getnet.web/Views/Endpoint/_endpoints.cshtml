@@ -1,22 +1,41 @@
-﻿<table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
-    <thead>
-        <tr>
-            @if (ViewData["SiteId"] == null)
+﻿<div class="page-content mdl-grid">
+    @if (ViewData["Vlans"] != null)
+    {
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--2-col mdl-typography--text-center">
+            @foreach (getnet.core.Model.Entities.Vlan vlan in ((IEnumerable<getnet.core.Model.Entities.Vlan>)ViewData["Vlans"]).OrderBy(d => d.VlanNumber))
             {
-            <th>Site</th>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="vlan_@vlan?.VlanNumber">
+                    <input type="checkbox" id="vlan_@vlan?.VlanNumber" data-vlan="@vlan?.VlanNumber" class="mdl-switch__input vlans" checked>
+                    <span class="mdl-switch__label">Vlan @vlan?.VlanNumber</span>
+                </label>
             }
-            <th>Vlan</th>
-            <th>Hostname</th>
-            <th>IP</th>
-            <th>MAC</th>
-            <th>Last Seen</th>
-        </tr>
-    </thead>
-</table>
+        </div>
+    }
+
+
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell @(ViewData["Vlans"] != null ? "mdl-cell--10-col" : "mdl-cell--12-col")">
+        <table id="end-table" class="mdl-data-table" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    @if (ViewData["SiteId"] == null)
+                    {
+                        <th>Site</th>
+                    }
+                    <th>Vlan</th>
+                    <th>Hostname</th>
+                    <th>IP</th>
+                    <th>MAC</th>
+                    <th>Last Seen</th>
+                </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+
 
 <script>
     var table = $('#end-table').on('processing.dt', function (e, settings, processing) {
-            $('#fullpage-loading').css('display', processing ? 'block' : 'none');
+        $('#fullpage-loading').css('display', processing ? 'block' : 'none');
     }).DataTable({
         ajax: {
             url: "/endpoint/endpointhandler",
@@ -41,8 +60,8 @@
             @if (ViewData["SiteId"] == null)
             {
                 @:$(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
-                @:ca = 0;
-            }
+                                                            @:ca = 0;
+                                                        }
 
             $(row).attr('id', data[4 - ca] + "_row");
             $(row).children("td").last().addClass("pingme");
@@ -53,12 +72,16 @@
                 '</button>' +
                 '<ul class="devbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="' + data[4 - ca] + '">' +
                 '<li id="' + data[4 - ca] + '_ping" class="pingme mdl-menu__item" data-ip="' + data[3 - ca] + '" data-colortarget="#' + data[4 - ca] + '_row"' + ' onclick="getnet.ping(\'#' + data[4 - ca] + '_ping\')">Ping</li>' +
+                '<li class="mdl-menu__item" onclick="getnet.hipkuSnack(\'' + data[3 - ca] + '\')">Hipku</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/e/' + encodeURIComponent(data[4 - ca]) + '\'">Details</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/endpoint/edit/' + encodeURIComponent(data[4 - ca]) + '\'">Edit</li>' +
                 '</ul>');
         },
         initComplete: function () {
             componentHandler.upgradeElements(document.querySelectorAll('.devbuts'));
+        },
+        drawCallback: function () {
+            componentHandler.upgradeElements(document.querySelectorAll('.devbuts'));            
         }
     });
 
@@ -72,4 +95,20 @@
                 '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
                 '</ul>');
     componentHandler.upgradeElement(document.querySelector('#devlst'));
+
+
+    componentHandler.upgradeElement(document.querySelector('.mdl-switch'))
+    $(".vlans").on("click", function () {
+        var filter = '';
+        $(".vlans").each(function () {
+            if ($(this).is(":checked")) {
+                console.log("vlan " + $(this).data("vlan") + " is checked");
+                filter = filter + $(this).data("vlan") + ",";
+            }
+            filter = filter.slice(0, -1);
+            if (filter === '')
+                filter = 'none';
+            table.column(0).search(filter).draw();
+        });
+    });
 </script>

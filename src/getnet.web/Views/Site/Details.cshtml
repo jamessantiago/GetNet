@@ -24,7 +24,15 @@
 
             <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
                 <div class="getnet-col-right">
-                    <h4><button class="mdl-button mdl-js-button mdl-button--icon" onclick="window.location='/site/edit/@Model.SiteId'"><i class="material-icons">edit</i></button></h4>
+                    <h4>
+                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="siteset">
+                            <i class="material-icons">more_vert</i>
+                        </button>
+                        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-left" for="siteset">
+                            <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId')">Rediscover</li>
+                            <li class="mdl-menu__item" onclick="window.location.href = '/site/edit/@Model.SiteId'">Edit</li>
+                        </ul>
+                    </h4>
                     <p>@Model.Priority.ToString()</p>
                     <p>@(Model.Owner ?? "?")</p>
                     <p>@(Model.Location?.Name ?? "?")</p>

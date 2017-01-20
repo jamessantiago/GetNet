@@ -20,6 +20,9 @@ namespace getnet
             if (!referer.HasValue())
                 return snacks;
 
+            if (Current.DatabaseConnectionError != null)
+                return snacks;
+
             var route = routeData.Routers.OfType<Route>().FirstOrDefault(p => p.Name == "default");
             var template = route.ParsedTemplate;
             var matcher = new TemplateMatcher(template, route.Defaults);

@@ -11,11 +11,11 @@ namespace getnet.Controllers
 {
     public class SubnetController : BaseController
     {
-        public ActionResult SubnetHandler(int? id, string searchText, jQueryDataTableParamModel param)
+        public ActionResult SubnetHandler(int? siteid, string searchText, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<Subnet>();
-            if (id.HasValue)
-                predicates = predicates.And(d => d.Site.SiteId == id.Value);
+            if (siteid.HasValue)
+                predicates = predicates.And(d => d.Site.SiteId == siteid.Value);
             if (searchText.HasValue())
                 predicates = predicates.And(Subnet.SearchPredicates(searchText));
 

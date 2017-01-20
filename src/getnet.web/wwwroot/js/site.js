@@ -154,6 +154,27 @@ window.getnet = (function () {
         layout.MaterialLayout.toggleDrawer();
     }
 
+    function GetServerData(url) {
+        $("#fullpage-loading").show();
+        $.get(url, function (data) {
+            return data;
+        }).fail(function () {
+            ShowSnack({
+                message: "An error occured",
+                timer: 10000
+            });
+        }).always(function () {
+            $("#fullpage-loading").hide();
+        });
+    }
+
+    function HipkuEncodeToSnack(ip) {
+        ShowSnack({
+            message: Hipku.encode(ip),
+            timeout: 10000
+        });
+    }
+
     function CopyToClipboard(elem) {
         var targetId = "_hiddenCopyText_";
         var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
@@ -255,7 +276,9 @@ window.getnet = (function () {
         toggleDrawer: ToggleDrawer,
         log: LogMessage,
         ping: PingFromServer,
-        pingall: PingAllFromServer
+        pingall: PingAllFromServer,
+        get: GetServerData,
+        hipkuSnack: HipkuEncodeToSnack
     }
 })();
 

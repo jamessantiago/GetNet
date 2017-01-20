@@ -44,5 +44,6 @@ namespace getnet.core.Model.Entities
         public string Port { get; set; }
 
         public virtual Tenant Tenant { get; set; }
+        public virtual Device Device { get; set; }
     }
 }

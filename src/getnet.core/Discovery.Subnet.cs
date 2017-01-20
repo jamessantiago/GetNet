@@ -16,7 +16,10 @@ namespace getnet.core
             {
                 var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Vlans,Subnets").First();
                 var oldSubnets = thisSite.Subnets;
-                thisSite.Subnets.Clear();
+                foreach (var sub in oldSubnets)
+                {
+                    uow.Repo<Subnet>().Delete(sub);
+                }
                 uow.Save();
                 foreach (var vlan in thisSite.Vlans)
                 {

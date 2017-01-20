@@ -57,12 +57,16 @@
                 '</button>' +
                 '<ul class="netbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="' + data[2 - ca] + '">' +
                 '<li id="' + data[2 - ca] + '_ping" class="pingme mdl-menu__item" data-ip="' + data[5 - ca] + '" data-colortarget="#' + data[2 - ca] + '_row"' + ' onclick="getnet.ping(\'#' + data[2 - ca] + '_ping\')">Ping</li>' +
+                '<li class="mdl-menu__item" onclick="getnet.hipkuSnack(\'' + data[5 - ca] + '\')">Hipku</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'ssh:' + data[5 - ca] + '\'">Ssh</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/d/' + encodeURIComponent(data[2 - ca]) + '\'">Details</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/networkdevice/edit/' + encodeURIComponent(data[5 - ca]) + '\'">Edit</li>' +
                 '</ul>');
             },
         initComplete: function () {
+            componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
+        },
+        drawCallback: function () {
             componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
         }
     });

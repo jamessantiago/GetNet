@@ -51,6 +51,11 @@ namespace getnet.core.Model
 
         public bool EnsureDatabaseIsDeleted() => context.Database.EnsureDeleted();
 
+        public void DumpChanges()
+        {
+            context.ChangeTracker.AcceptAllChanges();
+        }
+
         public void Save()
         {
             context.SaveChanges();

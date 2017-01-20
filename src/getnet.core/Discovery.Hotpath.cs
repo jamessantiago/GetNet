@@ -16,7 +16,9 @@ namespace getnet.core
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
-                    foreach (var tunnel in router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu")))
+                    var tunnels = router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu"));
+                    var tunnelmonitors = new Dictionary<long, CdpNeighbor>();
+                    foreach (var tunnel in tunnels)
                     {
                         long thisIp = 0;
                         try
@@ -24,6 +26,7 @@ namespace getnet.core
                             var ipints = tunnel.IP.Ssh().Execute<IpInterface>();
                             var tunnelip = ipints.FirstOrDefault(d => d.Interface.StartsWith("l", StringComparison.CurrentCultureIgnoreCase));
                             thisIp = tunnelip != null ? tunnelip.IP.ToInt() : tunnel.IP.ToInt();
+                            tunnelmonitors.Add(thisIp, tunnel);
                         }
                         catch { }
                         var existingPath = uow.Repo<HotPath>().Get(d => d.Site == site && d.Interface == tunnel.OutPort && d.RawMonitorIP == thisIp).FirstOrDefault();
@@ -51,8 +54,15 @@ namespace getnet.core
                             uow.Save();
                         }
                     }
+                    var paths = uow.Repo<Site>().Get(d => d == site, includeProperties: "HotPaths").FirstOrDefault().HotPaths?.ToList();
+                    var oldpaths = paths?.Where(d => !tunnelmonitors.Any(t => t.Key == d.RawMonitorIP && t.Value.OutPort == d.Interface));
+                    foreach (var oldpath in oldpaths)
+                    {
+                        uow.Repo<HotPath>().Delete(oldpath);
+                        uow.Save();
+                    }
                 }
             });
-        }  //check out them curlies
+        }
     }
 }
