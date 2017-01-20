@@ -123,16 +123,23 @@ window.getnet = (function () {
 
     function PingFromServer(target) {
         var address = $(target).data("ip");
+        var colorTarget = $(target).data("colortarget");
         getnet.log("pinging " + address);
         $("#fullpage-loading").show();
         $.getJSON("/ping/" + encodeURIComponent(address)).done(
                 function (data) {
                     if (data.success) {
                         getnet.log(address + " is up");
-                        $($(target).data("colortarget")).addClass("mdl-color--green-100");
+                        $(colorTarget).fadeOut(100);
+                        $(colorTarget).removeClass("mdl-color--red-100");
+                        $(colorTarget).addClass("mdl-color--green-100");
+                        $(colorTarget).fadeIn(100);
                     } else {
                         getnet.log(address + " is down");
-                        $($(target).data("colortarget")).addClass("mdl-color--red-100");
+                        $(colorTarget).fadeOut(100);
+                        $(colorTarget).removeClass("mdl-color--green-100");
+                        $(colorTarget).addClass("mdl-color--red-100");
+                        $(colorTarget).fadeIn(100);
                     }
                 }
             ).always(

@@ -83,5 +83,20 @@ namespace getnet.Controllers
         {
             return PartialView("_endpoints");
         }
+
+        [Route("/e/{id}")]
+        public IActionResult Details(string id)
+        {
+            int devid = 0;
+            Device device = null;
+            if (int.TryParse(id, out devid))
+                device = uow.Repo<Device>().Get(d => d.DeviceId == devid,
+                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice").FirstOrDefault();
+            else
+                device = uow.Repo<Device>().Get(d => d.MAC.ToLower() == id.ToLower(),
+                    includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice").FirstOrDefault();
+
+            return View(device);
+        }
     }
 }

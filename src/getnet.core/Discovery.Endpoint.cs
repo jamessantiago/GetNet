@@ -27,9 +27,18 @@ namespace getnet.core
                         var mac = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault();
                         if (mac != null && !Regex.IsMatch(mac.Interface, @"^[VTS]") && !neis.Any(d => d.InPort == mac.Interface || d.OutPort == mac.Interface))
                         {
+                            var thismac = Regex.Replace(macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Mac, @"\.|:|\-", "");
+                            var existingDevice = uow.Repo<Device>().Get(d => d.MAC == thismac && d.RawIP != arp.IP.ToInt()).FirstOrDefault();
+
+                            if (existingDevice != null)
+                            {
+                                uow.Repo<Device>().Delete(existingDevice);
+                                uow.Save();
+                            }
+
                             var change = uow.Repo<Device>().Insert(new Device
                             {
-                                MAC = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Mac,
+                                MAC = thismac,
                                 RawIP = arp.IP.ToInt(),
                                 DiscoveryDate = DateTime.UtcNow,
                                 LastSeenOnline = DateTime.UtcNow,
@@ -40,7 +49,33 @@ namespace getnet.core
                             var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices,Vlans,Vlans.Devices").First();
                             thisSite.Vlans.FirstOrDefault(d => IPNetwork.Contains(d.IPNetwork, newDevice.IP))?.Devices.AddOrNew(newDevice);
                             thisSite.Devices.AddOrNew(newDevice);
+                            if (newDevice.Port.HasValue())
+                            {
+                                var thisNet = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == macs.Where(m => m.Mac == arp.Mac).FirstOrDefault().TableOwner.ToInt()).FirstOrDefault();
+                                if (thisNet != null)
+                                    newDevice.NetworkDevice = thisNet;
+                            }
+                            if (existingDevice != null)
+                            {
+                                newDevice.DeviceHistories.Add(new DeviceHistory
+                                {
+                                    Details = existingDevice.Details,
+                                    Hostname = existingDevice.Hostname,
+                                    DiscoveryDate = existingDevice.DiscoveryDate,
+                                    LastSeenOnline = existingDevice.LastSeenOnline,
+                                    MAC = existingDevice.MAC,
+                                    PhoneNumber = existingDevice.PhoneNumber,
+                                    Port = existingDevice.Port,
+                                    RawIP = existingDevice.RawIP,
+                                    SerialNumber = existingDevice.SerialNumber,
+                                    Tenant = existingDevice.Tenant,
+                                    Type = existingDevice.Type
+                                });
+                                uow.Save();
+                            }
                             uow.Save();
+                            
+                                
                         }
                     }
                 }

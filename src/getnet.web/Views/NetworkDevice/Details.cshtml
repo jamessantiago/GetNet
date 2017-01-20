@@ -6,7 +6,7 @@
 
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
     <div class="getnet-col-right">
-        <h4><button class="mdl-button mdl-js-button mdl-button--icon" onclick="window.location='/networkdevice/edit/@Model.NetworkDeviceId'"><i class="material-icons">edit</i></button></h4>
+        <h4><button class="mdl-button mdl-js-button mdl-button--icon mdl-button--disabled"><i class="material-icons">edit</i></button></h4>
         <p><a href="/s/@Model.Site.Name">@Model.Site.Name</a></p>
         <p>@Model.ManagementIP.ToString()</p>
         <p>@Model.Capabilities.Summary()</p>

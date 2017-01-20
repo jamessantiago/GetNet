@@ -1,0 +1,84 @@
+﻿@model Device
+@{
+    ViewData["Title"] = "Endpoint " + Model.IP.ToString();
+    ViewData["Dependencies"] = Dependencies.GetNetMain;
+}
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
+    <div class="getnet-col-right">
+        <h4><button class="mdl-button mdl-js-button mdl-button--icon mdl-button--disabled"><i class="material-icons">edit</i></button></h4>
+        <p><a href="/s/@Model.Site.Name">@Model.Site.Name</a></p>
+        <p>@(Model.Hostname ?? "?")</p>
+        <p>@Model.IP.ToString()</p>
+        <p>@Model.MAC</p>
+        <p>@Model.Type</p>
+        <p>@(Model.SerialNumber ?? "?")</p>
+        <p>@Model.DiscoveryDate.ToLocalTimeString()</p>
+        <p>@Model.LastSeenOnline.ToLocalTimeString()</p>
+        <p></p>
+    </div>
+    <div class="getnet-col-left">
+        <h4>Endpoint</h4>
+        <p><b>Site</b></p>
+        <p><b>Hostname</b></p>
+        <p><b>IP</b></p>
+        <p><b>MAC</b></p>
+        <p><b>Type</b></p>
+        <p><b>Serial</b></p>
+        <p><b>Discovery Date</b></p>
+        <p><b>Last Rediscovery</b></p>
+        <p><b>Details</b></p>
+    </div>
+    <p>@Model.Details</p>
+</div>
+
+<div class="getnet-inner-grid mdl-cell--8-col mdl-grid">
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+        <h4>Vlan Membership</h4>
+        <table id="vlans" class="mdl-data-table" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Router</th>
+                    <th class="mdl-data-table__cell--non-numeric">Vlan</th>
+                    <th class="mdl-data-table__cell--non-numeric">Network</th>
+                    <th class="mdl-data-table__cell--non-numeric">First</th>
+                    <th class="mdl-data-table__cell--non-numeric">Last</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Vlan.NetworkDevice?.Hostname</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Vlan.VlanNumber</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Vlan.VlanIP/@Model.Vlan.IPNetwork.Cidr</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Vlan.IPNetwork.FirstUsable.ToString()</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Vlan.IPNetwork.LastUsable.ToString()</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+        <h4>Connected Network Device</h4>
+        <table class="mdl-data-table" width="100%" cellspacing="0">
+            <thead>
+                <tr>
+                    <th class="mdl-data-table__cell--non-numeric">Endpoint Port</th>
+                    <th class="mdl-data-table__cell--non-numeric">Capabilities</th>
+                    <th class="mdl-data-table__cell--non-numeric">Hostname</th>
+                    <th class="mdl-data-table__cell--non-numeric">Model</th>
+                    <th class="mdl-data-table__cell--non-numeric">Management IP</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.Port</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.NetworkDevice.Capabilities.Summary()</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.NetworkDevice.Hostname</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.NetworkDevice.Model</td>
+                    <td class="mdl-data-table__cell--non-numeric">@Model.NetworkDevice.ManagementIP.ToString()</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+    </div>
+</div>

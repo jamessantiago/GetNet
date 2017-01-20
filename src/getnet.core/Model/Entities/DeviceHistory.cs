@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
+using System.Net;
 
 namespace getnet.core.Model.Entities
 {
@@ -12,15 +13,22 @@ namespace getnet.core.Model.Entities
     {
         public int DeviceHistoryId { get; set; }
 
-        [StringLength(50)]
-        public string MAC { get; set; }
-
         public DeviceType Type { get; set; }
+
+        [Required]
+        public long RawIP { get; set; }
+
+        [NotMapped]
+        public IPAddress IP => new IPAddress(RawIP);
+
+        [Required, StringLength(50)]
+        public string MAC { get; set; }
 
         [StringLength(255)]
         public string Hostname { get; set; }
 
         public DateTime LastSeenOnline { get; set; }
+
         public DateTime DiscoveryDate { get; set; }
 
         [StringLength(50)]

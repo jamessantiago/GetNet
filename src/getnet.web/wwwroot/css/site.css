@@ -135,8 +135,12 @@ form .mdl-textfield {
     text-align: left;
 }
 
-.mdl-button {
+/*.mdl-button {
     margin: 0 16px 0 0;
+}*/
+
+.getnet-inner-grid {
+    padding: 0;
 }
 
 .getnet-layout .getnet-header .mdl-textfield .mdl-textfield__expandable-holder {

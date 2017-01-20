@@ -9,9 +9,11 @@
 </table>
 
 <script>
-    var table = $('#sub-table').DataTable({
+    var table = $('#sub-table').on('processing.dt', function (e, settings, processing) {
+        $('#fullpage-loading').css('display', processing ? 'block' : 'none');
+    }).DataTable({
         ajax: "/subnet/subnethandler/searchText=@ViewData["SearchText"]",
-        processing: true,
+        processing: false,
         serverSide: true,
         columnDefs: [
             {
@@ -19,8 +21,11 @@
                 className: 'mdl-data-table__cell--non-numeric'
             }
         ],
-        oLanguage: {
-            sSearch: "Filter:"
+        language: {
+            search: "Filter:"
+        },
+        rowCallback: function (row, data) {
+            $(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
         }
     });
 </script>

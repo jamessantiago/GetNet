@@ -53,8 +53,8 @@
                 '</button>' +
                 '<ul class="devbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="' + data[4 - ca] + '">' +
                 '<li id="' + data[4 - ca] + '_ping" class="pingme mdl-menu__item" data-ip="' + data[3 - ca] + '" data-colortarget="#' + data[4 - ca] + '_row"' + ' onclick="getnet.ping(\'#' + data[4 - ca] + '_ping\')">Ping</li>' +
-                '<li class="mdl-menu__item" onclick="window.location.href = \'/d/' + encodeURIComponent(data[4 - ca]) + '\'">Details</li>' +
-                '<li class="mdl-menu__item" onclick="window.location.href = \'/networkdevice/edit/' + encodeURIComponent(data[4 - ca]) + '\'">Edit</li>' +
+                '<li class="mdl-menu__item" onclick="window.location.href = \'/e/' + encodeURIComponent(data[4 - ca]) + '\'">Details</li>' +
+                '<li class="mdl-menu__item" onclick="window.location.href = \'/endpoint/edit/' + encodeURIComponent(data[4 - ca]) + '\'">Edit</li>' +
                 '</ul>');
         },
         initComplete: function () {
