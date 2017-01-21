@@ -25,7 +25,7 @@ namespace getnet.service.Jobs
                     includeProperties: "NetworkDevices"))
                 {
                     logger.Info("Full site discovery called by getnet.service for " + site.Name, WhistlerTypes.NetworkDiscovery, site.SiteId);
-                    tasks.Add(Task.Run(() => SiteDiscovery(site, uow)));
+                    tasks.Add(Task.Run(() => Discovery.RunFullSiteDiscovery(site.SiteId)));
                 }
                 
                 foreach (var task in tasks)
@@ -41,29 +41,6 @@ namespace getnet.service.Jobs
                     
             }
             return Task.FromResult(0);
-        }
-
-        private async Task SiteDiscovery(Site site, UnitOfWork uow)
-        {
-            int siteId = site.SiteId;
-            logger.Info("Finding network devices", WhistlerTypes.NetworkDiscovery, siteId);
-            await Discovery.FindNetworkDevices(site);
-
-            site = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "NetworkDevices").First();
-
-            logger.Info("Finding hot paths", WhistlerTypes.NetworkDiscovery, siteId);
-            await Discovery.DiscoverHotPaths(site);
-
-            logger.Info("Finding vlans", WhistlerTypes.NetworkDiscovery, siteId);
-            await Discovery.DiscoverVlans(site);
-
-            logger.Info("Finding subnets", WhistlerTypes.NetworkDiscovery, siteId);
-            await Discovery.DiscoverSubnets(site);
-
-            logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
-            await Discovery.DiscoverEndpoints(site);
-
-            logger.Info("Completed network discovery actions", WhistlerTypes.NetworkDiscovery, siteId);
         }
     }
 }

@@ -2,8 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Drawing;
-using c = Colorful.Console;
 using System.Text.RegularExpressions;
 using System.Text;
 using System.Globalization;
@@ -15,31 +13,31 @@ namespace getnet.service
     {
         public static void StartConfig()
         {
-            c.WriteLine("You are now in edit mode.\n", Color.Red);
-            c.WriteLine("Changes here will be persisted in appsettings.json.  Some settings can be modified directly in appsettings.json while others which required encryption must be done here.");
+            Console.WriteLine("You are now in edit mode.\n");
+            Console.WriteLine("Changes here will be persisted in appsettings.json.  Some settings can be modified directly in appsettings.json while others which required encryption must be done here.");
 
             string editResponse;
             do
             {
-                c.Write("Edit datastore configuration?");
-                c.Write(" [y/n]:", Color.LightYellow);
-                editResponse = c.ReadLine();
+                Console.Write("Edit datastore configuration?");
+                Console.Write(" [y/n]:");
+                editResponse = Console.ReadLine();
             } while (!IsValidYesNo(editResponse));
             if (IsYes(editResponse))
             {
                 string storeResponse = null;
                 do
                 {
-                    if (storeResponse.HasValue()) c.WriteLine("Invalid selection", Color.Red);
-                    c.Write("Choose the datastore type to use: ");
-                    c.Write(" [mssql/postgres]:", Color.LightYellow);
-                    storeResponse = c.ReadLine();
+                    if (storeResponse.HasValue()) Console.WriteLine("Invalid selection");
+                    Console.Write("Choose the datastore type to use: ");
+                    Console.Write(" [mssql/postgres]:");
+                    storeResponse = Console.ReadLine();
                 } while (!Regex.IsMatch(storeResponse, "mssql|postgres", RegexOptions.IgnoreCase));
                 storeResponse = storeResponse.Equals("mssql", StringComparison.CurrentCultureIgnoreCase) ? "MSSQL" : "Postgres";
                 CoreCurrent.Configuration.Set("Data:DataStore", storeResponse);
 
-                c.Write("Connection string: ");
-                var conString = c.ReadLine().Trim();
+                Console.Write("Connection string: ");
+                var conString = Console.ReadLine().Trim();
                 if (storeResponse == "Postgres")
                     CoreCurrent.Configuration.SetSecure("Data:PostgresConnectionString", conString);
                 else
@@ -48,19 +46,20 @@ namespace getnet.service
             
             do
             {
-                c.Write("Edit SSH configuration?");
-                c.Write(" [y/n]:", Color.LightYellow);
-                editResponse = c.ReadLine();
+                Console.Write("Edit SSH configuration?");
+                Console.Write(" [y/n]:");
+                editResponse = Console.ReadLine();
             } while (!IsValidYesNo(editResponse));
 
             if (IsYes(editResponse))
             {
-                c.Write("Username: ");
-                CoreCurrent.Configuration.SetSecure("SSH:Username", c.ReadLine());
-                c.Write("Username: ");
-                CoreCurrent.Configuration.SetSecure("SSH:Password", ReadPassword('*'));
-                c.Write("Port: ");
-                CoreCurrent.Configuration.Set("SSH:Port", c.ReadLine());
+                Console.Write("Username: ");
+                CoreCurrent.Configuration.SetSecure("SSH:Username", Console.ReadLine());
+                Console.Write("Password: ");
+                //ReadPassword('*')
+                CoreCurrent.Configuration.SetSecure("SSH:Password", Console.ReadLine());
+                Console.Write("Port: ");
+                CoreCurrent.Configuration.Set("SSH:Port", Console.ReadLine());
             }
 
             //todo logging config
@@ -97,7 +96,7 @@ namespace getnet.service
         {
             if (!Regex.IsMatch(response, @"y|yes|n|no", RegexOptions.IgnoreCase))
             {
-                c.WriteLine("Invalid response", Color.Red);
+                Console.WriteLine("Invalid response");
                 return false;
             }
             else
@@ -119,13 +118,13 @@ namespace getnet.service
             var pass = new Stack<char>();
             char chr = (char)0;
 
-            while ((chr = c.ReadKey(true).KeyChar) != ENTER)
+            while ((chr = Console.ReadKey(true).KeyChar) != ENTER)
             {
                 if (chr == BACKSP)
                 {
                     if (pass.Count > 0)
                     {
-                        c.Write("\b \b");
+                        Console.Write("\b \b");
                         pass.Pop();
                     }
                 }
@@ -133,7 +132,7 @@ namespace getnet.service
                 {
                     while (pass.Count > 0)
                     {
-                        c.Write("\b \b");
+                        Console.Write("\b \b");
                         pass.Pop();
                     }
                 }
@@ -141,11 +140,11 @@ namespace getnet.service
                 else
                 {
                     pass.Push((char)chr);
-                    c.Write(mask);
+                    Console.Write(mask);
                 }
             }
 
-            c.WriteLine();
+            Console.WriteLine();
 
             return new string(pass.Reverse().ToArray());
         }

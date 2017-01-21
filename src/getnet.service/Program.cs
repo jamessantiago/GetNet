@@ -6,8 +6,6 @@ using System.CommandLine;
 using Microsoft.Extensions.DependencyInjection;
 using System.IO;
 using Microsoft.AspNetCore.DataProtection;
-using c = Colorful.Console;
-using System.Drawing;
 
 namespace getnet.service
 {
@@ -53,7 +51,7 @@ namespace getnet.service
 
             if (service)
             {
-                c.WriteLine(LOGO, Color.FromArgb(68, 138, 255));
+                Console.WriteLine(LOGO);
                 logger.Info("GetNet Service is starting up", WhistlerTypes.ServiceControl);
                 Runner.Run();
             } else if (!conf)
