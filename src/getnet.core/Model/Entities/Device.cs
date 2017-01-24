@@ -44,6 +44,9 @@ namespace getnet.core.Model.Entities
         [StringLength(100)]
         public string Port { get; set; }
 
+        [StringLength(500)]
+        public string ReservationComment { get; set; }
+        
         public virtual Tenant Tenant { get; set; }
         public virtual NetworkDevice NetworkDevice { get; set; }
         public virtual Vlan Vlan { get; set; }

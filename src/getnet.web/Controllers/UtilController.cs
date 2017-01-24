@@ -13,7 +13,7 @@ using System.Net;
 
 namespace getnet.Controllers
 {
-    [Authorize]
+    [Authorize(Roles=Roles.GlobalViewers)]
     public class UtilController : BaseController
     {
         [Route("/ping/{id}")]

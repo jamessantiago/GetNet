@@ -1,7 +1,106 @@
 ﻿@{
-    ViewData["Title"] = "Home Page";
+    ViewData["Title"] = "Dash";
 }
 
-<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col mdl-typography--text-center getnet-hero">
-    <img src="~/images/logo_534.png" />    
+@section css {
+    <link rel="stylesheet" href="~/lib/c3/c3.css" />
+}
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--8-col">
+    <h3>GetNet Alpha</h3>
+    <p>GetNet is currently under heavy development.</p>
+    <p>Snapshot of open issues as of 23 Jan:</p>
+    <ul>
+        <li>Add diagram settings page</li>
+        <li>Create a field management page</li>
+        <li>Create ssh cache to store recently successful command results</li>
+        <li>Add https support for kestrel</li>
+        <li>Add getnet service job viewer/editor to getnet web</li>
+        <li>Create a home page</li>
+        <li>Replace any boilerplatish html with taghelpers</li>
+        <li>Create edit pages</li>
+        <li>Setup application versioning</li>
+        <li>Create way to access stored user sessions</li>
+        <li>Store broadcast ip for vlans and subnets and update searchpredicates methods to perform sql level ip containment queries</li>
+        <li>Create a user settings page for alert configuration</li>
+        <li>Make the getsnack polling timer to be logorithmic such that longer says on a single page equate to longer polling intervals on a logaritmic scale</li>
+        <li>create communication channel between getnet service and web</li>
+        <li>Setup sites and services management using the novel library</li>
+        <li>Replace whistler types with enum and convert to strings in events using camel to string</li>
+        <li>Add a help system where a button can be placed anywhere that looks up a help entry based on key or prompts to create an entry if missing</li>
+        <li>Configure tests to pull setup settings from environment</li>
+        <li>Create offline site loaded into app cache that checks for getnet to become available</li>
+        <li>Create a live pinnable website tile with RSS feed to alerts</li>
+        <li>Setup postgres database use for getnet context</li>
+        <li>Add-migration broken with postgres provider</li>
+        <li>Add a production profiler</li>
+        <li>Refactor: run codemaid everwhere, add xml comments</li>
+        <li>Create an upgrade system</li>
+        <li>Add a favorites function to list out entities for a specific user</li>
+        <li>Add the ability to import and export the entire dataset tagged by network</li>
+    </ul>
+
+    <p>Closed issues:</p>
+    <ul>
+        <li>Add all the appropriate authorize attributes</li>
+        <li>Add vrf support to discovery</li>
+        <li>Make discovery work for existing sites</li>
+        <li>Create "All" pages, table handlers, and search predicate builders for vlans, subnets, and endpoints</li>
+        <li>Add search functionality</li>
+        <li>create scheduling system for getnet.service</li>
+        <li>Create details pages for network devices and endpoints</li>
+        <li>Setup site details page</li>
+        <li>Add site discovery system</li>
+        <li>Add SSH config page</li>
+        <li>Create page for logging config</li>
+        <li>Configure the everyone's an admin/viewer providers</li>
+        <li>Long poll toasts</li>
+        <li>Clean up config page</li>
+        <li>setup global alert handling</li>
+        <li>setup global snackbar</li>
+        <li>Replace DPAPI with a cross platform encrypt/decrypt system</li>
+        <li>Setup main site js class thing</li>
+        <li>Setup ajax forms</li>
+        <li>Setup configuration provider for read/write/encrypt/decrypt</li>
+        <li>Setup authentication mechanism for getnet.web</li>
+        <li>Create site logo</li>
+        <li>Create test to check cascade deletes and another for relationships</li>
+        <li>Add all repos to unit of work</li>
+        <li>Setup DB inition workflow</li>
+        <li>Setup an unconfigured state in getnet.web when no connection string is set and allow for a new connection to be established</li>
+        <li>Add DHCP functions and fix deprecation warnings</li>
+        <li>Create DB migrations for EF</li>
+        <li>Create graph layout functionality for network diagrams</li>
+        <li>Create a code transaction system to revert multi step actions in case of failure</li>
+        <li>Setup migrations</li>
+        <li>Extend user manager to get user info from data model</li>
+        <li>Build unit of work and generic repository design pattern</li>
+        <li>Build alert system off logging system</li>
+        <li>add unit tests</li>
+        <li>Build logging system</li>
+        <li>create ui template</li>
+        <li>create base data model</li>
+        <li>add readme</li>
+        <li>Build gns3 test environment</li>
+        <li>Create data access project (dapper or ef)</li>
+        <li>Create .net core service?</li>
+        <li>Build out ssh execution framework</li>
+        <li>Add google material design lite</li>
+
+
+    </ul>
 </div>
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
+    <div id="statuschart-loading" class="mdl-progress mdl-js-progress mdl-progress__indeterminate"></div>
+    <div id="statuschart">
+    </div>
+</div>
+
+@section scripts {
+    <script src="~/lib/d3/d3.js"></script>
+    <script src="~/lib/c3/c3.js"></script>
+    <script>
+        getnet.Dash.init({ refresh: 20 });
+    </script>
+}

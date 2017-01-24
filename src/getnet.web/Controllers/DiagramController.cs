@@ -1,14 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Linq;
 using Microsoft.AspNetCore.Mvc;
 using getnet.core.Model.Entities;
 using System.Text;
 using getnet.core.ssh;
+using getnet.Helpers;
+using Microsoft.AspNetCore.Authorization;
+using getnet.Model;
+
 
 namespace getnet.Controllers
 {
+    [Authorize(Roles=Roles.GlobalViewers)]
+    [RedirectOnDbIssue]
     public class DiagramController : BaseController
     {
         public IActionResult Sigma(int id)

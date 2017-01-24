@@ -114,11 +114,5 @@ namespace getnet.Controllers
             return PartialView("_success", "Successfully configured logging");
         }
 
-        [AllowAnonymous]
-        [Route("/dbissue")]
-        public IActionResult Anon()
-        {
-            return View();
-        }
     }
 }

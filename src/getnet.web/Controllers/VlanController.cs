@@ -6,11 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using getnet.core.Model.Entities;
 using getnet.Helpers;
 using getnet.Model;
+using System.Net;
 
 namespace getnet.Controllers
 {
     public class VlanController : BaseController
     {
+        public IActionResult VlanUsage(int id)
+        {
+            var vlan = uow.Repo<Vlan>().Get(d => d.VlanId == id, includeProperties: "Devices").FirstOrDefault();
+            return View(vlan);
+        }
+
         //public ActionResult VlanHandler(int? id, string searchText, jQueryDataTableParamModel param)
         //{
         //    var predicates = PredicateBuilder.True<Vlan>();

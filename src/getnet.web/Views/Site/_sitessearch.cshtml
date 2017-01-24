@@ -1,0 +1,64 @@
+﻿<table id="ss-table" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Owner</th>
+            <th>Location</th>
+            <th>Building</th>
+            <th>Priority</th>
+            <th>Status</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+    var table = $('#ss-table').on('processing.dt', function (e, settings, processing) {
+        $('#fullpage-loading').css('display', processing ? 'block' : 'none');
+    }).DataTable({
+        ajax: {
+            url: "/site/sitehandler",
+            data: {
+                text: "@ViewData["SearchText"]"
+            }
+        },
+        processing: false,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ],
+        language: {
+            search: "Filter:"
+        },
+        rowCallback: function (row, data) {
+            var ca = 1;
+            $(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
+            var statusrow = $(row).children("td").last();
+            statusrow.addClass('mdl-color-text--white');
+            getnet.log(statusrow.html());
+            switch (statusrow.html()) {
+                case 'Online':
+                    statusrow.addClass('mdl-color--green');
+                    break;
+                case 'Maintenance':
+                    statusrow.addClass('mdl-color--yellow--100');
+                    break;
+                case 'Degraded':
+                    statusrow.addClass('mdl-color--yellow');
+                    break;
+                case 'PartiallyDown':
+                    statusrow.addClass('mdl-color--yellow');
+                    break;
+                case 'Offline':
+                    statusrow.addClass('mdl-color--red');
+                    break;
+                default:
+                    statusrow.removeClass('mdl-color-text--white');
+                    break;
+            }
+        }
+    });
+
+</script>

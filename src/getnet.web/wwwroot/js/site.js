@@ -1,6 +1,7 @@
 ﻿/// <reference path="../lib/jquery/dist/jquery.js"/>
 /// <reference path="../lib/jquery-form/jquery-form.js"/>
 /// <reference path="../lib/material-design-lite/material.js"/>
+/// <reference path="../lib/c3/c3.js"/>
 
 //
 //                 GETNET Main JS
@@ -31,7 +32,7 @@ window.getnet = (function () {
 
     function init(options) {
         getnet.options = options;
-
+        getnet.Pings = 0;
     }
 
     //#region Refresh
@@ -126,6 +127,7 @@ window.getnet = (function () {
         var colorTarget = $(target).data("colortarget");
         getnet.log("pinging " + address);
         $("#fullpage-loading").show();
+        getnet.Pings++;
         $.getJSON("/ping/" + encodeURIComponent(address)).done(
                 function (data) {
                     if (data.success) {
@@ -144,7 +146,10 @@ window.getnet = (function () {
                 }
             ).always(
                 function () {
-                    $("#fullpage-loading").hide();
+                    getnet.Pings--;
+                    if (getnet.Pings == 0) {
+                        $("#fullpage-loading").hide();
+                    }
                 }
             );
     }
@@ -534,5 +539,59 @@ getnet.Snacks = (function () {
     return {
         init: init,
         loadSnacks: LoadSnacks
+    }
+})();
+
+
+getnet.Dash = (function () {
+    function init(options) {
+        getnet.Dash.options = options;
+        getnet.Dash.failureCount = 0;
+        getnet.Dash.retryCount = 3;
+        LoadDash();
+        if (options.refresh) {
+            getnet.refresh.register("Dash", function () { UpdateDash(); }, getnet.Dash.options.refresh * 1000);
+        }
+    }
+
+    function LoadDash() {
+        getnet.Dash.StatusChart = c3.generate({
+            bindto: "#statuschart",
+            data: {
+                columns: [
+                ],
+                type: 'donut'
+            },
+            donut: {
+                title: 'Site Status'
+            }
+        });
+        UpdateDash();        
+    }
+
+    function UpdateDash() {
+        $("#statuschart-loading").show();
+        getnet.log("loading status chart data");
+        getnet.Dash.StatusChart.unload();
+        $.getJSON('/a/getsitestatus').success(function (data) {
+            getnet.Dash.StatusChart.load(data);
+        }).error(function (reason) {
+            getnet.log(reason.responseText);
+            if (getnet.Dash.failureCount >= getnet.Dash.retryCount) {
+                Shutdown();
+            } else {
+                getnet.Dash.failureCount++;
+            }
+        }).always(function () {
+            $("#statuschart-loading").hide();
+        });
+    }
+
+    function Shutdown() {
+        getnet.refresh.pause("Dash");
+    }
+
+    return {
+        init: init
     }
 })();

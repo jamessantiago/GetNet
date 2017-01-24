@@ -20,6 +20,7 @@
                 <link rel="stylesheet" href="~/lib/material-design-lite/material.css" />
                 <link rel="stylesheet" href="~/lib/getmdl-select/getmdl-select.min.css" />
                 <link rel="stylesheet" href="~/lib/datatables/media/css/dataTables.material.css" />
+                <link rel="stylesheet" href="~/lib/dialog-polyfill/dialog-polyfill.css" />
                 <link rel="stylesheet" href="~/css/site.css" />
             </environment>
             <environment names="Staging,Production">
@@ -79,15 +80,17 @@
                 </a>
                 <span class="mdl-layout-title">@ViewData["Title"]</span>
                 <div class="mdl-layout-spacer"></div>
-                <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
-                    <label class="mdl-button mdl-js-button mdl-button--icon" for="search">
-                        <i class="material-icons">search</i>
-                    </label>
-                    <div class="mdl-textfield__expandable-holder">
-                        <input class="mdl-textfield__input" type="text" id="search">
-                        <label class="mdl-textfield__label" for="search">Enter your query...</label>
+                <form action="/a/search" method="post">
+                    <div class="mdl-textfield mdl-js-textfield mdl-textfield--expandable">
+                        <label class="mdl-button mdl-js-button mdl-button--icon" for="searchtext">
+                            <i class="material-icons">search</i>
+                        </label>
+                        <div class="mdl-textfield__expandable-holder">
+                            <input class="mdl-textfield__input" type="text" name="searchtext" id="searchtext">
+                            <label class="mdl-textfield__label" for="search">Enter your query...</label>
+                        </div>
                     </div>
-                </div>
+                </form>
                 @if (Current.IsAdmin)
                 {
                 <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="hdrbtn">
@@ -134,7 +137,7 @@
                 <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">device_hub</i>Diagrams</a>
                 <a class="mdl-navigation__link" href="/endpoints"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">assessment</i>Reports</a>
                 <div class="mdl-layout-spacer"></div>
-                <a class="mdl-navigation__link" href="#" onclick="getnet.toggleDrawer()"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">keyboard_arrow_left</i><span class="visuallyhidden">Hide</span></a>
+                <a class="mdl-navigation__link" href="#"><i class="mdl-color-text--blue-grey-400 material-icons" role="presentation">help</i><span class="visuallyhidden">Hide</span></a>
             </nav>
         </div>
         <main class="mdl-layout__content mdl-color--grey-100">
@@ -148,6 +151,8 @@
         </main>
     </div>
 
+    @RenderSection("dialog", required: false)
+
     @switch ((Dependencies)ViewData["Dependencies"])
     {
         case Dependencies.GetnetMainWIthFormsAndTables:
@@ -155,6 +160,7 @@
                 <script src="~/lib/jquery/dist/jquery.js"></script>
                 <script src="~/lib/jquery-form/jquery.form.js"></script>
                 <script src="~/lib/material-design-lite/material.js"></script>
+                <script src="~/lib/dialog-polyfill/dialog-polyfill.js"></script>
                 <script src="~/lib/getmdl-select/getmdl-select.min.js"></script>
                 <script src="~/lib/hipku/index.js"></script>
                 <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
@@ -170,6 +176,7 @@
                 <script src="~/lib/jquery/dist/jquery.js"></script>
                 <script src="~/lib/jquery-form/jquery.form.js"></script>
                 <script src="~/lib/material-design-lite/material.js"></script>
+                <script src="~/lib/dialog-polyfill/dialog-polyfill.js"></script>
                 <script src="~/lib/getmdl-select/getmdl-select.min.js"></script>
                 <script src="~/lib/hipku/index.js"></script>
                 <script src="~/js/site.js" asp-append-version="true"></script>

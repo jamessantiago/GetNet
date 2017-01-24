@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
+using System.Collections.Concurrent;
 using getnet.core.ssh;
 
 namespace getnet.core
@@ -12,9 +13,30 @@ namespace getnet.core
     {
         private static UnitOfWork uow = new UnitOfWork();
         private static Whistler logger = new Whistler(typeof(Discovery).FullName);
+        private static ConcurrentDictionary<int, DateTime> runningDiscoveries = new ConcurrentDictionary<int, DateTime>();
 
         public async static void RunFullSiteDiscovery(int siteId)
         {
+            DateTime runningdisco = new DateTime(0);
+            runningDiscoveries.TryGetValue(siteId, out runningdisco);
+            if (runningdisco != new DateTime(0))
+            {
+                if (runningdisco < DateTime.UtcNow.AddMinutes(15))
+                {
+                    logger.Info("Site discovery appears to have been running for at least 15 minutes.  Removing discovery record and continuing with discovery actions.", WhistlerTypes.NetworkDiscovery, siteId);
+                    runningDiscoveries.TryRemove(siteId, out runningdisco);
+                    runningDiscoveries.TryAdd(siteId, DateTime.UtcNow);
+                }
+                else
+                {
+                    logger.Info("Site discovery request canceled, another discovery is already running since " + runningdisco.ToRelativeTime(), WhistlerTypes.NetworkDiscovery, siteId);
+                    return;
+                }
+            } else
+            {
+                runningDiscoveries.TryAdd(siteId, DateTime.UtcNow);
+            }
+
             logger.Info("Starting site configuration", WhistlerTypes.NetworkDiscovery, siteId);
             Site site = null;
             site = uow.Repo<Site>().Get(d => d.SiteId == siteId, includeProperties: "NetworkDevices").FirstOrDefault();
@@ -50,6 +72,9 @@ namespace getnet.core
             catch (Exception ex)
             {
                 logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);
+            } finally
+            {
+                runningDiscoveries.TryRemove(siteId, out runningdisco);
             }
         }
     }

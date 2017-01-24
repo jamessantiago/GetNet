@@ -6,9 +6,12 @@ using Microsoft.AspNetCore.Mvc;
 using getnet.core.Model.Entities;
 using getnet.Helpers;
 using getnet.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace getnet.Controllers
 {
+    [RedirectOnDbIssue]
+    [Authorize(Roles=Roles.GlobalViewers)]
     public class SubnetController : BaseController
     {
         public ActionResult SubnetHandler(int? siteid, string searchText, jQueryDataTableParamModel param)

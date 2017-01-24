@@ -12,25 +12,83 @@ using getnet;
 using getnet.core.Model;
 using getnet.Model;
 using getnet.core;
+using getnet.Helpers;
 
 namespace getnet.Controllers
 {
+    [RedirectOnDbIssue]
+    [Authorize(Roles=Roles.GlobalViewers)]
     public partial class SiteController : BaseController
     {
         private Whistler logger = new Whistler(typeof(SiteController).FullName);
 
+        public ActionResult SiteHandler(string text, jQueryDataTableParamModel param)
+        {
+            var predicates = PredicateBuilder.True<Site>();
+
+            if (text.HasValue())
+                predicates = predicates.And(Site.SearchPredicates(text));
+
+            var devices = uow.Repo<Site>().Get(predicates, includeProperties: "Location");
+
+            if (param.search["value"].HasValue())
+                predicates = predicates.And(Site.SearchPredicates(param.search["value"]));
+
+            var queriedDevices = devices.AsQueryable().Where(predicates);
+
+            Func<Site, string> orderingFunction = (d =>
+                param.order[0]["column"] == "0" ? d.Name :
+                param.order[0]["column"] == "1" ? d.Owner :
+                param.order[0]["column"] == "2" ? d.Location?.Name :
+                param.order[0]["column"] == "3" ? d.Building :
+                param.order[0]["column"] == "4" ? d.Priority.ToString() :
+                param.order[0]["column"] == "5" ? d.Status.ToString() : d.Name);
+
+            if (param.order[0]["dir"] == "asc")
+                queriedDevices = queriedDevices.OrderBy(orderingFunction).AsQueryable();
+            else
+                queriedDevices = queriedDevices.OrderByDescending(orderingFunction).AsQueryable();
+
+            var takecount = param.length;
+            var displayedResults = queriedDevices.Skip(param.start).Take(takecount).ToArray();
+
+            var results = from r in displayedResults
+                          select new[] {
+                              r.Name,
+                              r.Owner,
+                              r.Location?.Name,
+                              r.Building,
+                              r.Priority.ToString(),
+                              r.Status.ToString()
+                          };
+
+            return Json(new
+            {
+                recordsTotal = devices.Count(),
+                recordsFiltered = devices.Count(),
+                data = results
+            });
+        }
+
         [Route("/sites")]
         public IActionResult Index()
         {
-            var sites = uow.Repo<Site>().Get(includeProperties: "Location");
-            return View(sites);
+            //var sites = uow.Repo<Site>().Get(includeProperties: "Location");
+            return View();
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult Delete(int id)
         {
             uow.Repo<Site>().Delete(uow.Repo<Site>().Get(filter: d => d.SiteId == id, includeProperties: "HotPaths").First());
             uow.Save();
             return RedirectToAction("index", "site");
+        }
+
+        public IActionResult SitesPartial(string id)
+        {
+            ViewData["SearchText"] = id;
+            return PartialView("_sitessearch");
         }
 
         [Route("/s/{id}")]
@@ -46,12 +104,14 @@ namespace getnet.Controllers
             return View(site);
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult Edit(int id)
         {
             return View(uow.Repo<Site>().Get(d => d.SiteId == id, includeProperties: "Location").FirstOrDefault());
         }
 
         [HttpPost]
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult Edit(Site site, string Location)
         {
             if (ModelState.IsValid)
@@ -66,11 +126,13 @@ namespace getnet.Controllers
         }
 
         [Route("/newsite")]
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult New()
         {
             return View();
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult Discover(string hubip)
         {
             ViewData["hubip"] = hubip;
@@ -99,6 +161,7 @@ namespace getnet.Controllers
             return PartialView("_newsites", neighbors);
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public void MakeSite(string ip)
         {
             try
@@ -154,6 +217,7 @@ namespace getnet.Controllers
             }
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
         public void Rediscover(int id)
         {
             Task.Run(() => Discovery.RunFullSiteDiscovery(id));

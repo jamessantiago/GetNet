@@ -20,6 +20,7 @@ namespace getnet.Helpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             output.Attributes.Add("class", "mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent");
+            output.Attributes.Add("type", "button");
             output.Attributes.Add("onclick", "window.location='" + ReturnAddress + "'");
             output.TagMode = TagMode.StartTagAndEndTag;
             output.Content.SetContent(Text);

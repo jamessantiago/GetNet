@@ -6,11 +6,15 @@ using Microsoft.AspNetCore.Mvc;
 using getnet.core.Model.Entities;
 using getnet.Helpers;
 using getnet.Model;
+using Microsoft.AspNetCore.Authorization;
 
 namespace getnet.Controllers
 {
     public class NetworkDeviceController : BaseController
     {
+
+        [RedirectOnDbIssue]
+        [Authorize(Roles=Roles.GlobalViewers)]
         public ActionResult NetworkDeviceHandler(int? siteid, string text, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<NetworkDevice>();
@@ -76,6 +80,12 @@ namespace getnet.Controllers
 
         public IActionResult AllNetworkDevicesPartial()
         {
+            return PartialView("_networkdevices");
+        }
+
+        public IActionResult NetworkDevicesPartial(string id)
+        {
+            ViewData["SearchText"] = id;
             return PartialView("_networkdevices");
         }
 

@@ -39,7 +39,44 @@ namespace getnet.core
                                 d.Port != macs.Where(m => m.Mac == arp.Mac).FirstOrDefault().Interface, 
                                 includeProperties: "DeviceHistories,DeviceHistories.Device").FirstOrDefault();
                             var existingDevice = uow.Repo<Device>().Get(d => d.MAC == thismac).FirstOrDefault();
+                            var duplicateIP = uow.Repo<Device>().Get(d => d.RawIP == arp.IP.ToInt() && d.MAC != thismac).FirstOrDefault();
 
+                            if (duplicateIP != null)
+                            {
+                                uow.Repo<Device>().Delete(duplicateIP);
+                                uow.Save();
+
+                                if (duplicateIP.Type != DeviceType.Reservation)
+                                {
+                                    var newHistory = new DeviceHistory
+                                    {
+                                        DiscoveryDate = duplicateIP.DiscoveryDate,
+                                        LastSeenOnline = duplicateIP.LastSeenOnline,
+                                        MAC = duplicateIP.MAC,
+                                        RawIP = duplicateIP.RawIP,
+                                        Type = duplicateIP.Type
+                                    };
+                                    if (duplicateIP.Details.HasValue())
+                                        newHistory.Details = duplicateIP.Details;
+
+                                    if (duplicateIP.Hostname.HasValue())
+                                        newHistory.Hostname = duplicateIP.Hostname;
+
+                                    if (duplicateIP.PhoneNumber.HasValue())
+                                        newHistory.PhoneNumber = duplicateIP.PhoneNumber;
+
+                                    if (duplicateIP.Port.HasValue())
+                                        newHistory.Port = duplicateIP.Port;
+
+                                    if (duplicateIP.SerialNumber.HasValue())
+                                        newHistory.SerialNumber = duplicateIP.SerialNumber;
+
+                                    if (duplicateIP.Tenant != null)
+                                        newHistory.Tenant = duplicateIP.Tenant;
+                                    var histChnge = uow.Repo<DeviceHistory>().Insert(newHistory);
+                                    uow.Save();
+                                }
+                            }
                             
                             if (movedDevice != null)
                             {

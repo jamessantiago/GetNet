@@ -11,9 +11,11 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using Microsoft.AspNetCore.Mvc.Filters;
 using getnet.Model.Security;
 using Novell.Directory.Ldap;
+using getnet.Helpers;
 
 namespace getnet.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : BaseController
     {
         private Whistler logger = new Whistler(typeof(AccountController).FullName);
@@ -28,7 +30,6 @@ namespace getnet.Controllers
             signInManager = SignInManager;
         }
         
-        [AllowAnonymous]
         [Route("/login")]
         public async Task<IActionResult> Login()
         {
@@ -84,6 +85,11 @@ namespace getnet.Controllers
         {
             await signInManager.SignOutAsync();
             return RedirectToAction("login", "account");
+        }
+
+        public IActionResult AccessDenied()
+        {
+            return View();
         }
     }
 }

@@ -5,6 +5,7 @@
     "outputFileName": "wwwroot/css/gmf.min.css",
     "inputFiles": [
       "wwwroot/lib/material-design-lite/material.css",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.css",
       "wwwroot/lib/getmdl-select/getmdl-select.min.css",
       "wwwroot/css/site.css"
     ]
@@ -14,6 +15,7 @@
     "outputFileName": "wwwroot/css/gmft.min.css",
     "inputFiles": [
       "wwwroot/lib/material-design-lite/material.css",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.css",
       "wwwroot/lib/getmdl-select/getmdl-select.min.css",
       "wwwroot/lib/datatables/media/css/dataTables.material.css",
       "wwwroot/css/site.css"
@@ -43,6 +45,7 @@
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/jquery-form/jquery.form.js",
       "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.js",
       "wwwroot/lib/getmdl-select/getmdl-select.min.js",
       "wwwroot/lib/hipku/index.js",
       "wwwroot/js/site.js"
@@ -79,6 +82,7 @@
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/jquery-form/jquery.form.js",
       "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.js",
       "wwwroot/lib/getmdl-select/getmdl-select.min.js",
       "wwwroot/lib/hipku/index.js",
       "wwwroot/lib/datatables/media/js/jquery.dataTables.js",

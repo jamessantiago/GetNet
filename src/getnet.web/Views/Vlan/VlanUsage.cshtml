@@ -1,0 +1,124 @@
+﻿@model getnet.core.Model.Entities.Vlan
+@{
+    ViewData["Title"] = "Vlan Usage";
+    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+}
+
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <table id="vlans" class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>RawIP</th>
+                <th>IP</th>
+                <th>Availability</th>
+                <th>Device Type</th>
+                <th>MAC</th>
+                <th>Reservation Comment</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var ip in IPNetwork.ListIPAddress(Model.IPNetwork))
+            {
+                var useddevice = Model.Devices.Where(d => d.RawIP == ip.ToInt()).FirstOrDefault();
+                <tr id="@ip.ToInt()_row">
+                    <td>@ip.ToInt()</td>
+                    <td>@ip</td>
+                    <td>@(useddevice != null ? "Used" : "Available")</td>
+                    <td>@(useddevice != null ? useddevice.Type.ToString() : "N/A")</td>
+                    <td>@(useddevice != null ? useddevice.MAC : "N/A")</td>
+                    <td>
+                        @(useddevice != null ? useddevice.ReservationComment : "N/A")
+                        <button id="@ip.ToInt()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
+                            <i class="material-icons" role="presentation">arrow_drop_down</i>
+                            <span class="visuallyhidden">NetworkDevice</span>
+                        </button>
+                        <ul class="netbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="@ip.ToInt()">
+                            <li id="@ip.ToInt()_ping" class="pingme mdl-menu__item" data-ip="@ip.ToString()" data-colortarget="#@ip.ToInt()_row" onclick="getnet.ping('#@ip.ToInt()_ping')">Ping</li>
+                            <li class="mdl-menu__item" onclick="getnet.hipkuSnack('@ip.ToString()')">Hipku</li>
+                            @if (useddevice == null)
+                            {
+                                <li class="mdl-menu__item show-dialog" data-ip="@ip.ToInt()">Reserve</li>
+                            }
+                        </ul>
+                    </td>
+                </tr>
+
+            }
+        </tbody>
+    </table>
+</div>
+
+@section dialog {
+<dialog class="mdl-dialog">
+    <h5 class="mdl-dialog__title">Reserve this IP?</h5>
+    <div class="mdl-dialog__content">
+        <p>
+            Reserving this IP will create a endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
+        </p>
+        <form action="/endpoint/reserve" id="thisform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.Snacks.loadSnacks()" data-ajax-reset="true">
+            <input type="hidden" id="dialog-ip" name="dialog-ip" value="" />
+            <input type="hidden" id="dialog-ip" name="vlanid" value="@Model.VlanId" />
+            <div mdl-textarea-for="ReservationComment" mdl-label="Reservation Comment" mdl-rows="3" mdl-value=""></div>
+            <div class="mdl-dialog__actions">
+                <button mdl-submit-button="Submit"></button>
+                <button type="button" class="mdl-button close">Cancel</button>
+            </div>
+        </form>
+    </div>
+</dialog>
+}
+
+    @section scripts {
+        <script>
+            getnet.Forms.init({});
+            var table = $('#vlans').on('processing.dt', function (e, settings, processing) {
+                $('#fullpage-loading').css('display', processing ? 'block' : 'none');
+            }).DataTable({
+                columnDefs: [
+                    {
+                        targets: [2,3,4,5],
+                        className: 'mdl-data-table__cell--non-numeric'
+                    },
+                    {
+                        targets: [1],
+                        orderData: [0],
+                        className: 'mdl-data-table__cell--non-numeric'
+                    },
+                    {
+                        targets: [0],
+                        visible: false
+                    }
+                ],
+                language: {
+                    search: "Filter:"
+                },
+                initComplete: function () {
+                    componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
+                },
+                drawCallback: function () {
+                    componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
+                }
+            });
+            $(table.tables().containers()).children("div").first().children("div").first().removeClass("mdl-cell mdl-cell--6-col").addClass("mdl-cell mdl-cell--5-col");
+            $(table.tables().containers()).children("div").first().prepend('' +
+                        '<button id="ntblbut" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">' +
+                        '<i class="material-icons" role="presentation">more_vert</i>' +
+                        '<span class="visuallyhidden">NetworkDevice</span>' +
+                        '</button>' +
+                        '<ul id="ntlst" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="ntblbut">' +
+                        '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
+                        '</ul>');
+            var dialog = document.querySelector('dialog');
+            if (!dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+            }
+            $(".show-dialog").on('click', function () {
+                $("#dialog-ip").val($(this).data("ip"));
+                dialog.showModal();
+            });
+            dialog.querySelector('.close').addEventListener('click', function () {
+                dialog.close();
+            });
+        </script>
+    }

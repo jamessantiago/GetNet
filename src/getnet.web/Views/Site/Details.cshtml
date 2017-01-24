@@ -25,13 +25,22 @@
             <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
                 <div class="getnet-col-right">
                     <h4>
-                        <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="siteset">
-                            <i class="material-icons">more_vert</i>
-                        </button>
-                        <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-left" for="siteset">
-                            <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId')">Rediscover</li>
-                            <li class="mdl-menu__item" onclick="window.location.href = '/site/edit/@Model.SiteId'">Edit</li>
-                        </ul>
+                        @if (Current.User.IsAdmin)
+                        {
+                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon" id="siteset">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                            <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-left" for="siteset">
+                                <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId');getnet.Snacks.loadSnacks()">Rediscover</li>
+                                <li class="mdl-menu__item" onclick="window.location.href = '/site/edit/@Model.SiteId'">Edit</li>
+                            </ul>
+                        }
+                        else
+                        {
+                            <button class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon mdl-button--disabled" id="siteset">
+                                <i class="material-icons">more_vert</i>
+                            </button>
+                        }
                     </h4>
                     <p>@Model.Priority.ToString()</p>
                     <p>@(Model.Owner ?? "?")</p>
@@ -134,7 +143,7 @@
                         <tr>
                             <td>@vlan.NetworkDevice?.Hostname</td>
                             <td>@vlan.VlanNumber</td>
-                            <td>@vlan.VlanIP/@vlan.IPNetwork.Cidr</td>
+                            <td><a title="Detailed Vlan Usage" href="/vlan/vlanusage/@vlan.VlanId">@vlan.VlanIP/@vlan.IPNetwork.Cidr</a></td>
                             <td>@vlan.IPNetwork.FirstUsable.ToString()</td>
                             <td>@vlan.IPNetwork.LastUsable.ToString()</td>
                             <td>@(((double)vlan.Devices.Count / (double)vlan.IPNetwork.Usable).ToString("P0")) (@vlan.Devices.Count/@vlan.IPNetwork.Usable)</td>

@@ -6,7 +6,7 @@ namespace getnet.Model
 {
     public static class Roles
     {
-        public const string GlobalViewers = "GlobalViewers";
+        public const string GlobalViewers = "GlobalViewers,GlobalAdmins";
         public const string GlobalAdmins = "GlobalAdmins";
 
         private static Dictionary<string, string> configRoles;

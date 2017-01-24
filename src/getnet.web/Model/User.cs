@@ -16,6 +16,7 @@ namespace getnet.Model
 
         public string AccountName { get; }
         public bool IsAnonymous { get; }
+        public bool IsAdmin => this.Identity.IsAuthenticated && this.InRoles(Roles.GlobalAdmins);
         public UserProfile UserProfile => getnet.Current.uow.GetUserProfile(AccountName);
         public List<string> UserRoles => Claims.Where(d => d.Type == ClaimTypes.Role).Select(d => d.Value).ToList();
 

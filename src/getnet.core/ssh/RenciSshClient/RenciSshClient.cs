@@ -32,7 +32,8 @@ namespace getnet.core.ssh
         public List<T> Execute<T>(string command) where T : ICommandResult, new()
         {
             var client = this.gscFactory.CreateClient(this.gscSettings);
-            List<T> results = new List<T>();
+            logger.Debug(string.Format("Running '{0}' against {1}", command, client.ConnectionInfo.Host), WhistlerTypes.Ssh);
+            List <T> results = new List<T>();
             var executor = new T();
             var cmdResults = client.RunCommand(command);
             LastCommand = cmdResults;

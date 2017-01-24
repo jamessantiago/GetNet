@@ -6,11 +6,18 @@ using Microsoft.AspNetCore.Mvc;
 using getnet.Model;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
+using Microsoft.AspNetCore.Authorization;
+using getnet.Helpers;
+using Microsoft.AspNetCore.Http;
 
 namespace getnet.Controllers
 {
     public class EndpointController : BaseController
     {
+        private Whistler logger = new Whistler(typeof(EndpointController).FullName);
+
+        [RedirectOnDbIssue]
+        [Authorize(Roles =Roles.GlobalViewers)]
         public ActionResult EndpointHandler(int? siteid, string text, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<Device>();
@@ -88,6 +95,12 @@ namespace getnet.Controllers
             return PartialView("_endpoints");
         }
 
+        public IActionResult EndpointsPartial(string id)
+        {
+            ViewData["SearchText"] = id;
+            return PartialView("_endpoints");
+        }
+
         [Route("/e/{id}")]
         public IActionResult Details(string id)
         {
@@ -101,6 +114,41 @@ namespace getnet.Controllers
                     includeProperties: "Vlan,NetworkDevice,Site,Vlan.NetworkDevice,DeviceHistories").FirstOrDefault();
 
             return View(device);
+        }
+
+        [HttpPost]
+        public void Reserve(IFormCollection collection)
+        {
+            long ip = 0;
+            if (long.TryParse(collection["dialog-ip"].FirstOrDefault(), out ip))
+            {
+                try
+                {
+                    var newdevice = new Device
+                    {
+                        Type = DeviceType.Reservation,
+                        RawIP = ip,
+                        MAC = ip.ToString()
+                    };
+                    if (collection["ReservationComment"].FirstOrDefault() != null)
+                        newdevice.ReservationComment = collection["ReservationComment"].FirstOrDefault();
+                    uow.Repo<Device>().Insert(newdevice);
+                    uow.Save();
+                    var thisVlan = uow.Repo<Vlan>().Get(d => d.VlanId == int.Parse(collection["vlanid"].FirstOrDefault()), includeProperties: "Devices,Site").FirstOrDefault();
+                    thisVlan.Devices.AddOrNew(newdevice);
+                    var thisSite = uow.Repo<Site>().Get(d => d.SiteId == thisVlan.Site.SiteId, includeProperties: "Devices").FirstOrDefault();
+                    thisSite.Devices.AddOrNew(newdevice);
+                    uow.Save();
+                    HttpContext.Session.AddSnackMessage("Successfully added reservation.  Refresh to view updated listing.");
+                }catch (Exception ex)
+                {
+                    logger.Error(ex, WhistlerTypes.UnhandledException);
+                    HttpContext.Session.AddSnackMessage("Failed to add reservation: " + ex.Message);
+                }
+            } else
+            {
+                HttpContext.Session.AddSnackMessage("Failed to reserve ip, missing ip from dialog");
+            }
         }
     }
 }

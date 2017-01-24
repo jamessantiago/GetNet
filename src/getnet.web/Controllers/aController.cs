@@ -1,28 +1,40 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using getnet.Helpers;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
 using getnet.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Diagnostics;
-using getnet.core;
 using System.Data.SqlClient;
+using getnet.core.Model.Entities;
 
 namespace getnet.Controllers
 {
-    [RedirectOnDbIssue]
+    [Authorize(Roles = Roles.GlobalViewers)]
     public class aController : BaseController
     {
         private Whistler logger = new Whistler(typeof(aController).FullName);
 
-
-        [Authorize]
+        [RedirectOnDbIssue]
         public IActionResult Index()
         {
             return View();
+        }
+        
+        [HttpPost]
+        [RedirectOnDbIssue]
+        public IActionResult Search(string searchtext)
+        {
+            return View("Search", searchtext);
+        }
+        
+        public IActionResult GetSiteStatus()
+        {
+            return Json(new
+            {
+                columns = uow.Repo<Site>().Get().GroupBy(d => d.Status).Select(d => new object[]{ d.Key.ToString(), d.Count() })
+            });
+
         }
 
         [Route("/error")]
@@ -56,6 +68,13 @@ namespace getnet.Controllers
         {
             
             return Json(HttpContext.Session.GetSnackMessages().Concat(HttpContext.Request.GetRefererSnacks(RouteData)));
+        }
+        
+        [AllowAnonymous]
+        [Route("/dbissue")]
+        public IActionResult Anon()
+        {
+            return View();
         }
     }
 }

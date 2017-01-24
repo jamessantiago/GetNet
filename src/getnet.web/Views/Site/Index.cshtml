@@ -1,34 +1,17 @@
-﻿@model IEnumerable<Site>
-@{ 
-    ViewData["Title"] = string.Format("Sites ({0})", Model.Count());
+﻿@{ 
+    ViewData["Title"] = "Sites";
     ViewData["Dependencies"] = Dependencies.GetNetMainWithTables;
 }
 
-<div class="mdl-shadow--2dp mdl-color--grey-50 getnet-cell mdl-cell mdl-cell--12-col">
-    @Html.Partial("_sites", Model)
+<div id="site-content" class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <span></span>
 </div>
 
 @section scripts {
 <script>
     $(document).ready(function () {
-        var sitestbl = $('#sites').DataTable({
-            columnDefs: [
-                {
-                    targets: '_all',
-                    className: 'mdl-data-table__cell--non-numeric'
-                }
-            ],
-            rowCallback: function (row, data, index) {
-                switch (data[5]) {
-                    case 'Online':
-                        $(row).addClass("mdl-color--green-100");
-                        break;
-                    case 'Offline':
-                        $(row).addClass("mdl-color--red-100");
-                        break;
-                }
-            }
-        });
+
+        $("#site-content").load('/site/sitespartial/');
     });
 </script>
 }

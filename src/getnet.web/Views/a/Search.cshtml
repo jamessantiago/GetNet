@@ -1,0 +1,56 @@
+﻿@model string
+@{
+    ViewData["Title"] = "Search: " + Model;
+    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+}
+
+@section Tabs {
+    <div class="mdl-layout__tab-bar mdl-js-ripple-effect">
+        <a href="#site-tab" class="mdl-layout__tab is-active">Sites</a>
+        <a id="networkdevices" href="#dev-tab" class="mdl-layout__tab">Network Devices</a>
+        <a id="endpoints" href="#end-tab" class="mdl-layout__tab">Endpoints</a>
+    </div>
+}
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col is-active" id="site-tab">
+    <div class="page-content mdl-grid">
+        <div id="site-content" class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+            <span></span>
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="dev-tab">
+    <div class="page-content mdl-grid">
+        <div id="nd-content" class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+        </div>
+    </div>
+</section>
+
+<section class="mdl-layout__tab-panel mdl-cell--12-col" id="end-tab">
+    <div id="end-content">
+    </div>
+</section>
+
+@section scripts {
+    <script>
+        $(document).ready(function () {
+
+            $("#site-content").load('/site/sitespartial/?id=' + encodeURIComponent('@Model'));
+
+            $("#networkdevices").one('click', function () {
+                $("#fullpage-loading").show();
+                $("#nd-content").load('/networkdevice/networkdevicespartial/?id=' + encodeURIComponent('@Model'), function () {
+                    $("#fullpage-loading").hide();
+                });
+            });
+
+            $("#endpoints").one('click', function () {
+                $("#fullpage-loading").show();
+                $("#end-content").load('/endpoint/endpointspartial/?id=' + encodeURIComponent('@Model'), function () {
+                    $("#fullpage-loading").hide();
+                });
+            });
+        });
+    </script>
+}
