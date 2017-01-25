@@ -124,22 +124,26 @@ namespace getnet.Controllers
             {
                 try
                 {
-                    var newdevice = new Device
+                    uow.Transaction(() =>
                     {
-                        Type = DeviceType.Reservation,
-                        RawIP = ip,
-                        MAC = ip.ToString()
-                    };
-                    if (collection["ReservationComment"].FirstOrDefault() != null)
-                        newdevice.ReservationComment = collection["ReservationComment"].FirstOrDefault();
-                    uow.Repo<Device>().Insert(newdevice);
-                    uow.Save();
-                    var thisVlan = uow.Repo<Vlan>().Get(d => d.VlanId == int.Parse(collection["vlanid"].FirstOrDefault()), includeProperties: "Devices,Site").FirstOrDefault();
-                    thisVlan.Devices.AddOrNew(newdevice);
-                    var thisSite = uow.Repo<Site>().Get(d => d.SiteId == thisVlan.Site.SiteId, includeProperties: "Devices").FirstOrDefault();
-                    thisSite.Devices.AddOrNew(newdevice);
-                    uow.Save();
-                    HttpContext.Session.AddSnackMessage("Successfully added reservation.  Refresh to view updated listing.");
+                        var thisVlan = uow.Repo<Vlan>().Get(d => d.VlanId == int.Parse(collection["vlanid"].FirstOrDefault()), includeProperties: "Devices,Site").FirstOrDefault();
+                        var thisSite = uow.Repo<Site>().Get(d => d.SiteId == thisVlan.Site.SiteId, includeProperties: "Devices").FirstOrDefault();
+                        var newdevice = new Device
+                        {
+                            Type = DeviceType.Reservation,
+                            RawIP = ip,
+                            MAC = "IPR" + ip.ToString(),
+                            Site = thisSite
+                        };
+                        if (collection["ReservationComment"].FirstOrDefault() != null)
+                            newdevice.ReservationComment = collection["ReservationComment"].FirstOrDefault();
+                        uow.Repo<Device>().Insert(newdevice);
+                        uow.Save();
+                        thisVlan.Devices.AddOrNew(newdevice);
+                        thisSite.Devices.AddOrNew(newdevice);
+                        uow.Save();
+                        HttpContext.Session.AddSnackMessage("Successfully added reservation.  Refresh to view updated listing.");
+                    });
                 }catch (Exception ex)
                 {
                     logger.Error(ex, WhistlerTypes.UnhandledException);

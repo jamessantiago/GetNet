@@ -49,6 +49,11 @@ namespace getnet.service
                                 .WithIdentity(task.Name)
                                 .Build();
                             break;
+                        case ScheduleType.EndpointDiscovery:
+                            job = JobBuilder.Create<EndpointRediscoveryJob>()
+                                .WithIdentity(task.Name)
+                                .Build();
+                            break;
                         default:
                             break;
                     }
@@ -74,9 +79,9 @@ namespace getnet.service
         {
             uow.Repo<TaskSchedule>().Insert(new TaskSchedule
             {
-                Name = "Hotpath Checks Every 5 Min",
+                Name = "Hotpath Checks Every 7 Min",
                 Enabled = true,
-                CronSchedule = "0 0/5 * * * ?",
+                CronSchedule = "0 0/7 * * * ?",
                 Type = ScheduleType.HotpathCheck
             });
             uow.Repo<TaskSchedule>().Insert(new TaskSchedule
@@ -85,6 +90,13 @@ namespace getnet.service
                 Enabled = true,
                 CronSchedule = "0 0 12 ? * SAT *",
                 Type = ScheduleType.FullSiteDiscovery
+            });
+            uow.Repo<TaskSchedule>().Insert(new TaskSchedule
+            {
+                Name = "Endpoint Rediscovery Every 7 hours",
+                Enabled = true,
+                CronSchedule = "0 0 0/7 1/1 * ? *",
+                Type = ScheduleType.EndpointDiscovery
             });
             uow.Save();
         }

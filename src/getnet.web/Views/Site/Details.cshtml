@@ -33,6 +33,7 @@
                             <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-left" for="siteset">
                                 <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId');getnet.Snacks.loadSnacks()">Rediscover</li>
                                 <li class="mdl-menu__item" onclick="window.location.href = '/site/edit/@Model.SiteId'">Edit</li>
+                                <li class="mdl-menu__item" id="show-dialog">Delete</li>
                             </ul>
                         }
                         else
@@ -185,6 +186,24 @@
     </div>
 </section>
 
+@section dialog {
+    <dialog class="mdl-dialog">
+        <h5 class="mdl-dialog__title">Delete this site?</h5>
+        <div class="mdl-dialog__content">
+            <p>
+                Reserving this IP will create a endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
+            </p>
+            <form action="/site/delete/@Model.SiteId" id="thisform" method="post">
+                <input type="hidden" id="dialog-ip" name="siteid" value="@Model.SiteId" />
+                <div class="mdl-dialog__actions">
+                    <button mdl-submit-button="Delete"></button>
+                    <button type="button" class="mdl-button close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+}
+
 @section scripts {
     <script>
         $(document).ready(function () {
@@ -218,6 +237,17 @@
                 $("#viz-graph").load('/diagram/viz/@Model.SiteId', function () {
                     $("#fullpage-loading").hide();
                 });
+            });
+
+            var dialog = document.querySelector('dialog');
+            if (!dialog.showModal) {
+                dialogPolyfill.registerDialog(dialog);
+            }
+            $("#show-dialog").on('click', function () {
+                dialog.showModal();
+            });
+            dialog.querySelector('.close').addEventListener('click', function () {
+                dialog.close();
             });
         });
     </script>

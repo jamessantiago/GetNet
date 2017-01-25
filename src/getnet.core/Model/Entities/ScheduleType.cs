@@ -9,7 +9,7 @@ namespace getnet.core.Model.Entities
     {
         HotpathCheck,
         FullSiteDiscovery,
-        DeviceDiscovery,
+        EndpointDiscovery,
         DhcpDiscovery,
         SitesAndSubnetsDiscovery
     }

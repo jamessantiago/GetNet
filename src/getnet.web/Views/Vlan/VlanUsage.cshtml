@@ -1,6 +1,6 @@
 ﻿@model getnet.core.Model.Entities.Vlan
 @{
-    ViewData["Title"] = "Vlan Usage";
+    ViewData["Title"] = "Vlan Usage for vlan " + Model.VlanNumber;
     ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
 }
 
@@ -107,6 +107,7 @@
                         '<span class="visuallyhidden">NetworkDevice</span>' +
                         '</button>' +
                         '<ul id="ntlst" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="ntblbut">' +
+                        '<li class="mdl-menu__item" onclick="window.location = \'/s/@Html.UrlEncoder.Encode(Model.Site.Name)\'">@Model.Site.Name</li>' +
                         '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
                         '</ul>');
             var dialog = document.querySelector('dialog');

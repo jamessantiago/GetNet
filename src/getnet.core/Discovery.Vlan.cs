@@ -28,15 +28,16 @@ namespace getnet.core
                             {
                                 if (uow.Repo<Model.Entities.Vlan>().Get(d => d.RawVlanIP == subnet.IPNetwork.Network.ToInt() && d.RawVlanSM == subnet.IPNetwork.Netmask.ToInt()).Any())
                                     continue;
+                                var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Vlans").FirstOrDefault();
                                 var changes = uow.Repo<core.Model.Entities.Vlan>().Insert(new core.Model.Entities.Vlan
                                 {
                                     VlanNumber = 1,
                                     RawVlanIP = subnet.IPNetwork.Network.ToInt(),
-                                    RawVlanSM = subnet.IPNetwork.Netmask.ToInt()
+                                    RawVlanSM = subnet.IPNetwork.Netmask.ToInt(),
+                                    Site = thisSite
                                 });
                                 uow.Save();
                                 var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "Vlans").FirstOrDefault();
-                                var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Vlans").FirstOrDefault();
                                 var newVlan = uow.Repo<core.Model.Entities.Vlan>().Get(d => d.VlanId == (int)changes.CurrentValues["VlanId"], includeProperties: "Site,NetworkDevice").FirstOrDefault();
                                 thisRouter.Vlans.AddOrNew(newVlan);
                                 newVlan.NetworkDevice = thisRouter;
@@ -55,7 +56,8 @@ namespace getnet.core
                             {
                                 VlanNumber = vlan.VlanNumber,
                                 RawVlanIP = vlan.IPNetwork.Network.ToInt(),
-                                RawVlanSM = vlan.IPNetwork.Netmask.ToInt()
+                                RawVlanSM = vlan.IPNetwork.Netmask.ToInt(),
+                                Site = site
                             });
                             uow.Save();
                             var newVlan = uow.Repo<core.Model.Entities.Vlan>().GetByID((int)changes.CurrentValues["VlanId"]);

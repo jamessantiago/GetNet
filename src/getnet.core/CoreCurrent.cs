@@ -9,6 +9,8 @@ using Newtonsoft.Json;
 using System.Text;
 using Microsoft.Extensions.Primitives;
 using getnet.core.ssh;
+using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 
 namespace getnet
 {
@@ -38,6 +40,8 @@ namespace getnet
         public static string ConfigFile { get; private set; }
 
         public const string ENTROPY = "getnet";
+
+        public static IMemoryCache MemCache = new MemoryCache(new MemoryCacheOptions());
         
     }
 }

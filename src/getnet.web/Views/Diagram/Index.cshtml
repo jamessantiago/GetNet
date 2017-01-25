@@ -1,0 +1,32 @@
+﻿@model IEnumerable<string>
+@{
+    ViewData["Title"] = "Diagrams";
+    ViewData["Dependencies"] = Dependencies.GetNetMain;
+}
+
+
+<div class="mdl-layout mdl-js-layout mdl-layout--fixed-drawer">
+    <div class="mdl-layout__drawer getnet-inner-drawer mdl-shadow--2dp">
+        <nav class="mdl-navigation">
+            @foreach (var site in Model)
+            {
+                <a class="mdl-navigation__link diagram-link" href="#" data-site="@Html.UrlEncoder.Encode(site)">@site</a>
+            }
+        </nav>
+    </div>
+    <main class="mdl-layout__content getnet-inner-content">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--10-col" id="viz-graph"></div>
+    </main>
+</div>
+
+
+@section scripts {
+    <script>
+        $(".diagram-link").on('click', function () {
+            $("#fullpage-loading").show();
+            $("#viz-graph").load('/diagram/viz/' + $(this).data('site'), function () {
+                $("#fullpage-loading").hide();
+            });
+        });
+    </script>
+}

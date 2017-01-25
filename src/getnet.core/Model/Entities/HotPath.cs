@@ -25,6 +25,7 @@ namespace getnet.core.Model.Entities
 
         public HotPathStatus Status { get; set; }
         
+        [Required]
         public Site Site { get; set; }
     }
 }

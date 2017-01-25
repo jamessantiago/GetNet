@@ -31,6 +31,7 @@ namespace getnet.core.Model.Entities
         [NotMapped]
         public IPNetwork IPNetwork => IPNetwork.Parse(SubnetIP, SubnetSM);
 
+        [Required]
         public virtual Site Site { get; set; }
 
         public static Expression<Func<Subnet, bool>> SearchPredicates(string text)

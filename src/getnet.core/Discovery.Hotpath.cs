@@ -32,6 +32,7 @@ namespace getnet.core
                         var existingPath = uow.Repo<HotPath>().Get(d => d.Site == site && d.Interface == tunnel.OutPort && d.RawMonitorIP == thisIp).FirstOrDefault();
                         if (existingPath == null)
                         {
+                            var dbsite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "HotPaths").First();
                             var change = uow.Repo<HotPath>().Insert(new HotPath()
                             {
                                 MonitorDeviceHostname = tunnel.Hostname,
@@ -39,10 +40,10 @@ namespace getnet.core
                                 Name = tunnel.OutPort,
                                 Interface = tunnel.OutPort,
                                 Type = HotpathType.Tunnel,
-                                Status = HotPathStatus.Online
+                                Status = HotPathStatus.Online,
+                                Site = dbsite
                             });
                             uow.Save();
-                            var dbsite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "HotPaths").First();
                             dbsite.HotPaths.AddOrNew(uow.Repo<HotPath>().GetByID((int)change.CurrentValues["HotPathId"]));
                             uow.Save();
                         }

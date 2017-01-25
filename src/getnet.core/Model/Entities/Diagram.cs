@@ -19,6 +19,7 @@ namespace getnet.core.Model.Entities
         [StringLength(255)]
         public string FilePath { get; set; }
 
+        [Required]
         public virtual Site Site { get; set; }
     }
 }

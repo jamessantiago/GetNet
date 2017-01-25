@@ -29,7 +29,8 @@ namespace getnet.core
                         {
                             RawSubnetIP = vlan.RawVlanIP,
                             RawSubnetSM = vlan.RawVlanSM,
-                            Type = SubnetTypes.Vlan
+                            Type = SubnetTypes.Vlan,
+                            Site = thisSite
                         };
                         thisSite.Subnets.AddOrNew(newSub);
                         uow.Save();
@@ -48,7 +49,8 @@ namespace getnet.core
                                 var newSub = new Subnet
                                 {
                                     RawSubnetIP = i.IPNetwork.Network.ToInt(),
-                                    RawSubnetSM = i.IPNetwork.Netmask.ToInt()
+                                    RawSubnetSM = i.IPNetwork.Netmask.ToInt(),
+                                    Site = thisSite
                                 };
                                 switch (i.Interface[0].ToString().ToLower())
                                 {

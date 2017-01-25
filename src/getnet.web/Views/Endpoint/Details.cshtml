@@ -29,7 +29,7 @@
         <p><b>Last Rediscovery</b></p>
         <p><b>Details</b></p>
     </div>
-    <p>@Model.Details</p>
+    <p>@(Model.ReservationComment ?? Model.Details)</p>
 </div>
 
 <div class="getnet-inner-grid mdl-cell--8-col mdl-grid">
@@ -57,6 +57,8 @@
         </table>
     </div>
 
+    @if (Model.NetworkDevice != null)
+    {
     <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
         <h4>Connected Network Device</h4>
         <table class="mdl-data-table" width="100%" cellspacing="0">
@@ -80,6 +82,7 @@
             </tbody>
         </table>
     </div>
+    }
 </div>
 
 

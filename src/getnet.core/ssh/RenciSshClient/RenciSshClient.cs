@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Renci.SshNet;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace getnet.core.ssh
 {
@@ -35,7 +36,15 @@ namespace getnet.core.ssh
             logger.Debug(string.Format("Running '{0}' against {1}", command, client.ConnectionInfo.Host), WhistlerTypes.Ssh);
             List <T> results = new List<T>();
             var executor = new T();
-            var cmdResults = client.RunCommand(command);
+            object cacheCmd = null;
+            SshCommand cmdResults = null;
+            if (CoreCurrent.MemCache.TryGetValue(client.ConnectionInfo.Host + command, out cacheCmd))
+                cmdResults = cacheCmd as SshCommand;
+            if (cmdResults == null)
+            {
+                cmdResults = client.RunCommand(command);
+                CoreCurrent.MemCache.Set(client.ConnectionInfo.Host + command, cmdResults, TimeSpan.FromMinutes(1));
+            }
             LastCommand = cmdResults;
             if (cmdResults.ExitStatus != 0)
             {

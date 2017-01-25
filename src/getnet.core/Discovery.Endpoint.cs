@@ -19,7 +19,7 @@ namespace getnet.core
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
-                    var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "RemoteNetworkDeviceConnections").First();
+                    var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "RemoteNetworkDeviceConnections,RemoteNetworkDeviceConnections.ConnectedNetworkDevice").First();
                     var arps = router.ManagementIP.Ssh().Execute<Arp>().GroupBy(d => d.Mac).Select(d => new Arp
                     {
                         Interface = d.First().Interface,
@@ -119,17 +119,18 @@ namespace getnet.core
 
                             if (movedDevice != null || existingDevice == null)
                             {
+                                var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices,Vlans,Vlans.Devices").First();
                                 var change = uow.Repo<Device>().Insert(new Device
                                 {
                                     MAC = thismac,
                                     RawIP = arp.IP.ToInt(),
                                     DiscoveryDate = DateTime.UtcNow,
                                     LastSeenOnline = DateTime.UtcNow,
-                                    Port = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Interface
+                                    Port = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Interface,
+                                    Site = thisSite
                                 });
                                 uow.Save();
                                 existingDevice = uow.Repo<Device>().GetByID((int)change.CurrentValues["DeviceId"]);
-                                var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Devices,Vlans,Vlans.Devices").First();
                                 thisSite.Vlans.FirstOrDefault(d => IPNetwork.Contains(d.IPNetwork, existingDevice.IP))?.Devices.AddOrNew(existingDevice);
                                 thisSite.Devices.AddOrNew(existingDevice);
                                 if (existingDevice.Port.HasValue())

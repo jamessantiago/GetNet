@@ -60,8 +60,8 @@
             @if (ViewData["SiteId"] == null)
             {
                 @:$(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
-                                                            @:ca = 0;
-                                                        }
+                                                                                    @:ca = 0;
+                                                                                }
 
             $(row).attr('id', data[4 - ca] + "_row");
             $(row).children("td").last().addClass("pingme");
@@ -81,7 +81,7 @@
             componentHandler.upgradeElements(document.querySelectorAll('.devbuts'));
         },
         drawCallback: function () {
-            componentHandler.upgradeElements(document.querySelectorAll('.devbuts'));            
+            componentHandler.upgradeElements(document.querySelectorAll('.devbuts'));
         }
     });
 
@@ -92,6 +92,10 @@
                 '<span class="visuallyhidden">NetworkDevice</span>' +
                 '</button>' +
                 '<ul id="devlst" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="dtblbut">' +
+                @if (ViewData["SiteId"] != null)
+                {
+                @:'<li class="mdl-menu__item" onclick="getnet.get(\'/site/rediscoverendpoints/@ViewData["SiteId"]\');getnet.Snacks.loadSnacks()">Rediscover</li>' +
+                }
                 '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
                 '</ul>');
     componentHandler.upgradeElement(document.querySelector('#devlst'));

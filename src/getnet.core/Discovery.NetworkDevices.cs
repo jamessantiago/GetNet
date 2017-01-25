@@ -35,7 +35,8 @@ namespace getnet.core
                         Hostname = nei.Hostname,
                         Model = nei.Model,
                         RawManagementIP = nei.IP.ToInt(),
-                        Capabilities = nei.Capabilities.GetCaps()
+                        Capabilities = nei.Capabilities.GetCaps(),
+                        Site = device.Site
                     };
                     var newDeviceChanges = uow.Repo<NetworkDevice>().Insert(newDevice);
                     uow.Save();

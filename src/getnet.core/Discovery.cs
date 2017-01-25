@@ -15,7 +15,7 @@ namespace getnet.core
         private static Whistler logger = new Whistler(typeof(Discovery).FullName);
         private static ConcurrentDictionary<int, DateTime> runningDiscoveries = new ConcurrentDictionary<int, DateTime>();
 
-        public async static void RunFullSiteDiscovery(int siteId)
+        public static bool CanRun(int siteId)
         {
             DateTime runningdisco = new DateTime(0);
             runningDiscoveries.TryGetValue(siteId, out runningdisco);
@@ -30,12 +30,25 @@ namespace getnet.core
                 else
                 {
                     logger.Info("Site discovery request canceled, another discovery is already running since " + runningdisco.ToRelativeTime(), WhistlerTypes.NetworkDiscovery, siteId);
-                    return;
+                    return false;
                 }
-            } else
+            }
+            else
             {
                 runningDiscoveries.TryAdd(siteId, DateTime.UtcNow);
             }
+            return true;
+        }
+
+        public static void RunComplete(int siteId)
+        {
+            DateTime runningdisco = new DateTime(0);
+            runningDiscoveries.TryRemove(siteId, out runningdisco);
+        }
+
+        public async static void RunFullSiteDiscovery(int siteId)
+        {
+            
 
             logger.Info("Starting site configuration", WhistlerTypes.NetworkDiscovery, siteId);
             Site site = null;
@@ -74,7 +87,6 @@ namespace getnet.core
                 logger.Error("Failed to complete all network discovery actions", ex, WhistlerTypes.NetworkDiscovery);
             } finally
             {
-                runningDiscoveries.TryRemove(siteId, out runningdisco);
             }
         }
     }

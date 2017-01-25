@@ -8,7 +8,7 @@ namespace getnet.core.Model.Entities
 {
     public class NetworkDeviceConnection
     {
-        public int NetworkDeviceNetworkDeviceConnectionId { get; set; }
+        public int NetworkDeviceConnectionId { get; set; }
 
         public int NetworkDeviceId { get; set; }
         
@@ -20,7 +20,10 @@ namespace getnet.core.Model.Entities
         [StringLength(100)]
         public string ConnectedDevicePort { get; set; }
 
+        [Required]
         public virtual NetworkDevice NetworkDevice { get; set; }
+
+        [Required]
         public virtual NetworkDevice ConnectedNetworkDevice { get; set; }
     }
 

@@ -77,10 +77,12 @@ namespace getnet.Controllers
             return View();
         }
 
+        [HttpPost]
         [Authorize(Roles = Roles.GlobalAdmins)]
-        public IActionResult Delete(int id)
+        public IActionResult Delete(int siteid)
         {
-            uow.Repo<Site>().Delete(uow.Repo<Site>().Get(filter: d => d.SiteId == id, includeProperties: "HotPaths").First());
+            var includes = "Location,HotPaths,NetworkDevices,Subnets,Vlans,PointOfContacts,Devices,NetworkDevices.RemoteNetworkDeviceConnections,NetworkDevices.LocalNetworkDeviceConnections";
+            uow.Repo<Site>().Delete(uow.Repo<Site>().Get(filter: d => d.SiteId == siteid, includeProperties: includes).First());
             uow.Save();
             return RedirectToAction("index", "site");
         }
@@ -180,23 +182,27 @@ namespace getnet.Controllers
                         return;
                     }
 
+                    var site = new Site()
+                    {
+                        Name = router.Hostname + "_Site",
+                        Status = SiteStatus.Online
+                    };
+                    uow.Repo<Site>().Insert(site);
+                    uow.Save();
+
                     NetworkDevice device = new NetworkDevice()
                     {
                         Hostname = router.Hostname,
                         Model = router.Model,
                         RawManagementIP = ip.IpToInt(),
                         Capabilities = NetworkCapabilities.Router,
-                        ChassisSerial = router.Serial
+                        ChassisSerial = router.Serial,
+                        Site = site
                     };
                     var devchanges = uow.Repo<NetworkDevice>().Insert(device);
+                    site.NetworkDevices.AddOrNew(device);
                     uow.Save();
-                    var site = new Site()
-                    {
-                        Name = router.Hostname + "_Site",
-                        NetworkDevices = new List<NetworkDevice>() { device }
-                    };
-                    uow.Repo<Site>().Insert(site);
-                    uow.Save();
+                    
 
                     siteId = uow.Repo<Site>().Get(d => d.Name == site.Name).First().SiteId;
                     HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
@@ -223,5 +229,30 @@ namespace getnet.Controllers
             Task.Run(() => Discovery.RunFullSiteDiscovery(id));
         }
 
+        [Authorize(Roles = Roles.GlobalAdmins)]
+        public void RediscoverEndpoints(int id)
+        {
+            if (Discovery.CanRun(id))
+            {
+                logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, id);
+                var site = uow.Repo<Site>().Get(d => d.SiteId == id, includeProperties: "NetworkDevices").FirstOrDefault();
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        Discovery.DiscoverEndpoints(site).Wait();
+                        logger.Info("Endpoint discovery complete", WhistlerTypes.NetworkDiscovery, id);
+                    }
+                    catch (Exception ex) {
+                        logger.Error(ex, WhistlerTypes.NetworkDiscovery);
+                        logger.Info("Endpoint discovery failed to complete", WhistlerTypes.NetworkDiscovery, id);
+                    }
+                    finally
+                    {
+                        Discovery.RunComplete(id);
+                    }
+                });
+            }
+        }
     }
 }

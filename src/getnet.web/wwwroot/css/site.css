@@ -22,6 +22,14 @@ html, body {
     width: 380px;
 }
 
+.getnet-inner-drawer {
+    margin: 8px 0 0 0;
+}
+
+.getnet-inner-content {
+    text-align:center;
+}
+
 .getnet-hero {
     background-image: url(../images/hero.jpg);
 }

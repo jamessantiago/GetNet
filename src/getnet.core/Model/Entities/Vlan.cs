@@ -37,6 +37,8 @@ namespace getnet.core.Model.Entities
         public virtual NetworkDevice NetworkDevice { get; set; }
         public virtual ICollection<Device> Devices { get; set; }
         public virtual Tenant Tenant { get; set; }
+
+        [Required]
         public virtual Site Site { get; set; }
 
         public static Expression<Func<Vlan, bool>> SearchPredicates(string text)

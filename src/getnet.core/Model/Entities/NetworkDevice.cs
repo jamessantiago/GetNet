@@ -42,7 +42,8 @@ namespace getnet.core.Model.Entities
         public virtual ICollection<Vlan> Vlans { get; set; }
 
         public virtual ICollection<Device> Devices { get; set; }
-
+        
+        [Required]
         public virtual Site Site { get; set; }
 
         public override string ToString()
@@ -90,7 +91,6 @@ namespace getnet.core.Model.Entities
             modelBuilder.Entity<NetworkDevice>().HasIndex("Model");
             modelBuilder.Entity<NetworkDevice>().HasIndex("RawManagementIP")
                 .IsUnique();
-            
         }
     }
 }

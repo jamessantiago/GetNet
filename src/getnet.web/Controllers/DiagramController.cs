@@ -14,6 +14,12 @@ namespace getnet.Controllers
     [RedirectOnDbIssue]
     public class DiagramController : BaseController
     {
+        [Route("/diagrams")]
+        public IActionResult Index()
+        {
+            return View(uow.Repo<Site>().Get().Select(d => d.Name).OrderBy(d => d));
+        }
+
         public IActionResult Sigma(int id)
         {
             var site = uow.Repo<Site>().GetByID(id);
@@ -28,9 +34,14 @@ namespace getnet.Controllers
             return Json(new { nodes = nodes, edges = edges });
         }
 
-        public IActionResult Viz(int id)
+        public IActionResult Viz(string id)
         {
-            var site = uow.Repo<Site>().Get(d => d.SiteId == id, includeProperties: "HotPaths,NetworkDevices,NetworkDevices.RemoteNetworkDeviceConnections").FirstOrDefault();
+            int siteId;
+            Site site = null;
+            if (int.TryParse(id, out siteId))
+                site = uow.Repo<Site>().Get(d => d.SiteId == siteId, includeProperties: "HotPaths,NetworkDevices,NetworkDevices.RemoteNetworkDeviceConnections").FirstOrDefault();
+            else
+                site = uow.Repo<Site>().Get(d => d.Name == id, includeProperties: "HotPaths,NetworkDevices,NetworkDevices.RemoteNetworkDeviceConnections").FirstOrDefault();
             var sb = new StringBuilder();
             sb.Append(@"graph """ + site.Name + @""" { ");
             sb.Append(@"subgraph cluster_0 { label=""Hotpath Connections""; ");
