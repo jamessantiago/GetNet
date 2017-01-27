@@ -9,6 +9,9 @@ using Quartz;
 using Quartz.Impl;
 using Quartz.Logging;
 using getnet.service.Jobs;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using System.IO;
 
 namespace getnet.service
 {
@@ -19,6 +22,13 @@ namespace getnet.service
 
         public static async void Run()
         {
+            var host = new WebHostBuilder()
+                .UseContentRoot(Directory.GetCurrentDirectory())
+                .UseKestrel()
+                .UseStartup<Startup>()
+                .UseUrls("http://localhost:5002")
+                .Build();
+
             ISchedulerFactory sf = new StdSchedulerFactory();
             Current.Scheduler = await sf.GetScheduler();
             using (UnitOfWork uow = new UnitOfWork())
@@ -69,7 +79,12 @@ namespace getnet.service
                 }
             }
 
+            logger.Info("Starting scheduler", WhistlerTypes.ServiceScheduling);
             await Current.Scheduler.Start();
+
+            logger.Info("Starting nancy API router against http://localhost:5002", WhistlerTypes.ServiceControl);
+            Console.WriteLine("Default API key: {0}", CoreCurrent.Configuration.GetSecure("Api:Keys:Default"));
+            host.Start();
 
             try { _resetEvent.WaitOne(); } catch { }
             await Current.Scheduler.Shutdown();

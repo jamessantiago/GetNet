@@ -94,7 +94,7 @@
                 '<ul id="devlst" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="dtblbut">' +
                 @if (ViewData["SiteId"] != null)
                 {
-                @:'<li class="mdl-menu__item" onclick="getnet.get(\'/site/rediscoverendpoints/@ViewData["SiteId"]\');getnet.Snacks.loadSnacks()">Rediscover</li>' +
+                @:'<li class="mdl-menu__item" onclick="getnet.get(\'/site/rediscoverendpoints/@ViewData["SiteId"]\');getnet.refresh.run(\'Snacks\')">Rediscover</li>' +
                 }
                 '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
                 '</ul>');

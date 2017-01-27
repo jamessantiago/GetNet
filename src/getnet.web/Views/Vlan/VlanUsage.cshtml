@@ -56,7 +56,7 @@
         <p>
             Reserving this IP will create a endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
         </p>
-        <form action="/endpoint/reserve" id="thisform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.Snacks.loadSnacks()" data-ajax-reset="true">
+        <form action="/endpoint/reserve" id="thisform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.refresh.run('Snacks')" data-ajax-reset="true">
             <input type="hidden" id="dialog-ip" name="dialog-ip" value="" />
             <input type="hidden" id="dialog-ip" name="vlanid" value="@Model.VlanId" />
             <div mdl-textarea-for="ReservationComment" mdl-label="Reservation Comment" mdl-rows="3" mdl-value=""></div>

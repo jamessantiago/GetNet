@@ -1,0 +1,97 @@
+﻿@model IEnumerable<AlertRule>
+@{
+    ViewData["Title"] = "Alerts for " + Current.User.AccountName;
+    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+}
+
+@if (CoreCurrent.Configuration["Whistler:Smtp:Enabled"] == "false")
+{
+    
+    <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+        <h5>SMTP logging is not enabled.</h5>
+    </div>
+
+}
+else
+{
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored show-dialog">
+        New
+    </button>
+    <table id="alerts" class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+            <tr>
+                <th>Log Level</th>
+                <th>Type</th>
+                <th>Site</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var alert in Model)
+            {
+                <tr>
+                    <td><button class="mdl-button mdl-js-button mdl-button--icon" title="Remove this alert" onclick="window.location = '/a/deletealert/@alert.AlertRuleId'"><i class="material-icons">delete</i></button> @alert.LogLevel</td>
+                    <td>@alert.Type</td>
+                    <td>@(alert.Site?.Name ?? "Any")</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section dialog {
+    <dialog class="mdl-dialog">
+        <h5 class="mdl-dialog__title">New Alert</h5>
+        <div class="mdl-dialog__content">
+            <p>
+                Add a new alert.
+            </p>
+            <form action="/a/addalert" method="post">
+                <div mdl-select-for="LogLevel" mdl-label="Log Level"
+                     mdl-default-value="0" mdl-default-value-text="@AlertLogLevel.All.ToString()"
+                     mdl-values="@typeof(AlertLogLevel).EnumToSelectList()"></div>
+
+                <div mdl-select-for="Type" mdl-label="Type"
+                     mdl-default-value="" mdl-default-value-text="All"
+                     mdl-values="@Current.uow.Repo<Event>().Get().Select(d => d.Type).Distinct().OrderBy(d => d).ToSelectList(k => k, v => v)"></div>
+
+                <div mdl-select-for="SiteName" mdl-label="Site"
+                     mdl-default-value="Any" mdl-default-value-text="Any"
+                     mdl-values="@Current.uow.Repo<Site>().Get().Select(d => d.Name).OrderBy(d => d).ToSelectList(k => k, v => v)"></div>
+
+                <div class="mdl-dialog__actions">
+                    <button mdl-submit-button="Submit"></button>
+                    <button type="button" class="mdl-button close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+}
+
+@section scripts {
+    <script>
+
+        $('#alerts').DataTable({
+            columnDefs: [
+                {
+                    targets: '_all',
+                    className: 'mdl-data-table__cell--non-numeric'
+                }
+            ]
+        });
+
+        var dialog = document.querySelector('dialog');
+        if (!dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
+        }
+        $(".show-dialog").on('click', function () {
+            dialog.showModal();
+        });
+        dialog.querySelector('.close').addEventListener('click', function () {
+            dialog.close();
+        });
+    </script>
+}
+
+}

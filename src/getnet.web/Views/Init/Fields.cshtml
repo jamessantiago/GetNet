@@ -1,0 +1,13 @@
+﻿@{
+    ViewData["Title"] = "Fields";
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
+}
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <form action="/init/addlocations" method="post">
+        <h4>Locations</h4>
+        <div mdl-textarea-for="fields" mdl-label="Locations" mdl-rows="10" mdl-value="@ViewData["Locations"]" mdl-errors="@ViewData.ModelState.ErrorsFor("fields")"></div>
+        <br />
+        <button mdl-submit-button="Save"></button>
+    </form>
+</div>

@@ -31,7 +31,7 @@
                                 <i class="material-icons">more_vert</i>
                             </button>
                             <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-left" for="siteset">
-                                <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId');getnet.Snacks.loadSnacks()">Rediscover</li>
+                                <li class="mdl-menu__item" onclick="getnet.get('/site/rediscover/@Model.SiteId');getnet.refresh.run('Snacks')">Rediscover</li>
                                 <li class="mdl-menu__item" onclick="window.location.href = '/site/edit/@Model.SiteId'">Edit</li>
                                 <li class="mdl-menu__item" id="show-dialog">Delete</li>
                             </ul>

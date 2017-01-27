@@ -99,6 +99,7 @@
                 <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
                     <li class="mdl-menu__item" onclick="window.location.href = '/newsite'">Discovery</li>
                     <li class="mdl-menu__item" onclick="window.location.href = '/configure'">Configuration</li>
+                    <li class="mdl-menu__item" onclick="window.location.href = '/service'">Service</li>
                 </ul>
                 }
             </div>
@@ -117,7 +118,8 @@
                     </button>
                     <ul class="mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="accbtn">
                         @if (User.Identity.IsAuthenticated)
-                            {
+                        {
+                            <li class="mdl-menu__item" onclick="window.location.href = '/a/alerts'">Alerts</li>
                             <li class="mdl-menu__item" onclick="window.location.href = '/logoff'">Logoff</li>
                         }
                         else

@@ -116,7 +116,7 @@ namespace getnet.core.Model
 
         private void ConfigureServices(IServiceCollection services)
         {
-            services.AddSingleton<getnetContext>();
+            services.AddScoped<getnetContext>();
             var q = from t in Assembly.Load(new AssemblyName("getnet.core")).GetTypes()
                     where !typeof(IModelBuildItem).IsAssignableFrom(t) &&
                             t != typeof(IModelBuildItem) &&

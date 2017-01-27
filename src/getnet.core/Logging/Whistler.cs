@@ -45,7 +45,6 @@ namespace getnet
         {
             LogEventInfo ev = new LogEventInfo(LogLevel.Info, _logger.Name, message);
             ev.Properties["type"] = type;
-
             _logger.Log(ev);
         }
 

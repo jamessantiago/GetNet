@@ -12,12 +12,13 @@ namespace getnet.Model
         public int timeout = 10000;
         public string actionHandler { get; set; }
         public string actionText { get; set; }
+        public string timestamp = DateTime.UtcNow.ToString("o");
         public string AsJson()
         {
             if (actionHandler.HasValue())
                 return JsonConvert.SerializeObject(this);
             else
-                return JsonConvert.SerializeObject(new ToastMessage() { message = this.message, timeout = this.timeout });
+                return JsonConvert.SerializeObject(new ToastMessage() { message = this.message, timeout = this.timeout, timestamp = this.timestamp });
         }
     }
 
@@ -25,5 +26,6 @@ namespace getnet.Model
     {
         public string message { get; set; }
         public int timeout { get; set; }
+        public string timestamp = DateTime.UtcNow.ToString("o");
     }
 }

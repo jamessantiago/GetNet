@@ -25,7 +25,7 @@ namespace getnet.Helpers
         public override void Process(TagHelperContext context, TagHelperOutput output)
         {
             var html = $@"
-<textarea class=""mdl-textfield__input"" type=""text"" name=""{Field}"" rows=""{Rows ?? 4}"" id=""{Field}"" value=""{FieldValue}""></textarea>
+<textarea class=""mdl-textfield__input"" type=""text"" name=""{Field}"" rows=""{Rows ?? 4}"" id=""{Field}"">{FieldValue}</textarea>
 <label class=""mdl-textfield__label"" for=""{Field}"">{Label}</label>";
 
             output.Attributes.Add("class", "mdl-textfield mdl-js-textfield mdl-textfield--floating-label");

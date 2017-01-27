@@ -32,7 +32,7 @@ namespace getnet.Helpers
             sb.AppendLine($@"
 <input class=""mdl-textfield__input"" id=""{Field}"" name=""{Field}"" value=""{FieldValueText}"" type=""text"" readonly tabIndex=""-1"" data-val=""{FieldValue}"" />
 <label class=""mdl-textfield__label"" for=""{Field}"">{Label}</label>
-<ul class=""mdl-menu mdl-menu--bottom-left mdl-js-menu"" for=""{Label}"">");
+<ul class=""mdl-menu mdl-menu--bottom-left mdl-js-menu"" for=""{Field}"">");
 
             foreach (SelectListItem val in Values.Items)
             {

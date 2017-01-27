@@ -53,7 +53,7 @@ namespace getnet
             }
         }
 
-        public static void AddSnackMessage(this ISession session, string message, params string[] args)
+        public static void AddSnackMessage(this ISession session, string message, params object[] args)
         {
             var snack = new SnackMessage() { message = args != null ? string.Format(message, args) : message };
             session.AddSnackMessage(snack);

@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "Configure Service";
+    ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
+}
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <h4>Set Service API URL</h4>
+    <form action="/service/seturl" id="service-url" method="post">
+        <div mdl-textbox-for="Url" mdl-label="Url" mdl-value="@CoreCurrent.Configuration["Data:GetNetService:Url"]" mdl-errors="@ViewData.ModelState.ErrorsFor("Url")" />
+        <div mdl-textbox-for="DefaultKey" mdl-label="DefaultKey" mdl-value="@CoreCurrent.Configuration.GetSecure("Api:Keys:Default")" mdl-errors="@ViewData.ModelState.ErrorsFor("DefaultKey")" />
+        <br />
+        <button mdl-submit-button="Save"></button>
+    </form>
+</div>
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    <h4>Set Service API Keys</h4>
+    <p>This will set the admin and read keys needed for GetNet to communicate with the GetNet service.</p>
+    <form action="/service/setkeys" id="service-keys" method="post">
+        <div mdl-textbox-for="AdminKey" mdl-label="Admin Key" mdl-value="@CoreCurrent.Configuration.GetSecure("Api:Keys:Admin")" mdl-errors="@ViewData.ModelState.ErrorsFor("AdminKey")" />
+
+        <div mdl-textbox-for="ReadKey" mdl-label="Read Key" mdl-value="@CoreCurrent.Configuration.GetSecure("Api:Keys:Read")" mdl-errors="@ViewData.ModelState.ErrorsFor("ReadKey")" />
+
+        <br />
+        <button mdl-submit-button="Publish"></button>
+        <button class="generate-keys mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent" type="button">Generate New Keys</button>
+    </form>
+</div>
+
+@section scripts {
+    <script>
+        $('.generate-keys').on("click", function () {
+            var newkeys = $.getJSON("/service/newkeys", function (data) {
+                $("#AdminKey").val(data.adminKey);
+                $("#ReadKey").val(data.readKey);
+            })
+        });
+    </script>
+}

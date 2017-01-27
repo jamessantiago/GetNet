@@ -40,7 +40,7 @@ namespace getnet.core.Logging
                 foreach (var alert in alerts)
                 {
 
-                    if (alert.LogLevel == "All" || LogLevel.FromString(alert.LogLevel) <= logEvent.Level)
+                    if (alert.LogLevel == AlertLogLevel.All || LogLevel.FromString(alert.LogLevel.ToString()) <= logEvent.Level)
                     {
                         string email = alert.User.Email;
                         if (email.IsValidEmailAddress() && !finalemail.Contains(email))

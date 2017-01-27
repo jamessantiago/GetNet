@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Http;
 using System.Threading;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.AspNetCore.Authorization;
+using System.Text;
 
 namespace getnet.Controllers
 {
@@ -112,6 +113,53 @@ namespace getnet.Controllers
             CoreCurrent.Configuration.Set("Whistler:Smtp:SubjectLayout", collection["smtpsubject"]);
             CoreCurrent.Configuration.Set("Whistler:Db:Enabled", collection["databaseenabled"] == "on" ? "true" : "false");
             return PartialView("_success", "Successfully configured logging");
+        }
+
+        private string GetLocations()
+        {
+            var locs = uow.Repo<Location>().Get().ToList();
+            StringBuilder sb = new StringBuilder();
+            foreach (var loc in locs.OrderBy(d => d.Name))
+            {
+                sb.AppendLine(loc.Name);
+            }
+            return sb.ToString();
+        }
+
+        public IActionResult Fields()
+        {
+            ViewData["Locations"] = GetLocations();
+            return View();
+        }
+
+        [HttpPost]
+        public IActionResult AddLocations(string fields)
+        {
+            var repo = uow.Repo<Location>();
+            int count = 0;
+            int removed = 0;
+            var newfields = fields.Split(Environment.NewLine.ToCharArray());
+            foreach (var field in newfields)
+            {
+                var thisfield = field.Trim();
+                if (!thisfield.HasValue() || repo.Get(d => d.Name == thisfield).Any())
+                    continue;
+
+                repo.Insert(new Location { Name = thisfield });
+                count++;
+            }
+            foreach (var field in repo.Get())
+            {
+                if (!newfields.Any(d => d == field.Name.Trim()))
+                {
+                    repo.Delete(field);
+                    removed++;
+                }
+            }
+            uow.Save();
+            HttpContext.Session.AddSnackMessage("Added {0} new locations and removed {1}", count, removed);
+            ViewData["Locations"] = GetLocations();
+            return RedirectToAction("Fields");
         }
 
     }

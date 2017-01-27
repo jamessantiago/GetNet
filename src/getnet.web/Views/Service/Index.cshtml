@@ -1,0 +1,26 @@
+﻿@{
+    ViewData["Title"] = "GetNet Service";
+    ViewData["Dependencies"] = Dependencies.GetNetMain;
+    var client = new getnet.Client.ServiceClient(getnet.Client.ApiKeyType.Read);
+    var status = client.IsOnline() ? "Online" : "Unreachable";
+}
+
+
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    @if (client.IsConfigured())
+    {
+        <h3 class="@(status == "Online" ? "mdl-color-text--green" : "mdl-color-text--red")">@status <button class="mdl-button mdl-js-button mdl-button--icon" title="Configure" onclick="window.location = '/service/configure'"><i class="material-icons">settings</i></button></h3>
+        
+        <h4>Scheduled Jobs</h4>
+        @foreach (var job in client.GetJobs())
+        {
+            <p><button class="mdl-button mdl-js-button mdl-button--icon" title="Run now" onclick="window.location = '/service/runjob/@Html.UrlEncoder.Encode(job.Item1)'"><i class="material-icons">play_circle_outline</i></button> @job.Item1</p>
+        }
+
+    }
+    else
+    {
+        <h4>The API connection to the GetNet service has not been configured.</h4>
+        <button mdl-link-button="Configure" mdl-href="/service/configure"></button>
+    }
+</div>

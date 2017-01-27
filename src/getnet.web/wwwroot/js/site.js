@@ -36,15 +36,20 @@ window.getnet = (function () {
     }
 
     //#region Refresh
-    function registerRefresh(name, callback, interval, paused) {
+    function registerRefresh(name, callback, interval, intervalMax, intervalStepMax, paused) {
         var refreshData = {
             name: name,
             func: callback,
+            paused: paused,
             interval: interval,
-            paused: paused
+            intervalMax: intervalMax,
+            intervalStepMax: intervalStepMax,
+            start: GetUTCNow(),
+            currentInterval: interval
         };
         registeredRefreshes[name] = refreshData;
-        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, refreshData.interval);
+        getnet.log("Registered " + name)
+        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, logslider(refreshData));
     }
 
     function runRefresh(name) {
@@ -57,7 +62,30 @@ window.getnet = (function () {
             return;
         }
         refreshData.func();
-        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, refreshData.interval);
+        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, logslider(refreshData));
+    }
+
+    function logslider(refreshData) {
+        if (refreshData.intervalMax == null)
+            return refreshData.interval;
+
+        var now = GetUTCNow();
+        position = (now - refreshData.start);
+
+        if (position >= refreshData.intervalStepMax)
+            return getnet.Snacks.refreshMax;
+
+        var minp = 0;
+        var maxp = refreshData.intervalStepMax;
+
+        var minv = Math.log(refreshData.interval);
+        var maxv = Math.log(refreshData.intervalMax);
+
+        var scale = (maxv - minv) / (maxp - minp);
+        var logPosition = Math.exp(minv + scale * (position - minp));
+        refreshData.currentInterval = logPosition;
+        getnet.log("Refresh adjusted for " + refreshData.name + " to " + logPosition + " at step " + position);
+        return logPosition
     }
 
     function pauseRefresh(name) {
@@ -107,7 +135,19 @@ window.getnet = (function () {
             }
         }
     }
-    //#endregion Refresh
+
+    function currentInterval(name) {
+        if (name && registeredRefreshes[name]) {
+            return registeredRefreshes[name].currentInterval;            
+        }
+    }
+
+    function GetUTCNow(now) {
+        if (now == null)
+            now = new Date();
+        return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())
+    }
+        //#endregion Refresh
 
     function ShowSnack(data) {
         componentHandler.upgradeElement(document.querySelector('#global-snack'));
@@ -272,7 +312,8 @@ window.getnet = (function () {
             pause: pauseRefresh,
             resume: resumeRefresh,
             run: runRefresh,
-            registered: registeredRefreshes
+            registered: registeredRefreshes,
+            logtime: currentInterval
         },
         copy: CopyToClipboard,
         selectText: SelectElementText,
@@ -283,7 +324,8 @@ window.getnet = (function () {
         ping: PingFromServer,
         pingall: PingAllFromServer,
         get: GetServerData,
-        hipkuSnack: HipkuEncodeToSnack
+        hipkuSnack: HipkuEncodeToSnack,
+        utcnow: GetUTCNow
     }
 })();
 
@@ -496,22 +538,51 @@ getnet.Forms = (function () {
 
 getnet.Snacks = (function () {
     function init(options) {
+        if (options.refresh == null)
+            options.refresh = 15;
+        if (options.refreshMax == null)
+            options.refreshMax = 300;
         getnet.Snacks.options = options;
         getnet.Snacks.failureCount = 0;
         getnet.Snacks.retryCount = 3;
         LoadSnacks();
         if (options.refresh) {
-            getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 1000);
+            getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 1000, getnet.Snacks.options.refreshMax * 1000, getnet.Snacks.options.refreshMax * 2 * 1000);
         }
     }
+
+    
     
     function LoadSnacks() {
+        getnet.log("Loading snacks");
         $.ajax({
             dataType: 'json',
             type: 'GET',
             url: '/a/getsnacks',
             success: function (data) {
+                var adjusteddata = [];
+                for (di = 0; di < data.length || di == data.length - 1; di++) {
+                    var snackDate = new Date(data[di].timestamp);
+                    var now = getnet.utcnow();
+                    getnet.log("Snack " + di + " occured " + (now - snackDate) + "ms ago, logtime is " + getnet.refresh.logtime("Snacks"));
+                    if (snackDate >= (now - getnet.refresh.logtime("Snacks"))) {
+                        adjusteddata.push(data[di]);
+                    } else {
+                        getnet.log("Removing snack " + di + " because it occured before the last snack display");
+                    }
+                }
+                if (adjusteddata.length > 0) {
+                    getnet.log("Adjusted " + data.length + " snacks to " + adjusteddata.length);
+                    data = adjusteddata;
+                }
+
                 $.each(data, function (i, item) {
+                    if (data.length > 1 && (item.timeout * data.length) > getnet.refresh.logtime("Snacks")) {
+                        var newtimeout = (getnet.refresh.logtime("Snacks") - 1) / data.length;
+                        getnet.log("Timeout adjusted for snack " + i + " from " + item.timeout + " to " + newtimeout);
+                        item.timeout = newtimeout;
+                    }
+
                     if (item.actionHandler) {
                         var action = item.actionHandler;
                         item.actionHandler = function () {

@@ -11,10 +11,11 @@ namespace getnet.core.Model
         //do this instead of custom repositories?
         public UserProfile GetUserProfile(string email)
         {
+            var includes = "AlertRules,AlertRules.Site";
             if (!email.HasValue())
                 return null;
 
-            var profile = Repo<UserProfile>().Get(d => d.Email == email).FirstOrDefault();
+            var profile = Repo<UserProfile>().Get(d => d.Email == email, includeProperties: includes).FirstOrDefault();
             if (profile != null)
                 return profile;
             else
@@ -25,7 +26,7 @@ namespace getnet.core.Model
                     Email = email
                 });
                 Save();
-                return Repo<UserProfile>().Get(d => d.Email == email).FirstOrDefault();
+                return Repo<UserProfile>().Get(d => d.Email == email, includeProperties: includes).FirstOrDefault();
             }                
         }
     }

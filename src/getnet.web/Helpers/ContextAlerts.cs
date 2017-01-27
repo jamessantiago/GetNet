@@ -43,18 +43,15 @@ namespace getnet
                             site = uow.Repo<Site>().Get(filter: d => d.Name == routeValues["action"] as string).FirstOrDefault();
 
                         if (site != null)
-                            foreach (var ev in uow.Repo<Event>().Get(d => d.TimeStamp > DateTime.UtcNow.AddSeconds(-15) && d.SiteId == site.SiteId))
+                            foreach (var ev in uow.Repo<Event>().Get(d => d.TimeStamp > DateTime.UtcNow.AddSeconds(-30) && d.SiteId == site.SiteId))
                                 snacks.Add(new SnackMessage
                                 {
-                                    message = ev.Message
+                                    message = ev.Message,
+                                    timestamp = ev.TimeStamp.ToString("o")
                                 });
                     }
                 }
             }
-
-            if (snacks.Count > 1)
-                for (int i = 0; i < snacks.Count; i++)
-                    snacks[i].timeout = 10000 / snacks.Count;
 
             return snacks;
         }

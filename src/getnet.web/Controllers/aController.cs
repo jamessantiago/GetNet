@@ -76,5 +76,43 @@ namespace getnet.Controllers
         {
             return View();
         }
+
+        
+        public IActionResult Alerts()
+        {
+            return View(uow.GetUserProfile(Current.User.AccountName).AlertRules);
+        }
+
+        public IActionResult AddAlert(AlertRule alert, string SiteName)
+        {
+            if (ModelState.IsValid)
+            {
+                if (SiteName != "Any")
+                    alert.Site = uow.Repo<Site>().Get(d => d.Name == SiteName).FirstOrDefault();
+                var chantes = uow.Repo<AlertRule>().Insert(alert);
+                uow.Save();
+                uow.GetUserProfile(Current.User.AccountName).AlertRules.AddOrNew(uow.Repo<AlertRule>().GetByID(chantes.CurrentValues["AlertRuleId"]));
+                uow.Save();
+                HttpContext.Session.AddSnackMessage("Alert added");
+            }
+            else
+            {
+                HttpContext.Session.AddSnackMessage(string.Join("; ", ModelState.Select(d => d.Value)));
+            }
+            return RedirectToAction("Alerts", uow.GetUserProfile(Current.User.AccountName).AlertRules);
+        }
+
+        public IActionResult DeleteAlert(int id)
+        {
+            var alert = uow.Repo<AlertRule>().Get(d => d.AlertRuleId == id, includeProperties: "User").FirstOrDefault();
+            if (alert.User == uow.GetUserProfile(Current.User.AccountName))
+            {
+                uow.GetUserProfile(Current.User.AccountName).AlertRules.Remove(alert);
+                uow.Repo<AlertRule>().Delete(id);
+                uow.Save();
+                HttpContext.Session.AddSnackMessage("Alert removed");
+            }
+            return RedirectToAction("Alerts", uow.GetUserProfile(Current.User.AccountName).AlertRules);
+        }
     }
 }
