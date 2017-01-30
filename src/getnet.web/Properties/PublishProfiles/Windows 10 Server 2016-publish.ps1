@@ -11,8 +11,13 @@ try{
     $publishModulePath = Join-Path (Split-Path $MyInvocation.MyCommand.Path) 'publish-module.psm1'
     Import-Module $publishModulePath -DisableNameChecking -Force
 
+	$getnetModulePath = Join-Path (Split-Path $MyInvocation.MyCommand.Path) 'GetNet-module.psm1'
+    Import-Module $getnetModulePath -DisableNameChecking -Force
+
     # call Publish-AspNet to perform the publish operation
     Publish-AspNet -publishProperties $publishProperties -packOutput $packOutput -pubProfilePath $pubProfilePath
+
+	Publish-MaterialIcons $publishProperties["publishUrl"]
 }
 catch{
     "An error occurred during publish.`n{0}" -f $_.Exception.Message | Write-Error

@@ -41,7 +41,6 @@ namespace getnet.core.Model
         {
             //optionsBuilder.UseSqlServer("Server=.\\SQLEXPRESS;Database=GetNet;Integrated Security=true");
             //optionsBuilder.UseNpgsql("Host=localhost;Port=5432;Database=GetNet;Pooling=true;");
-           
             try
             {
                 if (CoreCurrent.Configuration["Data:DataStore"] == "MSSQL" && CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString").HasValue())

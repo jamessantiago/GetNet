@@ -9,23 +9,20 @@
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--8-col">
     <h3>GetNet Alpha</h3>
     <p>GetNet is currently under heavy development.</p>
-    <p>Snapshot of open issues as of 23 Jan:</p>
+    <p>Snapshot of open issues as of 26 Jan:</p>
     @*Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = ""} "http://gitlab.santiagodevelopment.com/api/v3/projects/43/issues?state=closed&per_page=100" | ConvertFrom-Json*@
     <ul>
+        <li>Create a cleaner "lite" layout</li>
+        <li>Validate ldap connection before setting configuration</li>
+        <li>Add settings for ping behavior</li>
         <li>Add diagram settings page</li>
-        <li>Create a field management page</li>
-        <li>Create ssh cache to store recently successful command results</li>
-        <li>Add https support for kestrel</li>
         <li>Add getnet service job viewer/editor to getnet web</li>
-        <li>Create a home page</li>
         <li>Replace any boilerplatish html with taghelpers</li>
         <li>Create edit pages</li>
         <li>Setup application versioning</li>
         <li>Create way to access stored user sessions</li>
         <li>Store broadcast ip for vlans and subnets and update searchpredicates methods to perform sql level ip containment queries</li>
         <li>Create a user settings page for alert configuration</li>
-        <li>Make the getsnack polling timer to be logorithmic such that longer says on a single page equate to longer polling intervals on a logaritmic scale</li>
-        <li>create communication channel between getnet service and web</li>
         <li>Setup sites and services management using the novel library</li>
         <li>Replace whistler types with enum and convert to strings in events using camel to string</li>
         <li>Add a help system where a button can be placed anywhere that looks up a help entry based on key or prompts to create an entry if missing</li>
@@ -43,10 +40,19 @@
 
     <p>Closed issues:</p>
     <ul>
+        <li>Add endpoint rediscovery</li>
+        <li>Create diagram listing page</li>
+        <li>Create a vlan usage ip view/reserve thing</li>
         <li>Add all the appropriate authorize attributes</li>
+        <li>Create a field management page</li>
+        <li>Create ssh cache to store recently successful command results</li>
+        <li>Add https support for kestrel</li>
         <li>Add vrf support to discovery</li>
+        <li>Create a home page</li>
         <li>Make discovery work for existing sites</li>
         <li>Create "All" pages, table handlers, and search predicate builders for vlans, subnets, and endpoints</li>
+        <li>Make the getsnack polling timer to be logorithmic such that longer says on a single page equate to longer polling intervals on a logaritmic scale</li>
+        <li>create communication channel between getnet service and web</li>
         <li>Add search functionality</li>
         <li>create scheduling system for getnet.service</li>
         <li>Create details pages for network devices and endpoints</li>
@@ -87,8 +93,6 @@
         <li>Create .net core service?</li>
         <li>Build out ssh execution framework</li>
         <li>Add google material design lite</li>
-
-
     </ul>
 </div>
 

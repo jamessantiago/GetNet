@@ -12,28 +12,36 @@ namespace getnet.Client
     public class ServiceClient
     {
         private HttpClient client;
+        public Exception CreationError;
+        public bool IsErrored => CreationError != null;
 
         public ServiceClient(ApiKeyType type)
         {
-            var httpclient = new HttpClient();
-            httpclient.BaseAddress = new Uri(CoreCurrent.Configuration["Data:GetNetService:Url"]);
-            httpclient.DefaultRequestHeaders.Accept.Clear();
-            httpclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            switch (type)
+            try
             {
-                case ApiKeyType.Default:
-                    httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Default"));
-                    break;
-                case ApiKeyType.Read:
-                    httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Read"));
-                    break;
-                case ApiKeyType.Admin:
-                    httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Admin"));
-                    break;
-                default:
-                    break;
+                var httpclient = new HttpClient();
+                httpclient.BaseAddress = new Uri(CoreCurrent.Configuration["Data:GetNetService:Url"]);
+                httpclient.DefaultRequestHeaders.Accept.Clear();
+                httpclient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+                switch (type)
+                {
+                    case ApiKeyType.Default:
+                        httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Default"));
+                        break;
+                    case ApiKeyType.Read:
+                        httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Read"));
+                        break;
+                    case ApiKeyType.Admin:
+                        httpclient.DefaultRequestHeaders.Add("PRIVATE_TOKEN", CoreCurrent.Configuration.GetSecure("Api:Keys:Admin"));
+                        break;
+                    default:
+                        break;
+                }
+                client = httpclient;
+            } catch (Exception ex)
+            {
+                CreationError = ex;
             }
-            client = httpclient;
         }
 
         public bool IsOnline()

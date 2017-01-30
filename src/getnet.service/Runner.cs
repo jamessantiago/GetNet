@@ -17,11 +17,15 @@ namespace getnet.service
 {
     public static class Runner
     {
-        private static AutoResetEvent _resetEvent = new AutoResetEvent(false);
+        public static AutoResetEvent ResetEvent = new AutoResetEvent(false);
         private static Whistler logger = new Whistler(typeof(Runner).FullName);
 
-        public static async void Run()
+        public static void Run()
         {
+            Console.CancelKeyPress += delegate {
+                ResetEvent.Set();
+            };
+
             var host = new WebHostBuilder()
                 .UseContentRoot(Directory.GetCurrentDirectory())
                 .UseKestrel()
@@ -30,9 +34,15 @@ namespace getnet.service
                 .Build();
 
             ISchedulerFactory sf = new StdSchedulerFactory();
-            Current.Scheduler = await sf.GetScheduler();
+            Current.Scheduler = sf.GetScheduler().Result;
             using (UnitOfWork uow = new UnitOfWork())
             {
+                Exception dbTest;
+                if (!uow.TestDatabaseConnection(out dbTest))
+                {
+                    logger.Error(dbTest, WhistlerTypes.ServiceControl);
+                }
+
                 var tasks = uow.Repo<TaskSchedule>().Get();
                 if (!tasks.Any())
                 {
@@ -75,19 +85,25 @@ namespace getnet.service
                                 .Build();
 
                     logger.Info("Setting schedule for " + task.Name + " at " + task.CronSchedule, WhistlerTypes.ServiceScheduling);
-                    await Current.Scheduler.ScheduleJob(job, trigger);
+                    Current.Scheduler.ScheduleJob(job, trigger);
                 }
             }
 
             logger.Info("Starting scheduler", WhistlerTypes.ServiceScheduling);
-            await Current.Scheduler.Start();
+            Task.Run(() => Current.Scheduler.Start());
 
             logger.Info("Starting nancy API router against http://localhost:5002", WhistlerTypes.ServiceControl);
             Console.WriteLine("Default API key: {0}", CoreCurrent.Configuration.GetSecure("Api:Keys:Default"));
             host.Start();
-
-            try { _resetEvent.WaitOne(); } catch { }
-            await Current.Scheduler.Shutdown();
+            
+            try {
+                ResetEvent.WaitOne();
+                logger.Info("Shutting down", WhistlerTypes.ServiceControl);
+            } catch (Exception ex)
+            {
+                logger.Error(ex, WhistlerTypes.ServiceControl);
+            }
+            Current.Scheduler.Shutdown();
         }
 
         private static void AddDefaultTasks(UnitOfWork uow)

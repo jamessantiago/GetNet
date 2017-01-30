@@ -5,6 +5,7 @@
   },
 
   "dependencies": {
+    "DasMulli.Win32.ServiceUtils": "1.0.1",
     "getnet.core": "1.0.0-*",
     "Microsoft.AspNetCore.Owin": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
@@ -26,6 +27,7 @@
 
   "runtimes": {
     "win10-x64": {},
+    "win81-x64": {},
     "centos.7-x64": {}
   }
 }

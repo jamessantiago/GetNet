@@ -71,7 +71,7 @@ namespace getnet
 
             if (CoreCurrent.Configuration["Whistler:File:Enabled"] == "true")
             {
-                var rule2 = new LoggingRule("*", LogLevel.Debug, fileTarget);
+                var rule2 = new LoggingRule("*", LogLevel.Trace, fileTarget);
                 config.LoggingRules.Add(rule2);
             }
 

@@ -76,7 +76,7 @@ namespace getnet.service
                     goods.Add(CoreCurrent.Configuration.GetSecure("Data:SqlServerConnectionString").HasValue());
                 else if (store.Value == "Postgres")
                     goods.Add(CoreCurrent.Configuration.GetSecure("Data:PostgresConnectionString").HasValue());
-
+                
                 goods.Add(CoreCurrent.Configuration.GetSecure("SSH:Username").HasValue());
                 goods.Add(CoreCurrent.Configuration.GetSecure("SSH:Password").HasValue());
                 goods.Add(CoreCurrent.Configuration["SSH:Port"].HasValue());

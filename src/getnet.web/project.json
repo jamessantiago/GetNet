@@ -45,11 +45,17 @@
 
   "buildOptions": {
     "emitEntryPoint": true,
-    "preserveCompilationContext": true
+    "preserveCompilationContext": true,
+    "compile": {
+      "exclude": [
+        "material-design-icons"
+      ]
+    }
   },
 
   "runtimes": {
     "win10-x64": {},
+    "win81-x64": {},
     "centos.7-x64": {}
   },
 
@@ -63,8 +69,11 @@
     "include": [
       "wwwroot",
       "**/*.cshtml",
-      "appsettings.json",
+      "getnet.pfx",
       "web.config"
+    ],
+    "exclude": [
+      "wwwroot/lib"
     ]
   },
 
