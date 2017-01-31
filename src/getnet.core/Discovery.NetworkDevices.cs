@@ -24,7 +24,16 @@ namespace getnet.core
 
         private static List<NetworkDevice> recurseDevices(NetworkDevice device, List<NetworkDevice> devices)
         {
-            var neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router));
+            IEnumerable<CdpNeighbor> neighbors = null;
+            try
+            {
+                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router) && d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch));
+            } catch (Exception ex)
+            {
+                logger.Error(ex, WhistlerTypes.NetworkDiscovery, "Failed to retrieve cdp table from device " + device.Hostname);
+                return devices;
+            }
+
             foreach (var nei in neighbors)
             {
                 var existingDevice = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == nei.IP.ToInt()).FirstOrDefault();

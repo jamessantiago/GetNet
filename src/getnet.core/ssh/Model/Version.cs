@@ -17,7 +17,7 @@ namespace getnet.core.ssh
             var results = new List<ICommandResult>();
             var ver = new DeviceVersion();
             ver.Hostname = Regex.Match(data, @"(.*) uptime").Groups[1].Value;
-            MatchCollection models = Regex.Matches(data, @"(.*) processor \(revision");
+            MatchCollection models = Regex.Matches(data, @"(.*) processor (\(revision|with)");
             if (models.Count == 0)
                 models = Regex.Matches(data, @"(.*) \(revision");
             if (models.Count > 0)

@@ -61,8 +61,8 @@ namespace getnet.core
                             });
                             uow.Save();
                             var newVlan = uow.Repo<core.Model.Entities.Vlan>().GetByID((int)changes.CurrentValues["VlanId"]);
-                            router.Vlans.Add(newVlan);
-                            site.Vlans.Add(newVlan);
+                            router.Vlans.AddOrNew(newVlan);
+                            site.Vlans.AddOrNew(newVlan);
                             uow.Save();
                         }
                     }

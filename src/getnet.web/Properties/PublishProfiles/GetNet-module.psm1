@@ -25,3 +25,53 @@ function Publish-MaterialIcons{
 		}
 	}
 }
+
+function GetNet-Build {
+	[cmdletbinding()]
+	param(
+		[Parameter(Position=0, Mandatory=$true)]
+		$publishProperties
+	)
+	process {
+		dotnet build --configuraiton $publishProperties["LastUsedBuildConfiguration"] --runtime $publishProperties["PublishRuntime"] 
+	}
+}
+
+function Copy-Last {
+	[cmdletbinding()]
+	param(
+		[Parameter(Position=0, Mandatory=$true)]
+		$path
+	)
+	process {
+		if (Test-Path $path) {
+			cp $path\* "$path\..\$(split-path $path -Leaf)-last" -Recurse
+		} else {
+			mkdir "$path\..\$(split-path $path -Leaf)-last"
+		}
+	}
+}
+
+function GetNet-Diff {
+	[cmdletbinding()]
+	param(
+		[Parameter(Position=0, Mandatory=$true)]
+		$path
+	)
+	process {
+		$last = "$path\..\$(split-path $path -Leaf)-last"
+		$patch = "$path\..\$(split-path $path -Leaf)-patch"
+		rm $patch -Recurse
+		robocopy $path $patch /e /xf *.* | Out-Null
+
+		ls $path |% {
+			$oldFile = $_.FullName.Replace($path, $last);
+			if (!(test-path $oldFile) -or $(ls $oldFile).lastwritetime -lt $_.LastWriteTime)
+			{
+				$patchFile = $_.Fullname.Replace($path, $patch)
+				$patchFile
+				cp $_.Fullname $patchFile
+			}
+		}
+	}
+}

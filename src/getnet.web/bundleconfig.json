@@ -21,6 +21,13 @@
       "wwwroot/css/site.css"
     ]
   },
+  {
+    //d3 + c3
+    "outputFileName": "wwwroot/css/dc.css",
+    "inputFiles": [
+      "wwwroot/lib/c3/c3.css"
+    ]
+  },
   /// JS
   {
     //getnet main
@@ -95,5 +102,33 @@
       "preserveImportantComments": false
     },
     "sourceMap": false
+  },
+  {
+    //d3 + C3
+    "outputFileName": "wwwroot/js/dc.js",
+    "inputFiles": [
+      "wwwroot/lib/d3/d3.js",
+      "wwwroot/lib/c3/c3.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true,
+      "preserveImportantComments": false
+    },
+    "sourceMap": false
+  },
+  {
+    //viz
+    "outputFileName": "wwwroot/js/viz.js",
+    "inputFiles": [
+      "wwwroot/lib/viz/viz.js"
+    ],
+    "minify": {
+      "enabled": true,
+      "renameLocals": true,
+      "preserveImportantComments": false
+    },
+    "sourceMap": false
   }
 ]
+  

@@ -21,23 +21,25 @@ namespace getnet.core.ssh
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
             var results = new List<ICommandResult>();
-            var IPs = Regex.Matches(data, @"Entry address\(es\):\s*IP address: ([\d\.]*)", RegexOptions.Multiline);
+            var IPs = Regex.Matches(data, @"Entry address\(es\):\s*(IP address: ([\d\.]*))?", RegexOptions.Multiline);
             var hostnames = Regex.Matches(data, @"Device ID: ([\w\.-]*)");
             var models = Regex.Matches(data, @"Platform: ([\w\. -]*)");
             var inPorts = Regex.Matches(data, @"Interface: ([\w\/]*)");
             var outPorts = Regex.Matches(data, @"\(outgoing port\): ([\w\/]*)");
-            var caps = Regex.Matches(data, @"Capabilities: ([\w, ]*)");
+            var caps = Regex.Matches(data, @"Capabilities: ([\w, -]*)");
 
             if (!Util.AllSame(IPs.Count, hostnames.Count, models.Count, inPorts.Count, outPorts.Count))
                 throw new Exception("Parsing failed to parse properties in an equal ammount from the CDP table");
 
             for (int i = 0; i < IPs.Count; i++)
             {
+                if (!IPs[i].Groups[2].Value.HasValue())
+                    continue;
                 string thisHostname = hostnames[i].Groups[1].Value;
                 if (CoreCurrent.Configuration["Data:StripNetworkDeviceDomainNames"] != "false")
                     thisHostname = thisHostname.Substring(".");
                 results.Add(new CdpNeighbor() {
-                    IP = IPAddress.Parse(IPs[i].Groups[1].Value),
+                    IP = IPAddress.Parse(IPs[i].Groups[2].Value),
                     Hostname = thisHostname,
                     Model = models[i].Groups[1].Value,
                     InPort = inPorts[i].Groups[1].Value,

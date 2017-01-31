@@ -474,6 +474,20 @@ namespace getnet
             return $"{Truncate(s, Math.Max(maxLength, 3) - 3)}...";
         }
 
+        public static string ReverseTruncate(this string s, int maxLength)
+        {
+            if (s.IsNullOrEmpty()) return s;
+            return (s.Length > maxLength) ? s.Remove(0, s.Length - maxLength) : s;
+        }
+
+        public static string ReverseTruncateWithEllipsis(this string s, int maxLength)
+        {
+            if (s.IsNullOrEmpty()) return s;
+            if (s.Length <= maxLength) return s;
+
+            return $"{ReverseTruncate(s, Math.Max(maxLength, 3) - 3)}...";
+        }
+
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random rng)
         {
             T[] elements = source.ToArray();
@@ -695,7 +709,10 @@ namespace getnet
 
         public static string Substring(this string value, string stopstring)
         {
-            return value.Substring(0, value.IndexOf(stopstring));
+            if (value.IndexOf(stopstring) == -1)
+                return value;
+            else
+                return value.Substring(0, value.IndexOf(stopstring));
         }
 
         public static string CamelToSpace(this string value)
