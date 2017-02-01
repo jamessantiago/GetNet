@@ -220,6 +220,38 @@ window.getnet = (function () {
         });
     }
 
+    function Truncate(str, maxLength) {
+        if (str == null || str.length < maxLength) {
+            return str;
+        } else {
+            return str.substring(0, maxLength);
+        }
+    }
+
+    function TruncateWithElipses(str, maxLength) {
+        if (str == null || str.length <= maxLength) {
+            return str;
+        } else {
+            return Truncate(str, Math.max(maxLength, 3) - 3) + "...";
+        }
+    }
+
+    function ReverseTruncate(str, maxLength) {
+        if (str == null || str.length < maxLength) {
+            return str;
+        } else {
+            return str.substring(str.length - maxLength, str.length);
+        }
+    }
+
+    function ReverseTruncateWithElipses(str, maxLength) {
+        if (str == null || str.length <= maxLength) {
+            return str;
+        } else {
+            return "..." + ReverseTruncate(str, Math.max(maxLength, 3) - 3);
+        }
+    }
+
     function CopyToClipboard(elem) {
         var targetId = "_hiddenCopyText_";
         var isInput = elem.tagName === "INPUT" || elem.tagName === "TEXTAREA";
@@ -325,7 +357,11 @@ window.getnet = (function () {
         pingall: PingAllFromServer,
         get: GetServerData,
         hipkuSnack: HipkuEncodeToSnack,
-        utcnow: GetUTCNow
+        utcnow: GetUTCNow,
+        reverseTrunc: ReverseTruncate,
+        reverseTruncElips: ReverseTruncateWithElipses,
+        trunc: Truncate,
+        truncElips: TruncateWithElipses
     }
 })();
 

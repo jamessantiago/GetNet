@@ -16,10 +16,12 @@ using System.Text;
 
 namespace getnet.Controllers
 {
-    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
+    [RequireHttps]
     [Authorize(Roles = Roles.GlobalAdmins)]
+    [ResponseCache(Location = ResponseCacheLocation.None, NoStore = true)]
     public class InitController : BaseController
     {
+        Whistler logger = new Whistler();
 
         [Route("/configure")]
         public IActionResult Index()
@@ -75,19 +77,46 @@ namespace getnet.Controllers
         [HttpPost]
         public IActionResult AuthConfig(IFormCollection collection)
         {
+            var oldAuth = CoreCurrent.Configuration["Security:Provider"];
             CoreCurrent.Configuration.Set("Security:Provider", collection["AuthChoice"]);
+            bool success = true;
             if (collection["AuthChoice"] == "ldap")
             {
-                CoreCurrent.Configuration.Set("Security:Ldap:Host", collection["Host"]);
-                CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", collection["LoginDN"]);
-                if (collection["Password"].Any())
-                    CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", collection["Password"]);
-                CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
-                CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
+                var oldHost = CoreCurrent.Configuration["Security:Ldap:Host"];
+                var oldLoginDn = CoreCurrent.Configuration.GetSecure("Security:Ldap:LoginDN");
+                var oldPass = CoreCurrent.Configuration.GetSecure("Security:Ldap:Password");
+                var oldAdmins = CoreCurrent.Configuration["Security:Ldap:GlobalAdmins"];
+                var oldUsers = CoreCurrent.Configuration["Security:Ldap:GlobalViewers"];
+
+                try
+                {
+                    CoreCurrent.Configuration.Set("Security:Ldap:Host", collection["Host"]);
+                    CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", collection["LoginDN"]);
+                    if (collection["Password"].Any())
+                        CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", collection["Password"]);
+                    CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", collection["GlobalAdmins"]);
+                    CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", collection["GlobalViewers"]);
+                    getnet.Model.Security.LdapServer.Current.EnsureBind(true);
+                    HttpContext.Session.AddSnackMessage("GetNet will reinitialize in roughly 1 second.  Existing sessions will need to be logged out of or wait until the session expires in 5 days.");
+                    Current.AppCancellationSource.CancelAfter(1000);
+                } catch (Exception ex)
+                {
+                    success = false;
+                    HttpContext.Session.AddSnackMessage("Ldap configuration failed (changes reverted): " + ex.Message);
+                    logger.Error(ex, WhistlerTypes.Configuration);
+                    CoreCurrent.Configuration.Set("Security:Ldap:Host", oldHost);
+                    CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", oldLoginDn);
+                    CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", oldPass);
+                    CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalAdmins", oldAdmins);
+                    CoreCurrent.Configuration.Set("Security:Ldap:Roles:GlobalViewers", oldUsers);
+                    CoreCurrent.Configuration.Set("Security:Provider", oldAuth);
+                }
             }
-            HttpContext.Session.AddSnackMessage("GetNet will reinitialize in roughly 1 second.  Existing sessions will need to be logged out of or wait until the session expires in 5 days.");
-            Current.AppCancellationSource.CancelAfter(1000);
-            return PartialView("_success", "Successfully configured authentication");
+            
+            if (success)
+                return PartialView("_success", "Successfully configured authentication");
+            else
+                return PartialView("_error", "Configuration failed");
         }
 
         [HttpPost]

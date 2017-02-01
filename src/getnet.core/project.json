@@ -12,12 +12,12 @@
     "System.Reflection.TypeExtensions": "4.3.0",
     "Microsoft.Extensions.Configuration.EnvironmentVariables": "1.1.0",
     "Microsoft.Extensions.Configuration.Json": "1.1.0",
-    "MailKit": "1.10.1",
     "Microsoft.Extensions.Configuration.Abstractions": "1.1.0",
     "Novell.Directory.Ldap.NETStandard": "2.3.6",
     "Microsoft.AspNetCore.DataProtection": "1.1.0",
     "System.Net.NetworkInformation": "4.3.0",
-    "System.Net.Ping": "4.3.0"
+    "System.Net.Ping": "4.3.0",
+    "MailKit": "1.10.1"
   },
 
   "frameworks": {

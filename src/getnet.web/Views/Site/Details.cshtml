@@ -49,7 +49,7 @@
                     <p>@(Model.Building ?? "?")</p>                    
                 </div>
                 <div class="getnet-col-left">
-                    <h4>@Model.Name</h4>
+                    <h4>@Model.Name.ReverseTruncateWithEllipsis(10)</h4>
                     <p><b>Priority</b></p>
                     <p><b>Owner</b></p>
                     <p><b>Location</b></p>
@@ -97,7 +97,7 @@
                             <p>@hotpath.Status</p>
                             <p>@hotpath.Type</p>
                             <p>@hotpath.Interface</p>
-                            <p>@hotpath.MonitorDeviceHostname.ReverseTruncateWithEllipsis(8)</p>
+                            <p>@hotpath.MonitorDeviceHostname.ReverseTruncateWithEllipsis(11)</p>
                             <p>@hotpath.MonitorIP.ToString()</p>
                         </div>
                         <div class="getnet-col-left">
@@ -142,7 +142,7 @@
                     @foreach (var vlan in Model.Vlans.OrderBy(d => d.VlanNumber))
                     {
                         <tr>
-                            <td>@vlan.NetworkDevice?.Hostname</td>
+                            <td>@vlan.NetworkDevice?.Hostname.ReverseTruncateWithEllipsis(11)</td>
                             <td>@vlan.VlanNumber</td>
                             <td><a title="Detailed Vlan Usage" href="/vlan/vlanusage/@vlan.VlanId">@vlan.VlanIP/@vlan.IPNetwork.Cidr</a></td>
                             <td>@vlan.IPNetwork.FirstUsable.ToString()</td>
@@ -191,7 +191,7 @@
         <h5 class="mdl-dialog__title">Delete this site?</h5>
         <div class="mdl-dialog__content">
             <p>
-                Reserving this IP will create a endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
+                Deleting this site will remove all sub entities such as network devices and subnets.  The site can be rediscovered if needed.
             </p>
             <form action="/site/delete/@Model.SiteId" id="thisform" method="post">
                 <input type="hidden" id="dialog-ip" name="siteid" value="@Model.SiteId" />

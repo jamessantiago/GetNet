@@ -28,7 +28,7 @@
 </div>
 
 <script>
-    componentHandler.upgradeElement(document.querySelector('.mdl-switch'))
+    componentHandler.upgradeElements(document.querySelectorAll('.mdl-switch'));
     var table = $('#end-table').DataTable({
         ajax: "/endpoint/endpointhandler/@ViewData["SiteId"]",
         processing: true,
@@ -49,13 +49,13 @@
         var filter = '';
         $(".vlans").each(function () {
             if ($(this).is(":checked")) {
-                console.log("vlan " + $(this).data("vlan") + " is checked");
+                getnet.log("vlan " + $(this).data("vlan") + " is checked");
                 filter = filter + $(this).data("vlan") + ",";
             }
             filter = filter.slice(0, -1);
             if (filter === '')
                 filter = 'none';
-            table.column(0).search(filter).draw();
         });
+        table.column(0).search(filter).draw();
     });
 </script>

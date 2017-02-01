@@ -4,6 +4,7 @@
 /// <reference path="js/gmft.min.js" />
 /// <reference path="js/gmt.min.js" />
 /// <reference path="js/site.js" />
+/// <reference path="js/viz.min.js" />
 /// <reference path="lib/bootstrap/dist/js/bootstrap.js" />
 /// <reference path="lib/c3/c3.js" />
 /// <reference path="lib/chart.js/dist/chart.js" />

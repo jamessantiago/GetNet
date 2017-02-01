@@ -42,7 +42,7 @@ ca03.13b7.001c          Dynamic       1     FastEthernet1/0
 
         public string GetStoredCommand()
         {
-            return "show mac-address-table dynamic";
+            return "show mac address-table dynamic";  //mac-address-table for routers...
         }
     }
 }

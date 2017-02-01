@@ -23,7 +23,7 @@
   },
   {
     //d3 + c3
-    "outputFileName": "wwwroot/css/dc.css",
+    "outputFileName": "wwwroot/css/dc.min.css",
     "inputFiles": [
       "wwwroot/lib/c3/c3.css"
     ]
@@ -105,7 +105,7 @@
   },
   {
     //d3 + C3
-    "outputFileName": "wwwroot/js/dc.js",
+    "outputFileName": "wwwroot/js/dc.min.js",
     "inputFiles": [
       "wwwroot/lib/d3/d3.js",
       "wwwroot/lib/c3/c3.js"
@@ -119,13 +119,13 @@
   },
   {
     //viz
-    "outputFileName": "wwwroot/js/viz.js",
+    "outputFileName": "wwwroot/js/viz.min.js",
     "inputFiles": [
       "wwwroot/lib/viz/viz.js"
     ],
     "minify": {
-      "enabled": true,
-      "renameLocals": true,
+      "enabled": false,
+      "renameLocals": false,
       "preserveImportantComments": false
     },
     "sourceMap": false

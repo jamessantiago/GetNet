@@ -7,7 +7,7 @@ namespace getnet.core.Model.Entities
 {
     public enum DeviceType
     {
-        Unkown,
+        Unknown,
         Workstation,
         Server,
         Phone,

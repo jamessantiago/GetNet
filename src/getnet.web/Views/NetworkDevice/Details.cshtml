@@ -7,7 +7,7 @@
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--4-col">
     <div class="getnet-col-right">
         <h4><button class="mdl-button mdl-js-button mdl-button--icon mdl-button--disabled"><i class="material-icons">edit</i></button></h4>
-        <p><a href="/s/@Model.Site.Name">@Model.Site.Name</a></p>
+        <p><a href="/s/@Model.Site.Name">@Model.Site.Name.ReverseTruncateWithEllipsis(10)</a></p>
         <p>@Model.ManagementIP.ToString()</p>
         <p>@Model.Capabilities.Summary()</p>
         <p>@(Model.Model ?? "?")</p>
@@ -15,7 +15,7 @@
         <p></p>
     </div>
     <div class="getnet-col-left">
-        <h4>@Model.Hostname</h4>
+        <h4 title="@Model.Hostname">@Model.Hostname.ReverseTruncateWithEllipsis(11)</h4>
         <p><b>Site</b></p>
         <p><b>Management IP</b></p>
         <p><b>Capabilities</b></p>
@@ -42,7 +42,7 @@
                 <tr>
                     <td>@con.DevicePort</td>
                     <td>@con.ConnectedDevicePort</td>
-                    <td><a href="/d/@con.ConnectedNetworkDevice.Hostname">@con.ConnectedNetworkDevice.Hostname</a></td>
+                    <td><a title="@con.ConnectedNetworkDevice.Hostname" href="/d/@con.ConnectedNetworkDevice.Hostname">@con.ConnectedNetworkDevice.Hostname.ReverseTruncateWithEllipsis(11)</a></td>
                 </tr>
             }
             @foreach (var con in Model.LocalNetworkDeviceConnections)
@@ -50,7 +50,7 @@
                 <tr>
                     <td>@con.ConnectedDevicePort</td>
                     <td>@con.DevicePort</td>
-                    <td><a href="/d/@con.NetworkDevice.Hostname">@con.NetworkDevice.Hostname</a></td>
+                    <td><a title="@con.NetworkDevice.Hostname" href="/d/@con.NetworkDevice.Hostname">@con.NetworkDevice.Hostname.ReverseTruncateWithEllipsis(11)</a></td>
                 </tr>
             }
         </tbody>

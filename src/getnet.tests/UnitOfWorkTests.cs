@@ -82,7 +82,7 @@ namespace getnet.tests
                     Building = "10",
                     Details = "This is a site test",
                     Owner = "Owner",
-                    Status = SiteStatus.Unkown
+                    Status = SiteStatus.Unknown
                 });
                 uow.Save();
                 Assert.NotNull(uow.Repo<Site>().Get(d => d.Name == "Site Test").First());

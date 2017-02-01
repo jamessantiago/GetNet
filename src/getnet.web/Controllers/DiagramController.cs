@@ -46,26 +46,34 @@ namespace getnet.Controllers
             sb.Append(@"graph """ + site.Name + @""" { ");
             sb.Append(@"subgraph cluster_0 { label=""Hotpath Connections""; ");
             foreach (var hp in site.HotPaths)
-                sb.Append(string.Format(@"""{0}""; ", hp.Name + " (" + hp.MonitorDeviceHostname + ")"));
+                sb.Append(string.Format(@"""{0}""; ", hp.Name + " (" + hp.MonitorDeviceHostname.ReverseTruncateWithEllipsis(11) + ")"));
             sb.Append(@"} subgraph cluster_1 { margin=30; label=""Routing""; ");
             foreach (var dev in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
-                sb.Append(string.Format(@"""{0}""; ", dev.Hostname));
+                sb.Append(string.Format(@"""{0}"" [label=""{1}"", shape=box]; ",
+                    dev.RawManagementIP,
+                    $"{dev.Hostname.ReverseTruncateWithEllipsis(11)}\\n{dev.Model}\\n{dev.ManagementIP.ToString()}"));
             sb.Append(@"} subgraph cluster_2 { margin=30; label=""Switching""; ");
             foreach (var dev in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Switch)))
-                sb.Append(string.Format(@"""{0}""; ", dev.Hostname));
+                sb.Append(string.Format(@"""{0}"" [label=""{1}"", shape=box]; ", 
+                    dev.RawManagementIP, 
+                    $"{dev.Hostname.ReverseTruncateWithEllipsis(11)}\\n{dev.Model}\\n{dev.ManagementIP.ToString()}" ));
             sb.Append("} ");
 
             sb.Append(string.Format(@"""{0}"" [shape=Msquare];", site.Name));
 
             foreach (var hp in site.HotPaths)
-                sb.Append(string.Format(@"""{0}"" -- ""{1}""; ", hp.Name + " (" + hp.MonitorDeviceHostname + ")", site.Name));
+                sb.Append(string.Format(@"""{0}"" -- ""{1}""; ", hp.Name + " (" + hp.MonitorDeviceHostname.ReverseTruncateWithEllipsis(11) + ")", site.Name));
             
             foreach (var con in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)).SelectMany(d => d.RemoteNetworkDeviceConnections))
             {
-                sb.Append(string.Format(@"""{0}"" -- ""{1}""; ", site.Name, con.NetworkDevice.Hostname));
+                sb.Append(string.Format(@"""{0}"" -- ""{1}""; ", site.Name, con.NetworkDevice.RawManagementIP));
             }
             foreach (var con in site.NetworkDevices.SelectMany(d => d.RemoteNetworkDeviceConnections))
-                sb.Append(string.Format(@"""{0}"" -- ""{1}"" [headlabel=""{2}"";taillabel=""{3}""]; ", con.NetworkDevice.Hostname, con.ConnectedNetworkDevice.Hostname, con.DevicePort.ShortIntName(), con.ConnectedDevicePort.ShortIntName()));
+                sb.Append(string.Format(@"""{0}"" -- ""{1}"" [headlabel=""{2}"";taillabel=""{3}""]; ", 
+                    con.NetworkDevice.RawManagementIP, 
+                    con.ConnectedNetworkDevice.RawManagementIP, 
+                    con.DevicePort.ShortIntName(), 
+                    con.ConnectedDevicePort.ShortIntName()));
 
             sb.Append("}");
             return PartialView("_viz", sb.ToString());

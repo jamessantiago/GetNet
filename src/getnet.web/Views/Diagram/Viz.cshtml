@@ -9,7 +9,7 @@
 </div>
 
 @section scripts {
-    <script src="~/js/viz.js"></script>
+    <script src="~/js/viz.min.js"></script>
     <script>
         var result = Viz('@Html.Raw(ViewData["VizGraph"])', { format="svg", engine: "dot", scale });
         $("#container").html(result);

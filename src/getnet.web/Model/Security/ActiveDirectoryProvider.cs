@@ -35,15 +35,11 @@ namespace getnet.Model.Security
                     continue;
                 foreach (var role in roleMap.Value.Split(','))
                 {
-                    try
+                    if (Retry.Do(() => LdapServer.Current.InGroup(email, role.Trim()), TimeSpan.FromMilliseconds(50), 2))
                     {
-                        if (Retry.Do(() => LdapServer.Current.InGroup(email, role.Trim()), TimeSpan.FromMilliseconds(50), 2))
-                        {
-                            memberRoles.Add(roleMap.Key);
-                            break;
-                        }
+                        memberRoles.Add(roleMap.Key);
+                        break;
                     }
-                    catch { }
                 }
             }
             return memberRoles;

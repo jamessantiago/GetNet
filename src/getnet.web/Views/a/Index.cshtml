@@ -9,9 +9,28 @@
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--8-col">
     <h3>GetNet Alpha</h3>
     <p>GetNet is currently under heavy development.</p>
-    <p>Snapshot of open issues as of 26 Jan:</p>
+    <p>Snapshot of open issues as of 21 Jan:</p>
     @*Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = ""} "http://gitlab.santiagodevelopment.com/api/v3/projects/43/issues?state=closed&per_page=100" | ConvertFrom-Json*@
     <ul>
+        <li>Force row drop down menus into alignment</li>
+        <li>Fix the diagrams layout</li>
+        <li>Add dns query for discovered endpoints</li>
+        <li>Router missing from vlans discovered through subinterfaces</li>
+        <li>Shorten hostnames and add title to shortened hostnames</li>
+        <li>Add link to fields page</li>
+        <li>Fix vlan filtering</li>
+        <li>Create reports</li>
+        <li>Create management page for all alerts</li>
+        <li>Add support for endpoint discovery when a part of a vlan but inaccessible due to connection through inaccessible switch device</li>
+        <li>Improve ldap group resolution</li>
+        <li>Setup antiforgery tokens for forms</li>
+        <li>Create site and hotpath availability data</li>
+        <li>Add site events to tab, hide if db is not set for logging</li>
+        <li>Add restart ability to getnet.web</li>
+        <li>Add logging config for getnet.service</li>
+        <li>Add event pruning system as service job</li>
+        <li>Improve ldapserver connection handling</li>
+        <li>Create global snack system and hook in alerts</li>
         <li>Create a cleaner "lite" layout</li>
         <li>Validate ldap connection before setting configuration</li>
         <li>Add settings for ping behavior</li>
@@ -40,6 +59,16 @@
 
     <p>Closed issues:</p>
     <ul>
+        <li>Skip first and last ip in vlan usage listing</li>
+        <li>Add default reservation comment in vlan usage for discovered devices</li>
+        <li>Add build script for dotnet build againsta all supported runtimes</li>
+        <li>Add ssh debug function</li>
+        <li>Correct reverse trucation with elipses extension</li>
+        <li>Add test button to ldap configuration</li>
+        <li>Add https restrictions for login</li>
+        <li>Correct missing viz.js bundle</li>
+        <li>Fix show mac address issue: line has invalid autocommand</li>
+        <li>Fix vlan checkbox styling for multiple vlans</li>
         <li>Add endpoint rediscovery</li>
         <li>Create diagram listing page</li>
         <li>Create a vlan usage ip view/reserve thing</li>
@@ -93,6 +122,8 @@
         <li>Create .net core service?</li>
         <li>Build out ssh execution framework</li>
         <li>Add google material design lite</li>
+
+
     </ul>
 </div>
 
@@ -103,7 +134,7 @@
 </div>
 
 @section scripts {
-    <script src="~/js/dc.js"></script>
+    <script src="~/js/dc.min.js"></script>
     <script>
         getnet.Dash.init({ refresh: 20 });
     </script>

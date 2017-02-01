@@ -485,7 +485,7 @@ namespace getnet
             if (s.IsNullOrEmpty()) return s;
             if (s.Length <= maxLength) return s;
 
-            return $"{ReverseTruncate(s, Math.Max(maxLength, 3) - 3)}...";
+            return $"...{ReverseTruncate(s, Math.Max(maxLength, 3) - 3)}";
         }
 
         public static IEnumerable<T> Shuffle<T>(this IEnumerable<T> source, Random rng)

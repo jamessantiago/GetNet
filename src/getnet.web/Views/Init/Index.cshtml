@@ -95,7 +95,7 @@
         <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
             <h3>Web Authentication</h3>
             <div id="authconfig-results"></div>
-            <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true">
+            <form action="/init/authconfig" id="authconfig" class="getnet-ajax-form" data-ajax-reset="true" data-ajax-success-action="getnet.refresh.run('Snacks')">
                 <label class="mdl-radio mdl-js-radio mdl-js-ripple-effect" for="UseLdap">
                     <input type="radio" id="UseLdap" class="mdl-radio__button getnet-group-selector" data-group="ldap-group" name="AuthChoice" value="ldap" @(CoreCurrent.Configuration["Security:Provider"] == "ldap" ? "checked" : "")>
                     <span class="mdl-radio__label">Use LDAP</span>

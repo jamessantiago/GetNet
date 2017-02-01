@@ -42,6 +42,7 @@ namespace getnet.Controllers
         }
 
         [HttpPost]
+        [RequireHttps]
         [Route("/login")]
         public async Task<IActionResult> Login(string email, string password)
         {

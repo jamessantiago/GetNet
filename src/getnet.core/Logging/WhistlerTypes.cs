@@ -14,5 +14,6 @@ namespace getnet
         public const string Ssh = "Ssh";
         public const string ServiceControl = "Service Control";
         public const string ServiceScheduling = "Service Scheduling";
+        public const string Configuration = "Configuration";
     }
 }

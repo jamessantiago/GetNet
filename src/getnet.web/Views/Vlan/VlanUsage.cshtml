@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Vlan Usage for vlan " + Model.VlanNumber;
     ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
+    var ips = IPNetwork.ListIPAddress(Model.IPNetwork).ToList();
+    var iplist = ips.Skip(1).Take(ips.Count() - 2);
 }
 
 
@@ -18,17 +20,18 @@
             </tr>
         </thead>
         <tbody>
-            @foreach (var ip in IPNetwork.ListIPAddress(Model.IPNetwork))
+            @foreach (var ip in iplist)
             {
                 var useddevice = Model.Devices.Where(d => d.RawIP == ip.ToInt()).FirstOrDefault();
+                var netdevice = Model.Site.NetworkDevices.Where(d => d.RawManagementIP == ip.ToInt()).FirstOrDefault();
                 <tr id="@ip.ToInt()_row">
                     <td>@ip.ToInt()</td>
                     <td>@ip</td>
-                    <td>@(useddevice != null ? "Used" : "Available")</td>
-                    <td>@(useddevice != null ? useddevice.Type.ToString() : "N/A")</td>
+                    <td>@(useddevice != null || netdevice != null ? "Used" : "Available")</td>
+                    <td>@(useddevice != null ? useddevice.Type.ToString() : netdevice != null ? netdevice.Capabilities.Summary() : "N/A")</td>
                     <td>@(useddevice != null ? useddevice.MAC : "N/A")</td>
                     <td>
-                        @(useddevice != null ? useddevice.ReservationComment : "N/A")
+                        @(useddevice != null && useddevice.ReservationComment.HasValue() ? useddevice.ReservationComment : "N/A")
                         <button id="@ip.ToInt()" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">
                             <i class="material-icons" role="presentation">arrow_drop_down</i>
                             <span class="visuallyhidden">NetworkDevice</span>
@@ -36,7 +39,7 @@
                         <ul class="netbuts mdl-menu mdl-menu--bottom-right mdl-js-menu mdl-js-ripple-effect" for="@ip.ToInt()">
                             <li id="@ip.ToInt()_ping" class="pingme mdl-menu__item" data-ip="@ip.ToString()" data-colortarget="#@ip.ToInt()_row" onclick="getnet.ping('#@ip.ToInt()_ping')">Ping</li>
                             <li class="mdl-menu__item" onclick="getnet.hipkuSnack('@ip.ToString()')">Hipku</li>
-                            @if (useddevice == null)
+                            @if (useddevice == null && netdevice == null)
                             {
                                 <li class="mdl-menu__item show-dialog" data-ip="@ip.ToInt()">Reserve</li>
                             }
@@ -54,7 +57,7 @@
     <h5 class="mdl-dialog__title">Reserve this IP?</h5>
     <div class="mdl-dialog__content">
         <p>
-            Reserving this IP will create a endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
+            Reserving this IP will create an endpoint stub with your provided comment and will show in this vlan view and on the endpoint views.
         </p>
         <form action="/endpoint/reserve" id="thisform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.refresh.run('Snacks')" data-ajax-reset="true">
             <input type="hidden" id="dialog-ip" name="dialog-ip" value="" />

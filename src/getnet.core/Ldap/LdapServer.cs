@@ -105,9 +105,9 @@ namespace getnet.Model.Security
             return results.next();
         }
 
-        public void EnsureBind()
+        public void EnsureBind(bool force = false)
         {
-            if (!conn.Bound)
+            if (force || conn == null || conn.AuthenticationDN == null && !conn.Bound)
                 lock (syncRoot)
                     current = new LdapServer();
         }

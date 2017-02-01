@@ -2,7 +2,7 @@
 {
     public enum SiteStatus
     {
-        Unkown,
+        Unknown,
         Maintenance,
         Offline,
         PartiallyDown,

@@ -60,8 +60,9 @@
             @if (ViewData["SiteId"] == null)
             {
                 @:$(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
-                                                                                    @:ca = 0;
-                                                                                }
+                @:ca = 0;
+            }
+            $(row).children("td").eq(2 - ca).attr("title", data[2 - ca]).html(getnet.truncElips(data[2 - ca], 15));
 
             $(row).attr('id', data[4 - ca] + "_row");
             $(row).children("td").last().addClass("pingme");
@@ -101,18 +102,18 @@
     componentHandler.upgradeElement(document.querySelector('#devlst'));
 
 
-    componentHandler.upgradeElement(document.querySelector('.mdl-switch'))
+    componentHandler.upgradeElements(document.querySelectorAll('.mdl-switch'))
     $(".vlans").on("click", function () {
         var filter = '';
         $(".vlans").each(function () {
             if ($(this).is(":checked")) {
-                console.log("vlan " + $(this).data("vlan") + " is checked");
+                getnet.log("vlan " + $(this).data("vlan") + " is checked");
                 filter = filter + $(this).data("vlan") + ",";
             }
             filter = filter.slice(0, -1);
             if (filter === '')
                 filter = 'none';
-            table.column(0).search(filter).draw();
         });
+        table.column(0).search(filter).draw();
     });
 </script>

@@ -47,6 +47,7 @@
                 @:$(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
                 @:ca = 0;
             }
+            $(row).children("td").eq(2 - ca).attr("title", data[2 - ca]).html(getnet.reverseTruncElips(data[2 - ca], 11));
 
             $(row).attr('id', data[2 - ca] + "_row");
             $(row).children("td").last().addClass("pingme");

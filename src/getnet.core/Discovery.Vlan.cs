@@ -60,8 +60,10 @@ namespace getnet.core
                                 Site = site
                             });
                             uow.Save();
+                            var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "Vlans").FirstOrDefault();
                             var newVlan = uow.Repo<core.Model.Entities.Vlan>().GetByID((int)changes.CurrentValues["VlanId"]);
-                            router.Vlans.AddOrNew(newVlan);
+                            thisRouter.Vlans.AddOrNew(newVlan);
+                            newVlan.NetworkDevice = thisRouter;
                             site.Vlans.AddOrNew(newVlan);
                             uow.Save();
                         }

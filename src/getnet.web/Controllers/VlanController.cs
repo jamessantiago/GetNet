@@ -14,7 +14,7 @@ namespace getnet.Controllers
     {
         public IActionResult VlanUsage(int id)
         {
-            var vlan = uow.Repo<Vlan>().Get(d => d.VlanId == id, includeProperties: "Devices,Site").FirstOrDefault();
+            var vlan = uow.Repo<Vlan>().Get(d => d.VlanId == id, includeProperties: "Devices,Site,Site.NetworkDevices").FirstOrDefault();
             return View(vlan);
         }
 
