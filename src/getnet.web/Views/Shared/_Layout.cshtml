@@ -12,36 +12,18 @@
 
     <title>@ViewData["Title"] - GetNet</title>
 
-    @switch ((Dependencies)ViewData["Dependencies"])
-    {
-        case Dependencies.GetnetMainWIthFormsAndTables:
-        case Dependencies.GetNetMainWithTables:
-            <environment names="Development">
-                <link rel="stylesheet" href="~/lib/material-design-lite/material.css" />
-                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-                <link rel="stylesheet" href="~/lib/getmdl-select/getmdl-select.min.css" />
-                <link rel="stylesheet" href="~/lib/datatables/media/css/dataTables.material.css" />
-                <link rel="stylesheet" href="~/lib/dialog-polyfill/dialog-polyfill.css" />
-                <link rel="stylesheet" href="~/css/site.css" />
-            </environment>
-            <environment names="Staging,Production">
-                <link rel="stylesheet" href="~/css/gmft.min.css" asp-append-version="true" />
-            </environment>
-            break;
-        case Dependencies.GetNetMainWithForms:
-        case Dependencies.GetNetMain:
-        default:
-            <environment names="Development">
-                <link rel="stylesheet" href="~/lib/material-design-lite/material.css" />
-                <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-                <link rel="stylesheet" href="~/lib/getmdl-select/getmdl-select.min.css" />
-                <link rel="stylesheet" href="~/css/site.css" />
-            </environment>
-            <environment names="Staging,Production">
-                <link rel="stylesheet" href="~/css/gmf.min.css" asp-append-version="true" />
-            </environment>
-            break;
-    }
+    <environment names="Development">
+        <link rel="stylesheet" href="~/lib/material-design-lite/material.css" />
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="~/lib/getmdl-select/getmdl-select.min.css" />
+        <link rel="stylesheet" href="~/lib/datatables/media/css/dataTables.material.css" />
+        <link rel="stylesheet" href="~/lib/dialog-polyfill/dialog-polyfill.css" />
+        <link rel="stylesheet" href="~/css/site.css" />
+    </environment>
+    <environment names="Staging,Production">
+        <link rel="stylesheet" href="~/css/gmft.min.css" asp-append-version="true" />
+    </environment>
+
     @RenderSection("css", false)
 </head>
 <body>
@@ -99,7 +81,8 @@
                     <i class="material-icons">settings</i>
                 </button>
                 <ul class="mdl-menu mdl-js-menu mdl-js-ripple-effect mdl-menu--bottom-right" for="hdrbtn">
-                    <li class="mdl-menu__item" onclick="window.location.href = '/newsite'">Discovery</li>
+                    <li class="mdl-menu__item show-sitedialog">New Site</li>
+                    <li class="mdl-menu__item" onclick="window.location.href = '/discovery'">Discovery</li>
                     <li class="mdl-menu__item" onclick="window.location.href = '/configure'">Configuration</li>
                     <li class="mdl-menu__item" onclick="window.location.href = '/init/fields'">Fields</li>
                     <li class="mdl-menu__item" onclick="window.location.href = '/service'">Service</li>
@@ -158,70 +141,43 @@
 
     @RenderSection("dialog", required: false)
 
-    @switch ((Dependencies)ViewData["Dependencies"])
-    {
-        case Dependencies.GetnetMainWIthFormsAndTables:
-            <environment names="Development">
-                <script src="~/lib/jquery/dist/jquery.js"></script>
-                <script src="~/lib/jquery-form/jquery.form.js"></script>
-                <script src="~/lib/material-design-lite/material.js"></script>
-                <script src="~/lib/dialog-polyfill/dialog-polyfill.js"></script>
-                <script src="~/lib/getmdl-select/getmdl-select.min.js"></script>
-                <script src="~/lib/hipku/index.js"></script>
-                <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
-                <script src="~/lib/datatables/media/js/dataTables.material.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-            </environment>
-            <environment names="Staging,Production">
-                <script src="~/js/gmft.min.js" asp-append-version="true"></script>
-            </environment>
-            break;
-        case Dependencies.GetNetMainWithForms:
-            <environment names="Development">
-                <script src="~/lib/jquery/dist/jquery.js"></script>
-                <script src="~/lib/jquery-form/jquery.form.js"></script>
-                <script src="~/lib/material-design-lite/material.js"></script>
-                <script src="~/lib/dialog-polyfill/dialog-polyfill.js"></script>
-                <script src="~/lib/getmdl-select/getmdl-select.min.js"></script>
-                <script src="~/lib/hipku/index.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-            </environment>
-            <environment names="Staging,Production">
-                <script src="~/js/gmft.min.js" asp-append-version="true"></script>
-            </environment>
-            break;
-        case Dependencies.GetNetMainWithTables:
-            <environment names="Development">
-                <script src="~/lib/jquery/dist/jquery.js"></script>
-                <script src="~/lib/material-design-lite/material.js"></script>
-                <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
-                <script src="~/lib/datatables/media/js/dataTables.material.js"></script>
-                <script src="~/lib/hipku/index.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-            </environment>
-            <environment names="Staging,Production">
-                <script src="~/js/gmft.min.js" asp-append-version="true"></script>
-            </environment>
-            break;
-        case Dependencies.GetNetMain:
-        default:
-            <environment names="Development">
-                <script src="~/lib/jquery/dist/jquery.js"></script>
-                <script src="~/lib/material-design-lite/material.js"></script>
-                <script src="~/lib/hipku/index.js"></script>
-                <script src="~/js/site.js" asp-append-version="true"></script>
-            </environment>
-            <environment names="Staging,Production">
-                <script src="~/js/gm.min.js" asp-append-version="true"></script>
-            </environment>
-            break;
-    }
+    <dialog class="mdl-dialog" id="makesite">
+        <h5 class="mdl-dialog__title">Create a site</h5>
+        <div class="mdl-dialog__content">
+            <p>
+                Enter the management IP of a router to discover.  This router should be the last hop before entering the site's local area network. 
+            </p>
+            <form action="/site/makesite" id="thissiteform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.refresh.run('Snacks')" data-ajax-reset="true">
+                <div mdl-textbox-for="ip" mdl-label="Last Hop Router" mdl-value="" mdl-errors="@ViewData.ModelState.ErrorsFor("ip")"></div>
+                <div class="mdl-dialog__actions">
+                    <button mdl-submit-button="Submit"></button>
+                    <button type="button" class="mdl-button close">Cancel</button>
+                </div>
+            </form>
+        </div>
+    </dialog>
+
+    <environment names="Development">
+        <script src="~/lib/jquery/dist/jquery.js"></script>
+        <script src="~/lib/jquery-form/jquery.form.js"></script>
+        <script src="~/lib/material-design-lite/material.js"></script>
+        <script src="~/lib/dialog-polyfill/dialog-polyfill.js"></script>
+        <script src="~/lib/getmdl-select/getmdl-select.min.js"></script>
+        <script src="~/lib/hipku/index.js"></script>
+        <script src="~/lib/datatables/media/js/jquery.dataTables.js"></script>
+        <script src="~/lib/datatables/media/js/dataTables.material.js"></script>
+        <script src="~/js/site.js" asp-append-version="true"></script>
+    </environment>
+    <environment names="Staging,Production">
+        <script src="~/js/gmft.min.js" asp-append-version="true"></script>
+    </environment>
 
     <environment names="Development">
         <script>
             getnet.init({
                 enableLogging: true
             });
+            getnet.Forms.init({});
             getnet.Snacks.init({ refresh: 15 });
             getnet.log("Development mode");
         </script>
@@ -229,6 +185,7 @@
     <environment names="Staging,Production">
         <script>
             getnet.init({});
+            getnet.Forms.init({});
             getnet.Snacks.init({ refresh: 15 });
         </script>
     </environment>        

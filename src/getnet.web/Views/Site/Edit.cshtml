@@ -1,7 +1,6 @@
 ﻿@model Site
 @{
     ViewData["Title"] = "Edit " + Model.Name;
-    ViewData["Dependencies"] = Dependencies.GetNetMainWithForms;
 }
 
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
@@ -30,9 +29,3 @@
         <button mdl-cancel-button="Cancel" mdl-return-to="/s/@Model.Name"></button>
     </form>
 </div>
-
-    @section scripts{
-        <script>
-            getnet.Forms.init({});
-        </script>
-    }

@@ -33,8 +33,12 @@ namespace getnet.Controllers
             
             var filter = param.columns[0]["search"]["value"];
             if (filter.HasValue() && filter != "none")
+            {
+                var vlanPredicates = PredicateBuilder.False<Device>();
                 foreach (var vn in ((string)filter).Split(','))
-                    predicates = predicates.And(d => d.Vlan.VlanNumber == int.Parse(vn));
+                    vlanPredicates = vlanPredicates.Or(d => d.Vlan.VlanNumber == int.Parse(vn));
+                predicates.And(vlanPredicates);
+            }
             else if (filter == "none")
                 predicates = predicates.And(d => false);
 

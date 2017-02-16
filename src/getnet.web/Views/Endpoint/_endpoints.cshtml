@@ -34,7 +34,7 @@
 
 
 <script>
-    var table = $('#end-table').on('processing.dt', function (e, settings, processing) {
+    var etable = $('#end-table').on('processing.dt', function (e, settings, processing) {
         $('#fullpage-loading').css('display', processing ? 'block' : 'none');
     }).DataTable({
         ajax: {
@@ -86,8 +86,8 @@
         }
     });
 
-    $(table.tables().containers()).children("div").first().children("div").first().removeClass("mdl-cell mdl-cell--6-col").addClass("mdl-cell mdl-cell--5-col");
-    $(table.tables().containers()).children("div").first().prepend('' +
+    $(etable.tables().containers()).children("div").first().children("div").first().removeClass("mdl-cell mdl-cell--6-col").addClass("mdl-cell mdl-cell--5-col");
+    $(etable.tables().containers()).children("div").first().prepend('' +
                 '<button id="dtblbut" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">' +
                 '<i class="material-icons" role="presentation">more_vert</i>' +
                 '<span class="visuallyhidden">NetworkDevice</span>' +
@@ -110,10 +110,10 @@
                 getnet.log("vlan " + $(this).data("vlan") + " is checked");
                 filter = filter + $(this).data("vlan") + ",";
             }
-            filter = filter.slice(0, -1);
-            if (filter === '')
-                filter = 'none';
         });
-        table.column(0).search(filter).draw();
+        filter = filter.slice(0, -1);
+        if (filter === '')
+            filter = 'none';
+        etable.column(0).search(filter).draw();
     });
 </script>

@@ -1,6 +1,5 @@
 ﻿@{
     ViewData["Title"] = "GetNet Service";
-    ViewData["Dependencies"] = Dependencies.GetNetMain;
     var client = new getnet.Client.ServiceClient(getnet.Client.ApiKeyType.Read);
     var status = client.IsOnline() ? "Online" : "Unreachable";
 }

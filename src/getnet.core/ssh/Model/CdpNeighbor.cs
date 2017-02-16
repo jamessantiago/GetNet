@@ -53,7 +53,7 @@ namespace getnet.core.ssh
 
         public string GetStoredCommand()
         {
-            return "show cdp neighbors detail";
+            return "show cdp neighbors detail | incl Entry|IP|Device|Platform|Interface|outgoing|Capabilities";
         }
     }
 }

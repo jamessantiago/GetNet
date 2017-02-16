@@ -1,8 +1,7 @@
 ﻿@model IEnumerable<AlertRule>
 @{
     ViewData["Title"] = "Alerts for " + Current.User.AccountName;
-    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
-}
+    }
 
 @if (CoreCurrent.Configuration["Whistler:Smtp:Enabled"] == "false")
 {
@@ -41,7 +40,7 @@ else
 </div>
 
 @section dialog {
-    <dialog class="mdl-dialog">
+    <dialog class="mdl-dialog" id="newalertdiag">
         <h5 class="mdl-dialog__title">New Alert</h5>
         <div class="mdl-dialog__content">
             <p>
@@ -81,7 +80,7 @@ else
             ]
         });
 
-        var dialog = document.querySelector('dialog');
+        var dialog = document.querySelector('#newalertdiag');
         if (!dialog.showModal) {
             dialogPolyfill.registerDialog(dialog);
         }

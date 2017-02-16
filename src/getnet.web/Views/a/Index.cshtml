@@ -9,15 +9,20 @@
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--8-col">
     <h3>GetNet Alpha</h3>
     <p>GetNet is currently under heavy development.</p>
-    <p>Snapshot of open issues as of 21 Jan:</p>
+    <p>Snapshot of open issues as of 1 Feb:</p>
     @*Invoke-WebRequest -Headers @{"PRIVATE-TOKEN" = ""} "http://gitlab.santiagodevelopment.com/api/v3/projects/43/issues?state=closed&per_page=100" | ConvertFrom-Json*@
     <ul>
+        <li>Add more account action events</li>
+        <li>Add hostname to title attribute in connected network device table for endpoint details</li>
+        <li>Add timeout to dns resolution</li>
+        <li>Improve cdp neighbor command</li>
+        <li>Speed up discovery (improve sh ip int command)</li>
+        <li>Add local font in line with material design typography</li>
+        <li>Fix login token expiration</li>
+        <li>Fix mailkit logging</li>
         <li>Force row drop down menus into alignment</li>
         <li>Fix the diagrams layout</li>
-        <li>Add dns query for discovered endpoints</li>
         <li>Router missing from vlans discovered through subinterfaces</li>
-        <li>Shorten hostnames and add title to shortened hostnames</li>
-        <li>Add link to fields page</li>
         <li>Fix vlan filtering</li>
         <li>Create reports</li>
         <li>Create management page for all alerts</li>
@@ -29,10 +34,8 @@
         <li>Add restart ability to getnet.web</li>
         <li>Add logging config for getnet.service</li>
         <li>Add event pruning system as service job</li>
-        <li>Improve ldapserver connection handling</li>
         <li>Create global snack system and hook in alerts</li>
         <li>Create a cleaner "lite" layout</li>
-        <li>Validate ldap connection before setting configuration</li>
         <li>Add settings for ping behavior</li>
         <li>Add diagram settings page</li>
         <li>Add getnet service job viewer/editor to getnet web</li>
@@ -55,12 +58,19 @@
         <li>Create an upgrade system</li>
         <li>Add a favorites function to list out entities for a specific user</li>
         <li>Add the ability to import and export the entire dataset tagged by network</li>
+
+
     </ul>
 
     <p>Closed issues:</p>
     <ul>
+        <li>Fix getsnacks logslider</li>
+        <li>Fix table draw issue</li>
+        <li>Add dns query for discovered endpoints</li>
         <li>Skip first and last ip in vlan usage listing</li>
         <li>Add default reservation comment in vlan usage for discovered devices</li>
+        <li>Shorten hostnames and add title to shortened hostnames</li>
+        <li>Add link to fields page</li>
         <li>Add build script for dotnet build againsta all supported runtimes</li>
         <li>Add ssh debug function</li>
         <li>Correct reverse trucation with elipses extension</li>
@@ -69,6 +79,8 @@
         <li>Correct missing viz.js bundle</li>
         <li>Fix show mac address issue: line has invalid autocommand</li>
         <li>Fix vlan checkbox styling for multiple vlans</li>
+        <li>Improve ldapserver connection handling</li>
+        <li>Validate ldap connection before setting configuration</li>
         <li>Add endpoint rediscovery</li>
         <li>Create diagram listing page</li>
         <li>Create a vlan usage ip view/reserve thing</li>

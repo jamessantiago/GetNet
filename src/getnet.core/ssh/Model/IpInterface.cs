@@ -39,7 +39,7 @@ namespace getnet.core.ssh
 
         public string GetStoredCommand()
         {
-            return "show ip interface";
+            return "show ip interface | incl line|Internet";
         }
     }
 }

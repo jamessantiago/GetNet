@@ -32,7 +32,7 @@ namespace getnet.core.Logging
                 else
                     predicates = predicates.And(d => d.Site == null);
 
-                if (logEvent.Properties.ContainsKey("type") && !logEvent.Properties.ContainsKey("directory"))
+                if (logEvent.Properties.ContainsKey("type"))
                     predicates = predicates.And(d => (d.Type == logEvent.Properties["type"].ToString() || d.Type == "All"));
 
                 var alerts = uow.Repo<AlertRule>().Get(predicates);

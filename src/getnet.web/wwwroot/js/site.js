@@ -33,6 +33,8 @@ window.getnet = (function () {
     function init(options) {
         getnet.options = options;
         getnet.Pings = 0;
+        getnet.MinRefresh = 10000;
+        LoadMakeSiteDialog();
     }
 
     //#region Refresh
@@ -48,8 +50,9 @@ window.getnet = (function () {
             currentInterval: interval
         };
         registeredRefreshes[name] = refreshData;
-        getnet.log("Registered " + name)
-        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, logslider(refreshData));
+        getnet.log("Registered " + name + "; interval: " + interval + "; intervalMax: " + intervalMax + "; max step: " + intervalStepMax)
+        var currentInterval = Math.max(logslider(refreshData), getnet.MinRefresh);
+        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, currentInterval);
     }
 
     function runRefresh(name) {
@@ -62,7 +65,9 @@ window.getnet = (function () {
             return;
         }
         refreshData.func();
-        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, logslider(refreshData));
+        var currentInterval = Math.max(logslider(refreshData), getnet.MinRefresh);
+        getnet.log(currentInterval);
+        refreshData.timer = setTimeout(function () { execRefresh(refreshData); }, currentInterval);
     }
 
     function logslider(refreshData) {
@@ -73,7 +78,7 @@ window.getnet = (function () {
         position = (now - refreshData.start);
 
         if (position >= refreshData.intervalStepMax)
-            return getnet.Snacks.refreshMax;
+            return refreshData.intervalMax;
 
         var minp = 0;
         var maxp = refreshData.intervalStepMax;
@@ -85,7 +90,7 @@ window.getnet = (function () {
         var logPosition = Math.exp(minv + scale * (position - minp));
         refreshData.currentInterval = logPosition;
         getnet.log("Refresh adjusted for " + refreshData.name + " to " + logPosition + " at step " + position);
-        return logPosition
+        return logPosition;
     }
 
     function pauseRefresh(name) {
@@ -147,7 +152,21 @@ window.getnet = (function () {
             now = new Date();
         return new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), now.getUTCHours(), now.getUTCMinutes(), now.getUTCSeconds())
     }
-        //#endregion Refresh
+    //#endregion Refresh
+
+    function LoadMakeSiteDialog() {
+        getnet.log('make site dialog ready');
+        var dialog = document.querySelector('#makesite');
+        if (!dialog.showModal) {
+            dialogPolyfill.registerDialog(dialog);
+        }
+        $(".show-sitedialog").on('click', function () {
+            dialog.showModal();
+        });
+        dialog.querySelector('.close').addEventListener('click', function () {
+            dialog.close();
+        });
+    }
 
     function ShowSnack(data) {
         componentHandler.upgradeElement(document.querySelector('#global-snack'));
@@ -577,13 +596,13 @@ getnet.Snacks = (function () {
         if (options.refresh == null)
             options.refresh = 15;
         if (options.refreshMax == null)
-            options.refreshMax = 300;
+            options.refreshMax = 150;
         getnet.Snacks.options = options;
         getnet.Snacks.failureCount = 0;
         getnet.Snacks.retryCount = 3;
         LoadSnacks();
         if (options.refresh) {
-            getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 1000, getnet.Snacks.options.refreshMax * 1000, getnet.Snacks.options.refreshMax * 2 * 1000);
+            getnet.refresh.register("Snacks", function () { LoadSnacks(); }, getnet.Snacks.options.refresh * 2 * 1000, getnet.Snacks.options.refreshMax * 1000, getnet.Snacks.options.refreshMax * 1000);
         }
     }
 
@@ -652,12 +671,16 @@ getnet.Snacks = (function () {
 
 getnet.Dash = (function () {
     function init(options) {
+        if (options.refresh == null)
+            options.refresh = 20;
+        if (options.refreshMax == null)
+            options.refreshMax = 300;
         getnet.Dash.options = options;
         getnet.Dash.failureCount = 0;
         getnet.Dash.retryCount = 3;
         LoadDash();
         if (options.refresh) {
-            getnet.refresh.register("Dash", function () { UpdateDash(); }, getnet.Dash.options.refresh * 1000);
+            getnet.refresh.register("Dash", function () { UpdateDash(); }, getnet.Dash.options.refresh * 1000, getnet.Dash.options.refreshMax * 2 * 1000, getnet.Dash.options.refreshMax * 1000);
         }
     }
 

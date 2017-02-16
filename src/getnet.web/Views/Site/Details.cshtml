@@ -1,7 +1,6 @@
 ﻿@model Site
 @{
     ViewData["Title"] = string.Format("{0} - ({1})", Model.Name, Model.Status.ToString().CamelToSpace());
-    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
     ViewData["SiteStatus"] = Model.Status;
 }
 
@@ -187,7 +186,7 @@
 </section>
 
 @section dialog {
-    <dialog class="mdl-dialog">
+    <dialog class="mdl-dialog" id="deletesite">
         <h5 class="mdl-dialog__title">Delete this site?</h5>
         <div class="mdl-dialog__content">
             <p>
@@ -239,7 +238,7 @@
                 });
             });
 
-            var dialog = document.querySelector('dialog');
+            var dialog = document.querySelector('#deletesite');
             if (!dialog.showModal) {
                 dialogPolyfill.registerDialog(dialog);
             }

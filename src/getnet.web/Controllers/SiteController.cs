@@ -127,7 +127,7 @@ namespace getnet.Controllers
             return View(site);
         }
 
-        [Route("/newsite")]
+        [Route("/discovery")]
         [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult New()
         {
@@ -164,7 +164,7 @@ namespace getnet.Controllers
         }
 
         [Authorize(Roles = Roles.GlobalAdmins)]
-        public void MakeSite(string ip)
+        public IActionResult MakeSite(string ip)
         {
             try
             {
@@ -221,6 +221,7 @@ namespace getnet.Controllers
                     message = string.Format("An error occured during site creation: {0}", ex.Message)
                 });
             }
+            return Content("");
         }
 
         [Authorize(Roles = Roles.GlobalAdmins)]

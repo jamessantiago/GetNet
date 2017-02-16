@@ -1,8 +1,7 @@
 ﻿@model getnet.core.Model.Entities.Vlan
 @{
     ViewData["Title"] = "Vlan Usage for vlan " + Model.VlanNumber;
-    ViewData["Dependencies"] = Dependencies.GetnetMainWIthFormsAndTables;
-    var ips = IPNetwork.ListIPAddress(Model.IPNetwork).ToList();
+        var ips = IPNetwork.ListIPAddress(Model.IPNetwork).ToList();
     var iplist = ips.Skip(1).Take(ips.Count() - 2);
 }
 
@@ -53,7 +52,7 @@
 </div>
 
 @section dialog {
-<dialog class="mdl-dialog">
+<dialog class="mdl-dialog" id="ipreserve">
     <h5 class="mdl-dialog__title">Reserve this IP?</h5>
     <div class="mdl-dialog__content">
         <p>
@@ -74,7 +73,6 @@
 
     @section scripts {
         <script>
-            getnet.Forms.init({});
             var table = $('#vlans').on('processing.dt', function (e, settings, processing) {
                 $('#fullpage-loading').css('display', processing ? 'block' : 'none');
             }).DataTable({
@@ -113,7 +111,7 @@
                         '<li class="mdl-menu__item" onclick="window.location = \'/s/@Html.UrlEncoder.Encode(Model.Site.Name)\'">@Model.Site.Name</li>' +
                         '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
                         '</ul>');
-            var dialog = document.querySelector('dialog');
+            var dialog = document.querySelector('#ipreserve');
             if (!dialog.showModal) {
                 dialogPolyfill.registerDialog(dialog);
             }

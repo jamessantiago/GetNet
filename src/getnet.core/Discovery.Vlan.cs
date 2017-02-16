@@ -52,19 +52,20 @@ namespace getnet.core
                         {
                             if (uow.Repo<Model.Entities.Vlan>().Get(d => d.RawVlanIP == vlan.IPNetwork.Network.ToInt() && d.RawVlanSM == vlan.IPNetwork.Netmask.ToInt()).Any())
                                 continue;
+                            var thisSite = uow.Repo<Site>().Get(d => d.SiteId == site.SiteId, includeProperties: "Vlans").FirstOrDefault();
                             var changes = uow.Repo<core.Model.Entities.Vlan>().Insert(new core.Model.Entities.Vlan
                             {
                                 VlanNumber = vlan.VlanNumber,
                                 RawVlanIP = vlan.IPNetwork.Network.ToInt(),
                                 RawVlanSM = vlan.IPNetwork.Netmask.ToInt(),
-                                Site = site
+                                Site = thisSite
                             });
                             uow.Save();
                             var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "Vlans").FirstOrDefault();
-                            var newVlan = uow.Repo<core.Model.Entities.Vlan>().GetByID((int)changes.CurrentValues["VlanId"]);
+                            var newVlan = uow.Repo<core.Model.Entities.Vlan>().Get(d => d.VlanId == (int)changes.CurrentValues["VlanId"], includeProperties: "Site,NetworkDevice").FirstOrDefault();
                             thisRouter.Vlans.AddOrNew(newVlan);
                             newVlan.NetworkDevice = thisRouter;
-                            site.Vlans.AddOrNew(newVlan);
+                            thisSite.Vlans.AddOrNew(newVlan);
                             uow.Save();
                         }
                     }

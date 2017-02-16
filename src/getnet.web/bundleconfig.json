@@ -35,6 +35,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.js",
       "wwwroot/lib/hipku/index.js",
       "wwwroot/js/site.js"
     ],
@@ -70,6 +71,7 @@
     "inputFiles": [
       "wwwroot/lib/jquery/dist/jquery.js",
       "wwwroot/lib/material-design-lite/material.js",
+      "wwwroot/lib/dialog-polyfill/dialog-polyfill.js",
       "wwwroot/lib/hipku/index.js",
       "wwwroot/lib/datatables/media/js/jquery.dataTables.js",
       "wwwroot/lib/datatables/media/js/dataTables.material.js",

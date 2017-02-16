@@ -351,6 +351,10 @@ _:-ms-input-placeholder, :root .getnet-graph {
           align-items: center;
 }
 
+.mdl-switch {
+    margin-bottom: 10px;
+}
+
 
 /* fallback */
 @font-face {
