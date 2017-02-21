@@ -148,7 +148,7 @@
                 Enter the management IP of a router to discover.  This router should be the last hop before entering the site's local area network. 
             </p>
             <form action="/site/makesite" id="thissiteform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('dialog').close();getnet.refresh.run('Snacks')" data-ajax-reset="true">
-                <div mdl-textbox-for="ip" mdl-label="Last Hop Router" mdl-value="" mdl-errors="@ViewData.ModelState.ErrorsFor("ip")"></div>
+                <div mdl-textbox-for="ip" mdl-label="Last Hop Router IP" mdl-value="" mdl-errors="@ViewData.ModelState.ErrorsFor("ip")"></div>
                 <div class="mdl-dialog__actions">
                     <button mdl-submit-button="Submit"></button>
                     <button type="button" class="mdl-button close">Cancel</button>

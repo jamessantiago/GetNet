@@ -13,19 +13,10 @@ namespace getnet.core.ssh
         public string Mac { get; set; }
         public string Interface { get; set; }
         public IPAddress TableOwner { get; set; }
+        public int Level { get; set; }
 
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
-            if (CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] == "Development")
-            {
-                data = @"
-Destination Address  Address Type  VLAN  Destination Port
--------------------  ------------  ----  --------------------
-c007.07e2.0000          Self          1     Vlan1
-ca03.13b7.001c          Dynamic       1     FastEthernet1/0
-0050.7966.6800          Dynamic       1     FastEthernet1/1
-";
-            }
             var results = new List<ICommandResult>();
             var matchSet = Regex.Matches(data, @"(\w{4}\.\w{4}\.\w{4})[\w\s,]*([LVFGST][\w\/]{2,30})");
             for(int i = 0; i < matchSet.Count; i++ )

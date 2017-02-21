@@ -163,6 +163,53 @@ namespace getnet.Controllers
             return PartialView("_newsites", neighbors);
         }
 
+        [HttpPost]
+        [Authorize(Roles = Roles.GlobalAdmins)]
+        public IActionResult AddRouter(int siteid, string ip)
+        {
+            try
+            {
+                uow.Transaction(() =>
+                {
+                    var router = ip.Ssh().Execute<DeviceVersion>().First();
+                    var testRouter = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == ip.IpToInt(), includeProperties: "Site").FirstOrDefault();
+                    if (testRouter != null)
+                    {
+                        HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
+                        {
+                            message = string.Format("Unable to add router to site, the router with IP {0} already belongs to site {1}", ip, testRouter.Site.Name)
+                        });
+                        return;
+                    }
+
+                    var site = uow.Repo<Site>().Get(d => d.SiteId == siteid, includeProperties: "NetworkDevices").First();
+                    NetworkDevice device = new NetworkDevice()
+                    {
+                        Hostname = router.Hostname,
+                        Model = router.Model,
+                        RawManagementIP = ip.IpToInt(),
+                        Capabilities = NetworkCapabilities.Router,
+                        ChassisSerial = router.Serial,
+                        Site = site
+                    };
+                    var devchanges = uow.Repo<NetworkDevice>().Insert(device);
+                    site.NetworkDevices.AddOrNew(device);
+                    uow.Save();
+                    Task.Run(() => Discovery.RunFullSiteDiscovery(siteid));
+                    HttpContext.Session.AddSnackMessage("Successfully added router and initiated a full site rediscovery");
+                });
+            } catch (Exception ex)
+            {
+                logger.Error("Failed to configure site", ex, WhistlerTypes.NetworkDiscovery);
+                HttpContext.Session.AddSnackMessage(new Model.SnackMessage()
+                {
+                    message = string.Format("An error occured during site configuration: {0}", ex.Message)
+                });
+
+            }
+            return Content("");
+        }
+
         [Authorize(Roles = Roles.GlobalAdmins)]
         public IActionResult MakeSite(string ip)
         {

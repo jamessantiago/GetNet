@@ -201,6 +201,23 @@
             </form>
         </div>
     </dialog>
+
+<dialog class="mdl-dialog" id="addroutertosite">
+    <h5 class="mdl-dialog__title">Add Adjacent Router</h5>
+    <div class="mdl-dialog__content">
+        <p>
+            Enter the management IP of a router to add.  This router should connect to the same switcing infrastructure that other routers in this site connect to.
+        </p>
+        <form action="/site/addrouter" id="thisaddrouterform" class="getnet-ajax-form" data-ajax-success-action="document.querySelector('#addroutertosite').close();getnet.refresh.run('Snacks')" data-ajax-reset="true">
+            <input type="hidden" id="siteid" name="siteid" value="@Model.SiteId" />
+            <div mdl-textbox-for="ip" mdl-label="Adjacent Router IP" mdl-value="" mdl-errors="@ViewData.ModelState.ErrorsFor("ip")"></div>
+            <div class="mdl-dialog__actions">
+                <button mdl-submit-button="Submit"></button>
+                <button type="button" class="mdl-button close">Cancel</button>
+            </div>
+        </form>
+    </div>
+</dialog>
 }
 
 @section scripts {
@@ -247,6 +264,14 @@
             });
             dialog.querySelector('.close').addEventListener('click', function () {
                 dialog.close();
+            });
+
+            window.dialog2 = document.querySelector('#addroutertosite');
+            if (!dialog2.showModal) {
+                dialogPolyfill.registerDialog(dialog2);
+            }
+            dialog2.querySelector('.close').addEventListener('click', function () {
+                dialog2.close();
             });
         });
     </script>

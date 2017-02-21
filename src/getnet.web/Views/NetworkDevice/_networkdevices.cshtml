@@ -3,7 +3,7 @@
         <tr>
             @if (ViewData["SiteId"] == null)
             {
-            <th>Site</th>
+                <th>Site</th>
             }
             <th>Capabilities</th>
             <th>Hostname</th>
@@ -31,9 +31,9 @@
             {
                 @if (ViewData["SiteId"] == null) {
                     @:targets: [0, 1, 2, 3, 4],
-                 } else {
+                                 } else {
                     @:targets: [0, 1, 2, 3],
-                 }
+                                 }
                 className: 'mdl-data-table__cell--non-numeric'
             }
         ],
@@ -45,8 +45,8 @@
             @if (ViewData["SiteId"] == null)
             {
                 @:$(row).children("td").first().html('<a href="/s/' + data[0] + '">' + data[0] + "</a>");
-                @:ca = 0;
-            }
+                            @:ca = 0;
+                        }
             $(row).children("td").eq(2 - ca).attr("title", data[2 - ca]).html(getnet.reverseTruncElips(data[2 - ca], 11));
 
             $(row).attr('id', data[2 - ca] + "_row");
@@ -63,7 +63,7 @@
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/d/' + encodeURIComponent(data[2 - ca]) + '\'">Details</li>' +
                 '<li class="mdl-menu__item" onclick="window.location.href = \'/networkdevice/edit/' + encodeURIComponent(data[5 - ca]) + '\'">Edit</li>' +
                 '</ul>');
-            },
+        },
         initComplete: function () {
             componentHandler.upgradeElements(document.querySelectorAll('.netbuts'));
         },
@@ -72,6 +72,12 @@
         }
     });
     $(table.tables().containers()).children("div").first().children("div").first().removeClass("mdl-cell mdl-cell--6-col").addClass("mdl-cell mdl-cell--5-col");
+    var addrouter = "";
+    @if (ViewData["SiteId"] != null)
+    {
+        @:addrouter = '<li class="mdl-menu__item" id="show-dialog2">Add Router</li>';
+        }
+
     $(table.tables().containers()).children("div").first().prepend('' +
                 '<button id="ntblbut" class="mdl-button mdl-js-button mdl-js-ripple-effect mdl-button--icon">' +
                 '<i class="material-icons" role="presentation">more_vert</i>' +
@@ -79,7 +85,15 @@
                 '</button>' +
                 '<ul id="ntlst" class="mdl-menu mdl-menu--bottom-left mdl-js-menu mdl-js-ripple-effect" for="ntblbut">' +
                 '<li class="mdl-menu__item" onclick="getnet.pingall()">Ping All</li>' +
+                addrouter +
                 '</ul>');
     componentHandler.upgradeElement(document.querySelector('#ntlst'));
+
+    @if (ViewData["SiteId"] != null)
+    {
+        @:$("#show-dialog2").on('click', function() {
+        @:    dialog2.showModal();
+        @:});
+    }
 
 </script>
