@@ -1,0 +1,47 @@
+﻿<table id="ev-table" class="mdl-data-table" width="100%" cellspacing="0">
+    <thead>
+        <tr>
+            <th>Timestamp</th>
+            <th>Level</th>
+            <th>Type</th>
+            <th>Source</th>
+            <th>Message</th>
+        </tr>
+    </thead>
+</table>
+
+<script>
+    var table = $('#ev-table').on('processing.dt', function (e, settings, processing) {
+        $('#fullpage-loading').css('display', processing ? 'block' : 'none');
+    }).DataTable({
+        ajax: {
+            url: "/event/eventhandler",
+            data: {
+                siteid: "@ViewData["SiteId"]",
+                text: "@ViewData["SearchText"]"
+            }
+        },
+        processing: false,
+        serverSide: true,
+        columnDefs: [
+            {
+                targets: '_all',
+                className: 'mdl-data-table__cell--non-numeric'
+            }
+        ],
+        order: [[0, 'desc']],
+        language: {
+            search: "Filter:"
+        },
+        rowCallback: function (row, data) {
+            $(row).children("td").last().attr("title", data[4]).html(getnet.truncElips(data[4], 50));
+            $(row).on("click",
+                function() {
+                    $('#ajaxdiag').load('/event/details/' + data[5]);
+                    var ajdiag = document.querySelector('#ajaxdiag');
+                    dialogPolyfill.registerDialog(ajdiag);
+                    ajdiag.showModal();
+                });
+        }
+    });
+</script>

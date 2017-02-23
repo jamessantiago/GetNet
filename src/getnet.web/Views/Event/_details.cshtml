@@ -1,0 +1,23 @@
+﻿@model Event
+
+<h5 class="mdl-dialog__title">@Model.Type</h5>
+<div class="mdl-dialog__content">
+    <h5>Timestamp</h5>
+    <p>@Model.TimeStamp.ToLocalTimeString()</p>
+    <h5>Level</h5>
+    <p>@Model.Level</p>
+    <h5>Source</h5>
+    <p>@Model.Source</p>
+    <h5>Message</h5>
+    <p>@Model.Message</p>
+    <h5>Details</h5>
+    <pre>@Model.Details</pre>
+    @if (ViewData["Site"] != null)
+    {
+        <h5>Site</h5>
+        <a href="/s/@ViewData["Site"]">@ViewData["Site"]</a>
+        <br/>
+        <br/>
+    }
+    <button type="button" onclick="document.querySelector('#ajaxdiag').close()" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--accent">Close</button>
+</div>

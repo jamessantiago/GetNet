@@ -1,10 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Dynamic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using Newtonsoft.Json.Linq;
 
 namespace getnet.Client
@@ -132,6 +135,28 @@ namespace getnet.Client
 
             }
         }
+
+        public dynamic GetLogging()
+        {
+            HttpResponseMessage response = client.GetAsync("/logging/").Result;
+            if (response.IsSuccessStatusCode)
+            {
+                var results = JObject.Parse(response.Content.ReadAsStringAsync().Result);
+                return results;
+            }
+            else
+            {
+                throw new Exception("HTTP error code: " + response.StatusCode);
+            }
+        }
+
+        public void SetLogging(IFormCollection collection)
+        {
+            var content = new FormUrlEncodedContent(collection.Select(d => new KeyValuePair<string, string>(d.Key, d.Value)));
+            client.PostAsync("/logging/set", content);
+        }
+
+
     }
 
     public enum ApiKeyType

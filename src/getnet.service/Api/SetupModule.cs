@@ -14,10 +14,7 @@ namespace getnet.service.Api
         public SetupModule() : base("/setup")
         {
             StatelessAuthentication.Enable(this, Current.StatelessConfig);
-            Before += ctx =>
-            {
-                return (this.Context.CurrentUser == null) ? new HtmlResponse(HttpStatusCode.Unauthorized) : null;
-            };
+            Before += ctx => (Context.CurrentUser == null) ? new HtmlResponse(HttpStatusCode.Unauthorized) : null;
 
             Post("SetKeys", args => SetKeys(this.Bind<Keys>()));
         }

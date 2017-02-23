@@ -14,7 +14,7 @@ namespace getnet.Controllers
 {
     public class EndpointController : BaseController
     {
-        private Whistler logger = new Whistler(typeof(EndpointController).FullName);
+        private readonly Whistler _whistler = new Whistler(typeof(EndpointController).FullName);
 
         [RedirectOnDbIssue]
         [Authorize(Roles =Roles.GlobalViewers)]
@@ -35,7 +35,7 @@ namespace getnet.Controllers
             if (filter.HasValue() && filter != "none")
             {
                 var vlanPredicates = PredicateBuilder.False<Device>();
-                foreach (var vn in ((string)filter).Split(','))
+                foreach (var vn in filter.Split(','))
                     vlanPredicates = vlanPredicates.Or(d => d.Vlan.VlanNumber == int.Parse(vn));
                 predicates.And(vlanPredicates);
             }
@@ -150,7 +150,7 @@ namespace getnet.Controllers
                     });
                 }catch (Exception ex)
                 {
-                    logger.Error(ex, WhistlerTypes.UnhandledException);
+                    _whistler.Error(ex, WhistlerTypes.UnhandledException);
                     HttpContext.Session.AddSnackMessage("Failed to add reservation: " + ex.Message);
                 }
             } else

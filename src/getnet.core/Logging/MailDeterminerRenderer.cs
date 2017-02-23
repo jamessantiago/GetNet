@@ -24,7 +24,7 @@ namespace getnet.core.Logging
 
                 int SiteId = 0;
 
-                if ((logEvent.Properties.ContainsKey("SiteId") && int.TryParse(logEvent.Properties["SiteId"].ToString(), out SiteId)) && logEvent.Properties.ContainsKey("type"))
+                if ((logEvent.Properties.ContainsKey("SiteId") && int.TryParse(logEvent.Properties["SiteId"].ToString(), out SiteId)) && logEvent.Properties.ContainsKey("type") && SiteId != 0)
                 {
                     predicates = predicates.And(d => (d.Type == logEvent.Properties["type"].ToString() || d.Type == "All") && d.Site != null && d.Site.SiteId == (int)logEvent.Properties["SiteId"]);
                     var net = uow.Repo<Site>().GetByID(SiteId);
@@ -35,12 +35,13 @@ namespace getnet.core.Logging
                 if (logEvent.Properties.ContainsKey("type"))
                     predicates = predicates.And(d => (d.Type == logEvent.Properties["type"].ToString() || d.Type == "All"));
 
-                var alerts = uow.Repo<AlertRule>().Get(predicates);
+                var alerts = uow.Repo<AlertRule>().Get(predicates, includeProperties: "User,Site");
                 string finalemail = "";
                 foreach (var alert in alerts)
                 {
 
-                    if (alert.LogLevel == AlertLogLevel.All || LogLevel.FromString(alert.LogLevel.ToString()) <= logEvent.Level)
+                    if ((alert.LogLevel == AlertLogLevel.All || LogLevel.FromString(alert.LogLevel.ToString()) <= logEvent.Level) && 
+                        (alert.Site == null || alert.Site.SiteId == SiteId))
                     {
                         string email = alert.User.Email;
                         if (email.IsValidEmailAddress() && !finalemail.Contains(email))

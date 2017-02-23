@@ -12,6 +12,7 @@ using getnet.service.Jobs;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using System.IO;
+using System.Net.Sockets;
 
 namespace getnet.service
 {
@@ -22,9 +23,8 @@ namespace getnet.service
 
         public static void Run()
         {
-            Console.CancelKeyPress += delegate {
-                ResetEvent.Set();
-            };
+            Console.CancelKeyPress -= ConsoleOnCancelKeyPress;
+            Console.CancelKeyPress += ConsoleOnCancelKeyPress;
 
             var host = new WebHostBuilder()
                 .UseContentRoot(Directory.GetCurrentDirectory())
@@ -104,6 +104,23 @@ namespace getnet.service
                 logger.Error(ex, WhistlerTypes.ServiceControl);
             }
             Current.Scheduler.Shutdown();
+        }
+
+        private static void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs consoleCancelEventArgs)
+        {
+            ResetEvent.Set();
+        }
+
+        public static void Restart(int sleep = 5)
+        {
+            ResetEvent.Set();
+            Thread.Sleep(sleep);
+            Run();
+        }
+
+        public static void Shutdown()
+        {
+            ResetEvent.Set();
         }
 
         private static void AddDefaultTasks(UnitOfWork uow)

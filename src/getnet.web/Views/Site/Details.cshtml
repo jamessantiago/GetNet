@@ -13,7 +13,7 @@
         <a href="#dhcp-tab" class="mdl-layout__tab">DHCP</a>
         <a href="#sas-tab" class="mdl-layout__tab">Sites and Subjets</a>
         <a id="digs" href="#dig-tab" class="mdl-layout__tab">Diagram</a>
-        <a href="#events-tab" class="mdl-layout__tab">Events</a>
+        <a id="evs" href="#events-tab" class="mdl-layout__tab">Events</a>
     </div>
 }
 
@@ -182,6 +182,8 @@
 
 <section class="mdl-layout__tab-panel mdl-cell--12-col" id="events-tab">
     <div class="page-content mdl-grid">
+        <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col" id="site-events">
+        </div>
     </div>
 </section>
 
@@ -236,7 +238,7 @@
                 $("#fullpage-loading").show();
                 $("#end-tab").load('/endpoint/siteendpoints/@Model.SiteId', function () {
                     $("#fullpage-loading").hide();
-                    
+
                 });
             });
 
@@ -252,6 +254,14 @@
                 $("#fullpage-loading").show();
                 $("#viz-graph").load('/diagram/viz/@Model.SiteId', function () {
                     $("#fullpage-loading").hide();
+                });
+            });
+
+            $("#evs").one('click', function () {
+                $("#fullpage-loading").show();
+                $("#site-events").load('/event/siteevents/@Model.SiteId', function () {
+                    $("#fullpage-loading").hide();
+
                 });
             });
 

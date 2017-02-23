@@ -7,6 +7,8 @@ using Quartz.Impl.Matchers;
 using System.Threading;
 using Quartz;
 using Nancy.ModelBinding;
+using Nancy.Authentication.Stateless;
+using Nancy.Responses;
 
 namespace getnet.service.Api
 {
@@ -14,6 +16,9 @@ namespace getnet.service.Api
     {
         public SchedulerModule() : base("/scheduler")
         {
+            StatelessAuthentication.Enable(this, Current.StatelessConfig);
+            Before += ctx => (Context.CurrentUser == null) ? new HtmlResponse(HttpStatusCode.Unauthorized) : null;
+
             Get("/jobs", args => GetJobDetails());
             Get("/triggers", args => GetTriggerDetails());
             Post("/run", args =>

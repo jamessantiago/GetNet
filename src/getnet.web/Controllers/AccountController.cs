@@ -55,7 +55,7 @@ namespace getnet.Controllers
                         return LdapServer.Current.Authenticate(email, password);
                     },
                     retryInterval: TimeSpan.FromSeconds(2), 
-                    breakOnValidation: ex => { return ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"); },
+                    breakOnValidation: ex => ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"),
                     retryCount: 3))
                 {
                     return await Login(email);

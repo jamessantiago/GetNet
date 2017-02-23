@@ -6,7 +6,7 @@
     },
     "getnet.core": "1.0.0-*",
     "Microsoft.AspNetCore.Diagnostics": "1.1.0",
-    "Microsoft.AspNetCore.Mvc": "1.1.0",
+    "Microsoft.AspNetCore.Mvc": "1.1.1",
     "Microsoft.AspNetCore.Routing": "1.1.0",
     "Microsoft.AspNetCore.Server.IISIntegration": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel": "1.1.0",
@@ -24,9 +24,9 @@
     "Microsoft.jQuery.Unobtrusive.Ajax": "3.2.3",
     "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "1.1.0",
     "Microsoft.AspNetCore.Session": "1.1.0",
-    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.1.0",
     "Microsoft.AspNetCore.Server.Kestrel.Https": "1.1.0",
-    "Love.Net.CronExpressionDescriptor": "1.0.3"
+    "Love.Net.CronExpressionDescriptor": "1.0.3",
+    "Microsoft.AspNetCore.Mvc.TagHelpers": "1.1.1"
   },
 
   "tools": {

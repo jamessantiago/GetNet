@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Events";
+}
+
+<div id="allevents" class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col ">
+
+</div>
+
+@section scripts {
+    <script>
+        $("#allevents").load("/event/alleventspartial");
+    </script>
+
+}

@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Authorization;
 using getnet.Model;
 using getnet.Client;
+using Microsoft.AspNetCore.Http;
 
 namespace getnet.Controllers
 {
@@ -58,7 +59,7 @@ namespace getnet.Controllers
             if (CoreCurrent.Configuration.GetSecure("Api:Keys:Admin").HasValue())
                 client = new Client.ServiceClient(ApiKeyType.Admin);
             else if (CoreCurrent.Configuration.GetSecure("Api:Keys:Default").HasValue())
-                client = new Client.ServiceClient(ApiKeyType.Default);
+                client = new ServiceClient(ApiKeyType.Default);
             else
             {
                 HttpContext.Session.AddSnackMessage("No API key available to communicate with service");
@@ -92,6 +93,13 @@ namespace getnet.Controllers
             client.RunJob(id);
             HttpContext.Session.AddSnackMessage("Job '{0}' initiated", id);
             return RedirectToAction("Index");
+        }
+
+        public IActionResult SetLogging(IFormCollection collection)
+        {
+            var client = new ServiceClient(ApiKeyType.Admin);
+            client.SetLogging(collection);
+            return PartialView("_success", "Successfully configured logging");
         }
     }
 }

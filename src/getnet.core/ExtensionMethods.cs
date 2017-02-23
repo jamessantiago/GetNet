@@ -507,8 +507,9 @@ namespace getnet
 
         public static bool IsValidEmailAddress(this string email)
         {
-            System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
-            return regex.IsMatch(email);
+            //System.Text.RegularExpressions.Regex regex = new System.Text.RegularExpressions.Regex(@"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
+            //return regex.IsMatch(email);
+            return email.Count(c => c == '@') == 1; //hey hey
         }
 
         public static uint IP2Int(this string IPAddress)

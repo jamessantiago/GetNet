@@ -87,7 +87,10 @@ namespace getnet
                 config.LoggingRules.Add(rule4);
             }
             
+            
+
             LogManager.Configuration = config;
+            LogManager.ThrowExceptions = false;
         }
     }
 }

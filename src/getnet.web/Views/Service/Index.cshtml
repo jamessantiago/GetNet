@@ -11,9 +11,69 @@
         <h3 class="@(status == "Online" ? "mdl-color-text--green" : "mdl-color-text--red")">@status <button class="mdl-button mdl-js-button mdl-button--icon" title="Configure" onclick="window.location = '/service/configure'"><i class="material-icons">settings</i></button></h3>
         
         <h4>Scheduled Jobs</h4>
-        @foreach (var job in client.GetJobs())
+        foreach (var job in client.GetJobs())
         {
             <p><button class="mdl-button mdl-js-button mdl-button--icon" title="Run now" onclick="window.location = '/service/runjob/@Html.UrlEncoder.Encode(job.Item1)'"><i class="material-icons">play_circle_outline</i></button> @job.Item1</p>
+        }
+
+        if (client.IsOnline())
+        {
+            var logConfig = client.GetLogging();
+
+            <h4>Logging</h4>
+            <div id="logging-results"></div>
+            <form action="/service/setlogging" id="logging" class="getnet-ajax-form">
+                <h4>Console</h4>
+
+                <h4>File</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="fileenabled">
+                    <input type="checkbox" id="fileenabled" name="fileenabled" class="mdl-switch__input" @(logConfig.fileEnabled == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="filelayout" id="filelayout" value="@logConfig.fileLayout">
+                    <label class="mdl-textfield__label" for="filelayout">Layout</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="filename" id="filename" value="@logConfig.fileFileName">
+                    <label class="mdl-textfield__label" for="filename">File Name</label>
+                </div>
+
+                <h4>SMTP</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="smtpenabled">
+                    <input type="checkbox" id="smtpenabled" name="smtpenabled" class="mdl-switch__input" @(logConfig.smtpEnabled == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpserver" id="smtpserver" value="@logConfig.smtpServer">
+                    <label class="mdl-textfield__label" for="smtpserver">Relay Server</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpfrom" id="smtpfrom" value="@logConfig.smtpFrom">
+                    <label class="mdl-textfield__label" for="smtpfrom">From Address</label>
+                </div>
+
+                <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                    <input class="mdl-textfield__input" type="text" name="smtpsubject" id="smtpsubject" value="@logConfig.smtpSubjectLayout">
+                    <label class="mdl-textfield__label" for="smtpsubject">Subject Layout</label>
+                </div>
+
+                <h4>Database</h4>
+                <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="databaseenabled">
+                    <input type="checkbox" id="databaseenabled" name="databaseenabled" class="mdl-switch__input" @(logConfig.dbEnabled == "true" ? "checked" : "")>
+                    <span class="mdl-switch__label"></span>
+                </label>
+
+
+                <br/><br/>
+                <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored">
+                    Save
+                </button>
+            </form>
         }
 
     }
