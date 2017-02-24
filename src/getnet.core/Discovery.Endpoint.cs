@@ -95,12 +95,6 @@ namespace getnet.core
                             uow.Save();
                             existingDevice = uow.Repo<Device>().GetByID((int)change.CurrentValues["DeviceId"]);
 
-                            try
-                            {
-                                var hostname = System.Net.Dns.GetHostEntryAsync(arp.IP).Result.HostName;
-                                existingDevice.Hostname = hostname;
-                            }
-                            catch { }
                             thisSite.Vlans.FirstOrDefault(d => IPNetwork.Contains(d.IPNetwork, existingDevice.IP))?.Devices.AddOrNew(existingDevice);
                             thisSite.Devices.AddOrNew(existingDevice);
                             if (existingDevice.Port.HasValue())
@@ -125,7 +119,7 @@ namespace getnet.core
                             uow.Save();
                         }
                         uow.Save();
-                            
+                        EndpointAnalysis.FullAnalysis(existingDevice.DeviceId);
                         
                     }
                 }

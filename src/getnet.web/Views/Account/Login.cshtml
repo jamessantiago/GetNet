@@ -17,6 +17,7 @@
                     @ViewData["FailedLoginMessage"]
                 </div>
             }
+            <input type="hidden" name="returnUrl" value="@ViewData["ReturnUrl"]" />
 
             <div mdl-textbox-for="email" mdl-label="Email" mdl-errors="@ViewData.ModelState.ErrorsFor("email")" mdl-value=""></div>
 

@@ -31,20 +31,24 @@ namespace getnet.Controllers
         }
         
         [Route("/login")]
-        public async Task<IActionResult> Login()
+        public async Task<IActionResult> Login(string returnUrl)
         {
             if (Current.Security as EveryonesAnAdminProvider != null)
             {
                 await signInManager.SignInAsync(new Model.User("AdminUser@GetNet", Roles.GlobalAdmins), false);
-                return RedirectToAction("index", "a");
+                if (returnUrl.HasValue())
+                    return Redirect(returnUrl);
+                else
+                    return RedirectToAction("index", "a");
             }
+            ViewData["ReturnUrl"] = returnUrl;
             return View();
         }
 
         [HttpPost]
         [RequireHttps]
         [Route("/login")]
-        public async Task<IActionResult> Login(string email, string password)
+        public async Task<IActionResult> Login(string email, string password, string returnUrl)
         {
             email = email.ToLower();
             try
@@ -58,7 +62,7 @@ namespace getnet.Controllers
                     breakOnValidation: ex => ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"),
                     retryCount: 3))
                 {
-                    return await Login(email);
+                    return await Login(email, returnUrl);
                 }
             } catch (AggregateException ex)
             {
@@ -73,12 +77,15 @@ namespace getnet.Controllers
             return View();
         }
 
-        private async Task<IActionResult> Login(string email)
+        private async Task<IActionResult> Login(string email, string returnUrl)
         {
             var groups = (Current.Security as ActiveDirectoryProvider).GetRoles(email);
             var tempUser = new User(email, groups.ToArray());
             await signInManager.SignInAsync(tempUser, true);
-            return RedirectToAction("index", "a");
+            if (returnUrl.HasValue())
+                return Redirect(returnUrl);
+            else
+                return RedirectToAction("index", "a");
         }
 
         [Route("/logoff")]

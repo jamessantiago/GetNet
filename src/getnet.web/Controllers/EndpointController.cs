@@ -12,12 +12,12 @@ using Microsoft.AspNetCore.Http;
 
 namespace getnet.Controllers
 {
+    [RedirectOnDbIssue]
+    [Authorize(Roles = Roles.GlobalViewers)]
     public class EndpointController : BaseController
     {
         private readonly Whistler _whistler = new Whistler(typeof(EndpointController).FullName);
 
-        [RedirectOnDbIssue]
-        [Authorize(Roles =Roles.GlobalViewers)]
         public ActionResult EndpointHandler(int? siteid, string text, jQueryDataTableParamModel param)
         {
             var predicates = PredicateBuilder.True<Device>();
