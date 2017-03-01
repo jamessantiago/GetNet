@@ -1,10 +1,12 @@
-﻿@model Site
+﻿@using System.Text.Encodings.Web
+@model Site
 @{
     ViewData["Title"] = "Viz Graph for " + Model.Name;
 }
 
-<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col mdl-typography--text-center" id="container">
-
+<div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col mdl-typography--text-center">
+    <h4><a href="/s/@UrlEncoder.Create().Encode(Model.Name)"></a>@Model.Name</h4>
+    <div id="container"></div>
 </div>
 
 @section scripts {

@@ -17,15 +17,19 @@ namespace getnet.core.ssh
             var results = new List<ICommandResult>();
             var ver = new DeviceVersion();
             ver.Hostname = Regex.Match(data, @"(.*) uptime").Groups[1].Value;
+            if (ver.Hostname == "Kernel")
+                ver.Hostname = Regex.Match(data, @"Device name: (.*)").Groups[1].Value;
             MatchCollection models = Regex.Matches(data, @"(.*) processor (\(revision|with)");
             if (models.Count == 0)
                 models = Regex.Matches(data, @"(.*) \(revision");
             if (models.Count > 0)
                 ver.Model = models[0].Groups[1].Value;
-            ver.Serial = Regex.Match(data, @"Processor board ID\s([\w]*)").Groups[1].Value;
+            if (models.Count == 0)
+                ver.Model = Regex.Match(data, @"Hardware[\n|\r|\r\n]\s+(.*)", RegexOptions.Multiline).Groups[1].Value;
+            ver.Serial = Regex.Match(data, @"Processor board ID\s([\w]*)", RegexOptions.IgnoreCase).Groups[1].Value;
 
-            if (!ver.Hostname.HasValue() || !ver.Model.HasValue() || !ver.Serial.HasValue())
-                throw new Exception("Incomplete data returned from device");
+            //if (!ver.Hostname.HasValue() || !ver.Model.HasValue() || !ver.Serial.HasValue())
+            //    throw new Exception("Incomplete data returned from device");
 
             results.Add(ver);
 

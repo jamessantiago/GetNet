@@ -17,20 +17,48 @@ namespace getnet.core.ssh
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
             var results = new List<ICommandResult>();
-            var matchSet1 = Regex.Matches(data, @"([\w\/]+)([\w ,]*)[\n|\r|\r\n]\s*Internet address is ([\d\.]*)\/(\d\d)", RegexOptions.Multiline);
-
-            foreach (Match m in matchSet1)
+            if (data.Contains("line"))
             {
-                if (!(string.IsNullOrEmpty(m.Groups[1].Value) || string.IsNullOrEmpty(m.Groups[3].Value) || string.IsNullOrEmpty(m.Groups[4].Value)))
+                var matchSet1 = Regex.Matches(data,
+                    @"([\w\/]+)([\w ,]*)[\n|\r|\r\n]\s*Internet address is ([\d\.]*)\/(\d\d)", RegexOptions.Multiline);
+
+                foreach (Match m in matchSet1)
                 {
-                    string port = m.Groups[1].Value;
-                    string network = m.Groups[3].Value + "/" + m.Groups[4].Value;
-                    results.Add(new IpInterface
+                    if (
+                        !(string.IsNullOrEmpty(m.Groups[1].Value) || string.IsNullOrEmpty(m.Groups[3].Value) ||
+                          string.IsNullOrEmpty(m.Groups[4].Value)))
                     {
-                        Interface = port,
-                        IP = IPAddress.Parse(m.Groups[3].Value),
-                        IPNetwork = IPNetwork.Parse(network)
-                    });
+                        string port = m.Groups[1].Value;
+                        string network = m.Groups[3].Value + "/" + m.Groups[4].Value;
+                        results.Add(new IpInterface
+                        {
+                            Interface = port,
+                            IP = IPAddress.Parse(m.Groups[3].Value),
+                            IPNetwork = IPNetwork.Parse(network)
+                        });
+                    }
+                }
+            }
+            else
+            {
+                var matchSet = Regex.Matches(data,
+                    @"([\w\/]+),.*[\n|\r|\r\n]\s*IP address: ([\d\.]*), IP subnet: ([\d\.]*)\/(\d\d)", RegexOptions.Multiline);
+
+                foreach (Match m in matchSet)
+                {
+                    if (
+                        !(string.IsNullOrEmpty(m.Groups[1].Value) || string.IsNullOrEmpty(m.Groups[2].Value) ||
+                          string.IsNullOrEmpty(m.Groups[3].Value) || string.IsNullOrEmpty(m.Groups[4].Value)))
+                    {
+                        string port = m.Groups[1].Value;
+                        string network = m.Groups[3].Value + "/" + m.Groups[4].Value;
+                        results.Add(new IpInterface
+                        {
+                            Interface = port,
+                            IP = IPAddress.Parse(m.Groups[2].Value),
+                            IPNetwork = IPNetwork.Parse(network)
+                        });
+                    }
                 }
             }
 
@@ -39,7 +67,7 @@ namespace getnet.core.ssh
 
         public string GetStoredCommand()
         {
-            return "show ip interface | incl line|Internet";
+            return "show ip interface | incl line|Internet|address|Interface";
         }
     }
 }

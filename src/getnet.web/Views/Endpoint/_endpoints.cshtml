@@ -102,12 +102,12 @@
     componentHandler.upgradeElement(document.querySelector('#devlst'));
 
 
-    componentHandler.upgradeElements(document.querySelectorAll('.mdl-switch'))
+    componentHandler.upgradeElements(document.querySelectorAll('.mdl-switch'));
     $(".vlans").on("click", function () {
         var filter = '';
         $(".vlans").each(function () {
-            if ($(this).is(":checked")) {
-                getnet.log("vlan " + $(this).data("vlan") + " is checked");
+            if ($(this).is(":checked") == false) {
+                getnet.log("vlan " + $(this).data("vlan") + " is not checked");
                 filter = filter + $(this).data("vlan") + ",";
             }
         });

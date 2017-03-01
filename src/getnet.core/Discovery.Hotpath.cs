@@ -16,7 +16,17 @@ namespace getnet.core
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
-                    var tunnels = router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu"));
+                    IEnumerable<CdpNeighbor> tunnels = null;
+                    try
+                    {
+                        tunnels =
+                            router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu"));
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Failed to retrieve connected tunnels", ex, WhistlerTypes.NetworkDiscovery);
+                        continue;
+                    }
                     var tunnelmonitors = new Dictionary<long, CdpNeighbor>();
                     foreach (var tunnel in tunnels)
                     {

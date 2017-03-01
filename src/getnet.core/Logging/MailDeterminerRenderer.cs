@@ -49,6 +49,8 @@ namespace getnet.core.Logging
                     }
                 }
                 finalemail += "!";
+                if (finalemail == "!") finalemail = "";
+
                 builder.Append(finalemail.Replace(";!", ""));
             }
         }

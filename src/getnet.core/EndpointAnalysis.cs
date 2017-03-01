@@ -29,10 +29,10 @@ namespace getnet.core
             try
             {
                 var cts = new CancellationTokenSource();
-                IPHostEntry hostname = null;
+                IPHostEntry hostEntry = null;
                 cts.CancelAfter(TimeSpan.FromSeconds(1));
-                Task.Run(async () => hostname = await System.Net.Dns.GetHostEntryAsync(device.IP.ToString()), cts.Token);
-                device.Hostname = hostname.HostName;
+                hostEntry = Task.Run(async () => await System.Net.Dns.GetHostEntryAsync(device.IP.ToString()), cts.Token).Result;
+                device.Hostname = hostEntry.HostName;
                 uow.Save();
                 return;
             }
@@ -41,12 +41,19 @@ namespace getnet.core
                 // ignored
             }
 
-            var cdp = device.NetworkDevice.ManagementIP.Ssh().Execute<CdpNeighbor>();
-            var cdpEntry = cdp.FirstOrDefault(d => d.IP.ToInt() == device.RawIP);
-            if (cdpEntry == null || !cdpEntry.Capabilities.Contains("Phone")) return;
-            device.Type = DeviceType.Phone;
-            device.Hostname = cdpEntry.Hostname;
-            uow.Save();
+            try
+            {
+                var cdp = device.NetworkDevice.ManagementIP.Ssh().Execute<CdpNeighbor>();
+                var cdpEntry = cdp.FirstOrDefault(d => d.IP.ToInt() == device.RawIP);
+                if (cdpEntry == null || !cdpEntry.Capabilities.Contains("Phone")) return;
+                device.Type = DeviceType.Phone;
+                device.Hostname = cdpEntry.Hostname;
+                uow.Save();
+            }
+            catch
+            {
+                // ignored
+            }
         }
 
         public static void SetType(int deviceId)

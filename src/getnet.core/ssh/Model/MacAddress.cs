@@ -18,7 +18,7 @@ namespace getnet.core.ssh
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
             var results = new List<ICommandResult>();
-            var matchSet = Regex.Matches(data, @"(\w{4}\.\w{4}\.\w{4})[\w\s,]*([LVFGST][\w\/]{2,30})");
+            var matchSet = Regex.Matches(data, @"(\w{4}\.\w{4}\.\w{4})[\w\s,]*([PLVFGST][\w\/]{2,30})");
             for(int i = 0; i < matchSet.Count; i++ )
             {
                 results.Add(new MacAddress

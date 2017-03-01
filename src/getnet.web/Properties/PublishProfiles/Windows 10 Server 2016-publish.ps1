@@ -17,7 +17,9 @@ try{
     # call Publish-AspNet to perform the publish operation
     Publish-AspNet -publishProperties $publishProperties -packOutput $packOutput -pubProfilePath $pubProfilePath
 
-	Publish-MaterialIcons $publishProperties["publishUrl"]
+	#Publish-MaterialIcons $publishProperties["publishUrl"]
+
+	#Remove-Configs "Windows 10 Server 2016"
 }
 catch{
     "An error occurred during publish.`n{0}" -f $_.Exception.Message | Write-Error

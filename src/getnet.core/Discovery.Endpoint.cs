@@ -7,6 +7,7 @@ using getnet.core.Model.Entities;
 using getnet.core.ssh;
 using System.Text.RegularExpressions;
 using System.Net;
+using System.Text;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace getnet.core
@@ -20,29 +21,54 @@ namespace getnet.core
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
                     var thisRouter = uow.Repo<NetworkDevice>().Get(d => d.NetworkDeviceId == router.NetworkDeviceId, includeProperties: "RemoteNetworkDeviceConnections,RemoteNetworkDeviceConnections.ConnectedNetworkDevice").First();
-                    var arps = router.ManagementIP.Ssh().Execute<Arp>().GroupBy(d => d.Mac).Select(d => new Arp
+                    var arps = new List<Arp>();
+                    try
+                    {
+                        arps = router.ManagementIP.Ssh().Execute<Arp>();
+                    }
+                    catch (Exception ex)
+                    {
+                        logger.Error("Failed to get arp table from router: " + router.Hostname, ex, WhistlerTypes.NetworkDiscovery);
+                        continue;
+                    }
+
+                    arps = arps.GroupBy(d => d.Mac).Select(d => new Arp
                     {
                         Interface = d.First().Interface,
                         Mac = d.Key,
                         IP = d.First().IP
-                    });
+                    }).ToList();
                     var macs = RecurseMacs(thisRouter, new List<MacAddress>(), 1);
                     var neis = router.ManagementIP.Ssh().Execute<CdpNeighbor>();
+
+                    var sb = new StringBuilder();
+                    sb.AppendLine("Arps (Int, Mac, IP)");
+                    foreach (var a in arps)
+                        sb.AppendFormat("{0}  {1}  {2}\n", a.Interface, a.Mac, a.IP);
+                    sb.AppendLine("\nMacs (Int, Mac, Level)");
+                    foreach (var a in macs)
+                        sb.AppendFormat("{0}  {1}  {2}\n", a.Interface, a.Mac, a.Level);
+                    sb.AppendLine("\nNeighbors (IP, InPort, OutPort)");
+                    foreach (var a in neis)
+                        sb.AppendFormat("{0}  {1}  {2}\n", a.IP, a.InPort, a.OutPort);
+                    logger.Info("Collected recursed endpoint data from " + thisRouter.Hostname, sb.ToString(), WhistlerTypes.NetworkDiscovery);
+
+
                     foreach (var arp in arps)
                     {
-                        var mac = macs.Where(d => d.Mac == arp.Mac).OrderByDescending(d => d.Level).FirstOrDefault();
+                        var mac = macs.Where(d => d.Mac == arp.Mac)
+                            .OrderByDescending(d => d.Level)
+                            .ThenBy(d => d.Interface[0])
+                            .ThenBy(d => neis.All(f => f.InPort != d.Interface && f.OutPort != d.Interface))
+                            .FirstOrDefault();
+
                         if (mac == null)
                             continue;
-
-                        if (Regex.IsMatch(mac.Interface, @"^[VTS]") || neis.Any(d => d.InPort == mac.Interface || d.OutPort == mac.Interface))
-                        {
-                            //do something?
-                        }
-
-                        var thismac = Regex.Replace(macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Mac, @"\.|:|\-", "");
+                        
+                        var thismac = Regex.Replace(mac.Mac, @"\.|:|\-", "").ToUpper();
                         var movedDevice = uow.Repo<Device>().Get(d => d.MAC == thismac && 
                             d.RawIP != arp.IP.ToInt() &&
-                            d.Port != macs.Where(m => m.Mac == arp.Mac).FirstOrDefault().Interface, 
+                            d.Port != macs.FirstOrDefault(m => m.Mac == arp.Mac).Interface, 
                             includeProperties: "DeviceHistories,DeviceHistories.Device").FirstOrDefault();
                         var existingDevice = uow.Repo<Device>().Get(d => d.MAC == thismac).FirstOrDefault();
                         var duplicate = uow.Repo<Device>().Get(d => d.RawIP == arp.IP.ToInt() && d.MAC != thismac).FirstOrDefault();
@@ -89,7 +115,7 @@ namespace getnet.core
                                 RawIP = arp.IP.ToInt(),
                                 DiscoveryDate = DateTime.UtcNow,
                                 LastSeenOnline = DateTime.UtcNow,
-                                Port = macs.Where(d => d.Mac == arp.Mac).FirstOrDefault()?.Interface,
+                                Port = macs.FirstOrDefault(d => d.Mac == arp.Mac)?.Interface,
                                 Site = thisSite
                             });
                             uow.Save();
@@ -99,7 +125,7 @@ namespace getnet.core
                             thisSite.Devices.AddOrNew(existingDevice);
                             if (existingDevice.Port.HasValue())
                             {
-                                var thisNet = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == macs.Where(m => m.Mac == arp.Mac).FirstOrDefault().TableOwner.ToInt()).FirstOrDefault();
+                                var thisNet = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == macs.FirstOrDefault(m => m.Mac == arp.Mac).TableOwner.ToInt()).FirstOrDefault();
                                 if (thisNet != null)
                                     existingDevice.NetworkDevice = thisNet;
                             }
@@ -159,7 +185,7 @@ namespace getnet.core
 
         private static List<MacAddress> RecurseMacs(NetworkDevice device, List<MacAddress> macs, int level)
         {
-            if (device.Capabilities == NetworkCapabilities.Switch)
+            if (device.Capabilities.HasFlag(NetworkCapabilities.Switch))
             {
                 try
                 {
@@ -180,7 +206,7 @@ namespace getnet.core
             }
             var connectedDevices = device.RemoteNetworkDeviceConnections
                 ?.Select(d => d.ConnectedNetworkDevice)
-                .Where(d => d.Capabilities == NetworkCapabilities.Switch)
+                .Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Switch))
                 ?? new List<NetworkDevice>().AsEnumerable();
 
             foreach (var connectedDevice in connectedDevices)
@@ -200,7 +226,7 @@ namespace getnet.core
             {
                 logger.Error(ex, WhistlerTypes.NetworkDiscovery);
             }
-            var connectedDevices = device.RemoteNetworkDeviceConnections.Select(d => d.NetworkDevice).Where(d => d.Capabilities == NetworkCapabilities.Switch);
+            var connectedDevices = device.RemoteNetworkDeviceConnections.Select(d => d.NetworkDevice).Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Switch));
             foreach (var connectedDevice in connectedDevices)
             {
                 neighbors.AddRange(RecurseNeighbors(connectedDevice, neighbors));

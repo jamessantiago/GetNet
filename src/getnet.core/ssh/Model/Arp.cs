@@ -17,13 +17,14 @@ namespace getnet.core.ssh
         public List<ICommandResult> ConvertCommandResult<T>(string data)
         {
             var results = new List<ICommandResult>();
-            var ipMatchSet = Regex.Matches(data, @"((([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])[.]){3}(([2]([0-4][0-9]|[5][0-5])|[0-1]?[0-9]?[0-9])))\s*[-\d]*\s\s\s(\w{4}\.\w{4}\.\w{4})");
-            var macIntMatchSet = Regex.Matches(data, @"(\w{4}\.\w{4}\.\w{4})[\w\s,]*([FGST][\w\/]{2,30})");
+            var ipMatchSet = Regex.Matches(data, @"(\d+\.\d+\.\d+\.\d+) \s*");
+            var macIntMatchSet = Regex.Matches(data, @"(\w{4}\.\w{4}\.\w{4}|INCOMPLETE)[\w\s,]*([VFGST][\w\/]{2,30})");
 
             if (Util.AllSame(ipMatchSet.Count, macIntMatchSet.Count))
             {
                 for (int i = 0; i < ipMatchSet.Count; i++)
                 {
+                    if (macIntMatchSet[i].Groups[1].Value == "INCOMPLETE") continue;
                     results.Add(new Arp
                     {
                         IP = IPAddress.Parse(ipMatchSet[i].Groups[1].Value),
@@ -38,7 +39,7 @@ namespace getnet.core.ssh
 
         public string GetStoredCommand()
         {
-            return "show arp";
+            return "show ip arp";
         }
     }
 }

@@ -18,6 +18,11 @@ html, body {
     width: 100%;
 }
 
+.getnet-subnets {
+    max-height: 400px;
+    overflow: auto;
+}
+
 .mdl-dialog {
     width: 380px;
 }

@@ -18,6 +18,8 @@ try{
     Publish-AspNet -publishProperties $publishProperties -packOutput $packOutput -pubProfilePath $pubProfilePath
 
 	#Publish-MaterialIcons $publishProperties["publishUrl"]
+
+	#Remove-Configs "Centos 7 x64"
 }
 catch{
     "An error occurred during publish.`n{0}" -f $_.Exception.Message | Write-Error

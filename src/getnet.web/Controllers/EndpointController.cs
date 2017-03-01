@@ -34,10 +34,8 @@ namespace getnet.Controllers
             var filter = param.columns[0]["search"]["value"];
             if (filter.HasValue() && filter != "none")
             {
-                var vlanPredicates = PredicateBuilder.False<Device>();
                 foreach (var vn in filter.Split(','))
-                    vlanPredicates = vlanPredicates.Or(d => d.Vlan.VlanNumber == int.Parse(vn));
-                predicates.And(vlanPredicates);
+                    predicates = predicates.And(d => d.Vlan.VlanNumber != int.Parse(vn));
             }
             else if (filter == "none")
                 predicates = predicates.And(d => false);
@@ -46,7 +44,7 @@ namespace getnet.Controllers
 
             Func<Device, string> orderingFunction = (d =>
                 param.order[0]["column"] == "0" ? d.Site.Name :
-                param.order[0]["column"] == "1" ? d.Vlan.VlanNumber.ToString() :
+                param.order[0]["column"] == "1" ? d.Vlan?.VlanNumber.ToString() ?? "?" :
                 param.order[0]["column"] == "2" ? d.Hostname :
                 param.order[0]["column"] == "3" ? d.RawIP.ToString() :
                 param.order[0]["column"] == "4" ? d.MAC :
@@ -63,7 +61,7 @@ namespace getnet.Controllers
             var results = from r in displayedResults
                           select new[] {
                               r.Site.Name,
-                              r.Vlan.VlanNumber.ToString(),
+                              r.Vlan?.VlanNumber.ToString() ?? "?",
                               r.Hostname,
                               r.IP.ToString(),
                               r.MAC,

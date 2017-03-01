@@ -19,7 +19,17 @@ namespace getnet.core.Logging
         protected override void Write(LogEventInfo logEvent)
         {
             if (Enabled)
-                Task.Run(() => Client.SendAsync(Make(logEvent).Result));
+                Task.Run(() =>
+                {
+                    try
+                    {
+                        Client.SendAsync(Make(logEvent).Result);
+                    }
+                    catch
+                    {
+                        // ignored
+                    }
+                });
         }
 
         private static SmtpClient LoadClient()

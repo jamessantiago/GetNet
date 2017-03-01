@@ -85,6 +85,7 @@ namespace getnet.Controllers
 
         public IActionResult AddAlert(AlertRule alert, string SiteName)
         {
+
             if (ModelState.IsValid)
             {
                 if (SiteName != "Any")

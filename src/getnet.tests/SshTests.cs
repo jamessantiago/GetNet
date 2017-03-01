@@ -119,7 +119,7 @@ namespace getnet.tests
             });
 
             var ints = client.Execute<IpInterface>();
-            Assert.Equal(ints.Count, 4);
+            Assert.Equal(ints.Count, 1);
         }
 
         [Fact]
@@ -149,7 +149,7 @@ namespace getnet.tests
                 Port = 22
             });
 
-            var ints = client.Execute<MacAddress>();
+            var ints = client.Execute<MacAddress>("show mac-add");
             Assert.Equal(ints.Count, 3);
         }
 

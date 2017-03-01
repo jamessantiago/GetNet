@@ -75,3 +75,17 @@ function GetNet-Diff {
 		}
 	}
 }
+
+function Remove-Configs {
+	[cmdletbinding()]
+	param(
+		[Parameter(Position=0, Mandatory=$true)]
+		[string]$build
+	)
+	process {
+		$path = Join-Path "D:\Deploy\GetNet" $build
+		$path = Join-Path $path "getnet.web"
+		rm $(Join-path $path "web.config")
+		rm $(Join-path $path "nlog.config")
+	}
+}

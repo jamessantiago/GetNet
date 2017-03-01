@@ -32,11 +32,11 @@ namespace getnet.Controllers
             var queriedEvents = events.AsQueryable().Where(predicates);
 
             Func<Event, string> orderingFunction = (d =>
-                param.order[0]["column"] == "0" ? d.TimeStamp.ToString() : 
+                param.order[0]["column"] == "0" ? d.TimeStamp.ToLocalTimeString("s") : 
                 param.order[0]["column"] == "1" ? d.Level :
                 param.order[0]["column"] == "2" ? d.Type :
                 param.order[0]["column"] == "3" ? d.Source :
-                param.order[0]["column"] == "4" ? d.Message : d.TimeStamp.ToString());
+                param.order[0]["column"] == "4" ? d.Message : d.TimeStamp.ToLocalTimeString("s"));
 
             if (param.order[0]["dir"] == "asc")
                 queriedEvents = queriedEvents.OrderBy(orderingFunction).AsQueryable();

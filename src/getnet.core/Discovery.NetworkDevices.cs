@@ -17,17 +17,17 @@ namespace getnet.core
                 uow.DumpChanges();
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)).ToList())
                 {
-                    recurseDevices(router, new List<NetworkDevice>());
+                    RecurseDevices(router, new List<NetworkDevice>());
                 }
             });
         }
 
-        private static List<NetworkDevice> recurseDevices(NetworkDevice device, List<NetworkDevice> devices)
+        private static List<NetworkDevice> RecurseDevices(NetworkDevice device, List<NetworkDevice> devices)
         {
             IEnumerable<CdpNeighbor> neighbors = null;
             try
             {
-                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router) && d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch));
+                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch));
             } catch (Exception ex)
             {
                 logger.Error(ex, WhistlerTypes.NetworkDiscovery, "Failed to retrieve cdp table from device " + device.Hostname);
@@ -37,7 +37,7 @@ namespace getnet.core
             foreach (var nei in neighbors)
             {
                 var existingDevice = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == nei.IP.ToInt()).FirstOrDefault();
-                if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt()) && existingDevice == null)
+                if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt() || d.Hostname == nei.Hostname) && existingDevice == null)
                 {
                     var newDevice = new NetworkDevice
                     {
@@ -65,9 +65,9 @@ namespace getnet.core
                     uow.Save();
                     UpdateDevice(newDevice);
                     devices.Add(newDevice);
-                    devices = recurseDevices(newDevice, devices);
+                    devices = RecurseDevices(newDevice, devices);
                 }
-                else if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt()) && existingDevice != null)
+                else if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt() || d.Hostname == nei.Hostname) && existingDevice != null)
                 {
                     existingDevice.Hostname = nei.Hostname;
                     existingDevice.Model = nei.Model;
@@ -76,7 +76,7 @@ namespace getnet.core
                     uow.Save();
                     UpdateDevice(existingDevice);
                     devices.Add(existingDevice);
-                    devices = recurseDevices(existingDevice, devices);
+                    devices = RecurseDevices(existingDevice, devices);
                     uow.Save();
                     //todo do something for determining connections for existing devices
                 }
@@ -86,9 +86,16 @@ namespace getnet.core
 
         private static void UpdateDevice(NetworkDevice device)
         {
-            var version = device.ManagementIP.Ssh().Execute<DeviceVersion>().First();
-            device.ChassisSerial = version.Serial;
-            uow.Save();
+            try
+            {
+                var version = device.ManagementIP.Ssh().Execute<DeviceVersion>().First();
+                device.ChassisSerial = version.Serial;
+                uow.Save();
+            }
+            catch (Exception ex)
+            {
+                logger.Error("Failed to update device " + device.Hostname, ex, WhistlerTypes.NetworkDiscovery);
+            }
         }
     }
 }

@@ -20,12 +20,13 @@ namespace getnet.core.Model.Entities
         [StringLength(500)]
         public string Details { get; set; }
 
+        [StringLength(100)]
         public string Hostname { get; set; }
 
         [NotMapped]
         public IPAddress ManagementIP => new IPAddress(RawManagementIP);
 
-        [StringLength(50)]
+        [StringLength(150)]
         public string Model { get; set; }
 
         public NetworkCapabilities Capabilities { get; set; }
