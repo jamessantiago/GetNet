@@ -8,12 +8,15 @@ using System.Threading.Tasks;
 using getnet.core.Model;
 using getnet.core.Model.Entities;
 using getnet.core.ssh;
+using getnet.core.Helpers;
 
 namespace getnet.core
 {
     public static partial class EndpointAnalysis
     {
         private static UnitOfWork uow = new UnitOfWork();
+
+        private static Whistler logger = new Whistler(typeof(EndpointAnalysis).FullName);
 
         public static void FullAnalysis(int deviceId)
         {
@@ -30,30 +33,30 @@ namespace getnet.core
             {
                 var cts = new CancellationTokenSource();
                 IPHostEntry hostEntry = null;
-                cts.CancelAfter(TimeSpan.FromSeconds(1));
+                cts.CancelAfter(TimeSpan.FromMilliseconds(200));
                 hostEntry = Task.Run(async () => await System.Net.Dns.GetHostEntryAsync(device.IP.ToString()), cts.Token).Result;
                 device.Hostname = hostEntry.HostName;
                 uow.Save();
                 return;
             }
-            catch
+            catch (Exception ex)
             {
-                // ignored
+                logger.Debug("DNS failed for " + device.IP.ToString(), ex.ToString(), WhistlerTypes.NetworkDiscovery);
             }
 
-            try
-            {
-                var cdp = device.NetworkDevice.ManagementIP.Ssh().Execute<CdpNeighbor>();
-                var cdpEntry = cdp.FirstOrDefault(d => d.IP.ToInt() == device.RawIP);
-                if (cdpEntry == null || !cdpEntry.Capabilities.Contains("Phone")) return;
-                device.Type = DeviceType.Phone;
-                device.Hostname = cdpEntry.Hostname;
-                uow.Save();
-            }
-            catch
-            {
-                // ignored
-            }
+            //try
+            //{
+            //    var cdp = device.NetworkDevice.ManagementIP.Ssh().Execute<CdpNeighbor>();
+            //    var cdpEntry = cdp.FirstOrDefault(d => d.IP.ToInt() == device.RawIP);
+            //    if (cdpEntry == null || !cdpEntry.Capabilities.Contains("Phone")) return;
+            //    device.Type = DeviceType.Phone;
+            //    device.Hostname = cdpEntry.Hostname;
+            //    uow.Save();
+            //}
+            //catch
+            //{
+            //    // ignored
+            //}
         }
 
         public static void SetType(int deviceId)

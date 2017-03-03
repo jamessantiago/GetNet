@@ -41,14 +41,23 @@ namespace getnet.Controllers
                 predicates = predicates.And(d => false);
 
             var queriedDevices = devices.AsQueryable().Where(predicates);
-
-            Func<Device, string> orderingFunction = (d =>
-                param.order[0]["column"] == "0" ? d.Site.Name :
-                param.order[0]["column"] == "1" ? d.Vlan?.VlanNumber.ToString() ?? "?" :
-                param.order[0]["column"] == "2" ? d.Hostname :
-                param.order[0]["column"] == "3" ? d.RawIP.ToString() :
-                param.order[0]["column"] == "4" ? d.MAC :
-                param.order[0]["column"] == "5" ? d.LastSeenOnline.ToString() : d.Hostname);
+            
+            Func<Device, string> orderingFunction = null;
+            if (!siteid.HasValue)
+                orderingFunction = (d =>
+                    param.order[0]["column"] == "0" ? d.Site.Name :
+                    param.order[0]["column"] == "1" ? d.Vlan?.VlanNumber.ToString() ?? "0" :
+                    param.order[0]["column"] == "2" ? d.Hostname :
+                    param.order[0]["column"] == "3" ? d.RawIP.ToString() :
+                    param.order[0]["column"] == "4" ? d.MAC :
+                    param.order[0]["column"] == "5" ? d.LastSeenOnline.ToString("s") : d.Hostname);
+            else
+                orderingFunction = (d =>
+                    param.order[0]["column"] == "0" ? d.Vlan?.VlanNumber.ToString() ?? "0" :
+                    param.order[0]["column"] == "1" ? d.Hostname :
+                    param.order[0]["column"] == "2" ? d.RawIP.ToString() :
+                    param.order[0]["column"] == "3" ? d.MAC :
+                    param.order[0]["column"] == "4" ? d.LastSeenOnline.ToString("s") : d.Hostname);
 
             if (param.order[0]["dir"] == "asc")
                 queriedDevices = queriedDevices.OrderBy(orderingFunction).AsQueryable();

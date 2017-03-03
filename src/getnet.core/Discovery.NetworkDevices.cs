@@ -27,7 +27,9 @@ namespace getnet.core
             IEnumerable<CdpNeighbor> neighbors = null;
             try
             {
-                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch));
+                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => 
+                    d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch) &&
+                    !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router));
             } catch (Exception ex)
             {
                 logger.Error(ex, WhistlerTypes.NetworkDiscovery, "Failed to retrieve cdp table from device " + device.Hostname);

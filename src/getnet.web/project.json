@@ -1,5 +1,5 @@
 {
-  "version": "1.0.9",
+  "version": "1.0.11",
   "dependencies": {
     "Microsoft.AspNetCore.Razor.Tools": {
       "version": "1.0.0-preview2-final",

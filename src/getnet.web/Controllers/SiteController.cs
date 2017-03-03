@@ -12,7 +12,10 @@ using getnet;
 using getnet.core.Model;
 using getnet.Model;
 using getnet.core;
+using getnet.core.Helpers;
 using getnet.Helpers;
+using Newtonsoft.Json;
+using NuGet.Protocol.Core.v3;
 
 namespace getnet.Controllers
 {
@@ -140,23 +143,30 @@ namespace getnet.Controllers
             ViewData["hubip"] = hubip;
             var neighbors = hubip.Ssh().Execute<CdpNeighbor>();
             var ipnets = hubip.Ssh().Execute<IpInterface>();
+            var settings = new JsonSerializerSettings();
+            settings.Converters.Add(new JsonIpAddressConverter());
+            settings.Formatting = Formatting.Indented;
+            logger.Info("Discovery performed against " + hubip, 
+                JsonConvert.SerializeObject(neighbors, settings) + "\n\n\n\n" + JsonConvert.SerializeObject(ipnets, settings),
+                WhistlerTypes.NetworkDiscovery);
+            
+
             foreach (var ipnet in ipnets.Where(d => d.IPNetwork.Cidr >= 30 && neighbors.Any(n => n.InPort != d.Interface)))
             {
                 var ip = ipnet.IPNetwork.Cidr == 31 ? ipnet.IPNetwork.Broadcast.IncrementIPbyOne() : ipnet.IPNetwork.LastUsable;
-                if (ip.CanSsh())
-                {
-                    var ver = ip.Ssh().Execute<DeviceVersion>();
+                if (!ip.CanSsh()) continue;
+
+                var ver = ip.Ssh().Execute<DeviceVersion>();
                     
-                    neighbors.Add(new CdpNeighbor
-                    {
-                        Capabilities = new string[] { "Router" },
-                        InPort = ipnet.Interface,
-                        OutPort = "Unknown",
-                        Hostname = ver.First().Hostname,
-                        IP = ip,
-                        Model = ver.First().Model
-                    });
-                }
+                neighbors.Add(new CdpNeighbor
+                {
+                    Capabilities = new string[] { "Router" },
+                    InPort = ipnet.Interface,
+                    OutPort = "Unknown",
+                    Hostname = ver.First().Hostname,
+                    IP = ip,
+                    Model = ver.First().Model
+                });
             }
             var networkdevices = uow.Repo<NetworkDevice>().Get(d => d.Capabilities.HasFlag(NetworkCapabilities.Router));
             neighbors = neighbors.Where(d => d.Capabilities.Contains("Router") && !networkdevices.Any(n => n.RawManagementIP == d.IP.ToInt())).ToList();
