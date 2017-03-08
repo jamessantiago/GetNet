@@ -7,6 +7,7 @@ using System;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
 using System.Linq;
+using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace getnet.core.Model.Entities
 {
@@ -73,6 +74,7 @@ namespace getnet.core.Model.Entities
         {
             modelBuilder.Entity<Site>().HasIndex("Status");
             modelBuilder.Entity<Site>().HasIndex("Name").IsUnique();
+            modelBuilder.Entity<Site>().HasMany(d => d.Vlans).WithOne(d => d.Site).Metadata.DeleteBehavior = DeleteBehavior.Restrict;
         }
     }
 }

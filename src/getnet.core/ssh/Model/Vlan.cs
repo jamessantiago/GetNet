@@ -20,11 +20,15 @@ namespace getnet.core.ssh
             var matchSet2 = Regex.Matches(data, @"Vlan([0-9]{1,3})((?!Vlan)[\w ,]*)[\n|\r|\r\n]{1,5}\s*Internet address is ([\d\.]*)\/(\d\d)", RegexOptions.Multiline);
             var matchSet3 = Regex.Matches(data, @"Vlan([0-9]{1,3})((?!Vlan)[\w ,]*).{1,800}Secondary address ([\d\.]*)\/(\d\d)", RegexOptions.Singleline);
             var matchSet4 = Regex.Matches(data, @"Vlan([0-9]{1,3}),.*[\n|\r|\r\n]\s*IP address: ([\d\.]*), IP subnet: ([\d\.]*)\/(\d\d)", RegexOptions.Multiline);
+            var matchSet5 = Regex.Matches(data,
+                @"Vlan([0-9]{1,3}),.*[\n|\r|\r\n]\s*IP address: [\d\.]*, IP subnet: [\d\.]*\/\d\d.+[\n|\r|\r\n]\s*IP address: ([\d\.]*), IP subnet: ([\d\.]*)\/(\d\d)",
+                RegexOptions.Multiline);
 
             IEnumerable<Match> fullMatchSet = matchSet1.OfType<Match>()
                 .Concat(matchSet2.OfType<Match>())
                 .Concat(matchSet3.OfType<Match>())
                 .Concat(matchSet4.OfType<Match>())
+                .Concat(matchSet5.OfType<Match>())
                 .Where(m => m.Success);
 
             foreach (Match m in fullMatchSet)

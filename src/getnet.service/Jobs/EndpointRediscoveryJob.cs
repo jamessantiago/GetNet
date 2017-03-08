@@ -30,7 +30,7 @@ namespace getnet.service.Jobs
                         {
                             try
                             {
-                                Discovery.DiscoverEndpoints(site).Wait();
+                                Discovery.DiscoverEndpoints(site);
                                 logger.Info("Endpoint discovery complete", WhistlerTypes.NetworkDiscovery, site.SiteId);
                             }
                             catch (Exception ex)

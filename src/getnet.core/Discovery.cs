@@ -46,7 +46,7 @@ namespace getnet.core
             runningDiscoveries.TryRemove(siteId, out runningdisco);
         }
 
-        public async static void RunFullSiteDiscovery(int siteId)
+        public static async void RunFullSiteDiscovery(int siteId)
         {
             
 
@@ -73,7 +73,7 @@ namespace getnet.core
                 await Discovery.DiscoverSubnets(site);
 
                 logger.Info("Finding endpoints", WhistlerTypes.NetworkDiscovery, siteId);
-                await Discovery.DiscoverEndpoints(site);
+                Discovery.DiscoverEndpoints(site);
 
                 //todo DHCP
 

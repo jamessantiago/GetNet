@@ -33,7 +33,7 @@ namespace getnet.core.ssh
 
         public string GetStoredCommand()
         {
-            return "show mac address-table dynamic";  //mac-address-table for routers...
+            return "show mac address-table";  //mac-address-table for routers...
         }
     }
 }

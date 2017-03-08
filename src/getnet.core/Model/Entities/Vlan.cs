@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Linq.Expressions;
 using System.Text.RegularExpressions;
+using Microsoft.EntityFrameworkCore;
 
 namespace getnet.core.Model.Entities
 {
@@ -68,6 +69,13 @@ namespace getnet.core.Model.Entities
             }
 
             return predicates;
+        }
+    }
+
+    public class VlanBuildItem : IModelBuildItem
+    {
+        public void Build(ref ModelBuilder modelBuilder)
+        {
         }
     }
 }

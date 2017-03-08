@@ -118,7 +118,7 @@ namespace getnet.tests
                 Port = 22
             });
 
-            var ints = client.Execute<IpInterface>();
+            var ints = client.Execute<IpInterface>().Where(d => d.Interface == "x").ToList();
             Assert.Equal(ints.Count, 1);
         }
 

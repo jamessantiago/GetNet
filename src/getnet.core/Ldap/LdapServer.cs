@@ -22,11 +22,10 @@ namespace getnet.Model.Security
         };
 
         private LdapServer() {
-            var configExists = CoreCurrent.Configuration.GetSection("Security")?.GetSection("Ldap").GetChildren().Where(d =>
-                d.Key == "Host" ||
+            var configExists = (CoreCurrent.Configuration.GetSection("Security")?.GetSection("Ldap").GetChildren())
+                .Count(d => d.Key == "Host" ||
                 d.Key == "LoginDN" ||
-                d.Key == "Password"
-                ).Count() == 3;
+                d.Key == "Password") == 3;
 
             if (!configExists)
                 throw new NotImplementedException("The ldap configuration is missing or incomplete");
@@ -60,9 +59,9 @@ namespace getnet.Model.Security
 
         public string BaseDN => conn.AuthenticationDN.Substring(conn.AuthenticationDN.IndexOf("DC="), conn.AuthenticationDN.Length - conn.AuthenticationDN.IndexOf("DC="));
 
-        public bool Authenticate(string email, string password)
+        public bool Authenticate(string samaccountname, string password)
         {
-            var dn = FindUserDN(email);
+            var dn = FindUserDN(samaccountname);
             var testconn = new LdapConnection();
             testconn.SecureSocketLayer = false;
             testconn.Connect(CoreCurrent.Configuration["Security:Ldap:Host"], conn.Port);
@@ -74,14 +73,14 @@ namespace getnet.Model.Security
             return connected;
         }
 
-        public bool InGroup(string email, string groupname)
+        public bool InGroup(string samaccountname, string groupname)
         {
             if (groupname == "Domain Users")
             {
-                var user = FindUser(email);
+                var user = FindUser(samaccountname);
                 return (user.getAttribute("primaryGroupID").StringValue == "513");
             }
-            var userDN = FindUserDN(email);
+            var userDN = FindUserDN(samaccountname);
             var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
                 string.Format("(&(objectCategory=group)(sAMAccountName={0}))", groupname),
                 null, false, searchConstraints);
@@ -91,15 +90,15 @@ namespace getnet.Model.Security
             
         }
 
-        public string FindUserDN(string email)
+        public string FindUserDN(string samaccountname)
         {
-            return FindUser(email).DN;
+            return FindUser(samaccountname).DN;
         }
 
         public LdapEntry FindUser(string username)
         {
             var results = conn.Search(BaseDN, LdapConnection.SCOPE_SUB,
-                string.Format("(&(objectCategory=person)(objectClass=user)(mail={0}))", username),
+                string.Format("(&(objectCategory=person)(objectClass=user)(sAMAccountName={0}))", username),
                 null, false, searchConstraints);
 
             return results.next();
@@ -107,9 +106,9 @@ namespace getnet.Model.Security
 
         public void EnsureBind(bool force = false)
         {
-            if (force || conn == null || conn.AuthenticationDN == null && !conn.Bound)
-                lock (syncRoot)
-                    current = new LdapServer();
+            if (!force && conn != null && (conn.AuthenticationDN != null || conn.Bound)) return;
+            lock (syncRoot)
+                current = new LdapServer();
         }
     }
 }

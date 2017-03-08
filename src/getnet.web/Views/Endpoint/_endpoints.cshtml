@@ -2,7 +2,11 @@
     @if (ViewData["Vlans"] != null)
     {
         <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--2-col mdl-typography--text-center">
-            @foreach (getnet.core.Model.Entities.Vlan vlan in ((IEnumerable<getnet.core.Model.Entities.Vlan>)ViewData["Vlans"]).OrderBy(d => d.VlanNumber))
+            <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="vlan_all">
+                <input type="checkbox" id="vlan_all" class="mdl-switch__input" checked>
+                <span class="mdl-switch__label">All Vlans</span>
+            </label>
+            @foreach (getnet.core.Model.Entities.Vlan vlan in ((IEnumerable<getnet.core.Model.Entities.Vlan>) ViewData["Vlans"]).OrderBy(d => d.VlanNumber))
             {
                 <label class="mdl-switch mdl-js-switch mdl-js-ripple-effect" for="vlan_@vlan?.VlanNumber">
                     <input type="checkbox" id="vlan_@vlan?.VlanNumber" data-vlan="@vlan?.VlanNumber" class="mdl-switch__input vlans" checked>
@@ -103,6 +107,19 @@
 
 
     componentHandler.upgradeElements(document.querySelectorAll('.mdl-switch'));
+
+    $("#vlan_all").on("click", function () {
+        if ($("#vlan_all").is(":checked") == true) {
+            $('.vlans').each(function(index, element) {
+                element.MaterialCheckbox.check();
+            });
+        } else {
+            $('.vlans').each(function (index, element) {
+                element.MaterialCheckbox.uncheck();
+            });
+        }
+    });
+
     $(".vlans").on("click", function () {
         var filter = '';
         $(".vlans").each(function () {
@@ -113,7 +130,7 @@
         });
         filter = filter.slice(0, -1);
         if (filter === '')
-            filter = 'none';
+            filter = 'all';
         etable.column(0).search(filter).draw();
     });
 </script>

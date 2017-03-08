@@ -16,11 +16,35 @@ namespace getnet.core
             {
                 foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
                 {
-                    IEnumerable<CdpNeighbor> tunnels = null;
+                    List<CdpNeighbor> tunnels = null;
                     try
                     {
                         tunnels =
-                            router.ManagementIP.Ssh().Execute<CdpNeighbor>()?.Where(d => d.OutPort.StartsWith("Tu"));
+                            router.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => d.OutPort.StartsWith("Tu")).ToList();
+                        if (!tunnels.Any())
+                        {
+                            var ipnets = router.ManagementIP.Ssh().Execute<IpInterface>();
+                            foreach (var ipnet in ipnets.Where(d => d.IPNetwork.Cidr >= 30 && d.Interface.StartsWith("Tu")))
+                            {
+                                var ip = ipnet.IPNetwork.Cidr == 31 ? ipnet.IP.DecrementIPbyOne() : ipnet.IPNetwork.FirstUsable;
+                                if (!ip.CanSsh()) continue;
+
+                                var ver = ip.Ssh().Execute<DeviceVersion>();
+                                var outport = ip.Ssh().Execute<IpInterface>().FirstOrDefault(d => d.IP.ToInt() == ipnet.IP.ToInt())?.Interface;
+                                if (outport == null)
+                                    continue;
+
+                                tunnels.Add(new CdpNeighbor
+                                {
+                                    Capabilities = new string[] { "Router" },
+                                    InPort = ipnet.Interface,
+                                    OutPort = outport,
+                                    Hostname = ver.First().Hostname,
+                                    IP = ip,
+                                    Model = ver.First().Model
+                                });
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {

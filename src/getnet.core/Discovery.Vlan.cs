@@ -69,7 +69,7 @@ namespace getnet.core
 
                     foreach (var oldvlan in vlansToRemove)
                     {
-                        var devicesToMove = uow.Repo<Device>().Get(d => d.Vlan == oldvlan, includeProperties: "Vlan").ToList();
+                        var devicesToMove = uow.Repo<Device>().Get(d => d.Vlan == oldvlan || d.Vlan == null, includeProperties: "Vlan").ToList();
                         foreach (var dev in devicesToMove)
                             dev.Vlan = vlansToKeep.FirstOrDefault(d => IPNetwork.Contains(d.IPNetwork, dev.IP));
                         router.Vlans.Remove(oldvlan);

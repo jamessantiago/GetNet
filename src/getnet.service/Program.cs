@@ -45,7 +45,9 @@ namespace getnet.service
             string pathToCryptoKeys = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar
                     + "dp_keys" + Path.DirectorySeparatorChar;
             serviceCollection.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys));
+                .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys))
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(3650))
+                .SetApplicationName("getnet");
             CoreCurrent.Protector = ActivatorUtilities.CreateInstance<DataProtect>(serviceCollection.BuildServiceProvider());
 
             CoreCurrent.Configuration["Whistler:Console:Enabled"] = "true";

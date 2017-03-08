@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using getnet.core.Model.Entities;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Identity;
 using getnet.Model;
@@ -48,21 +49,21 @@ namespace getnet.Controllers
         [HttpPost]
         [RequireHttps]
         [Route("/login")]
-        public async Task<IActionResult> Login(string email, string password, string returnUrl)
+        public async Task<IActionResult> Login(string username, string password, string returnUrl)
         {
-            email = email.ToLower();
+            username = username.ToLower();
             try
             {
                 if (Retry.Do(
                     action: () => {
-                        LdapServer.Current.EnsureBind();
-                        return LdapServer.Current.Authenticate(email, password);
+                        LdapServer.Current.EnsureBind(true);
+                        return LdapServer.Current.Authenticate(username, password);
                     },
                     retryInterval: TimeSpan.FromSeconds(2), 
                     breakOnValidation: ex => ex.GetType() == typeof(LdapException) && ex.Message.StartsWith("Invalid Credentials"),
                     retryCount: 3))
                 {
-                    return await Login(email, returnUrl);
+                    return await Login(username, returnUrl);
                 }
             } catch (AggregateException ex)
             {
@@ -100,5 +101,20 @@ namespace getnet.Controllers
             return View();
         }
 
+        [HttpPost]
+        public IActionResult UpdateEmail(string email)
+        {
+            var user = uow.Repo<UserProfile>().Get(d => d.Username == Current.User.AccountName).FirstOrDefault();
+            if (!user.Email.IsValidEmailAddress())
+            {
+                HttpContext.Session.AddSnackMessage("Email is invalid");
+            }
+            else
+            {
+                user.Email = email;
+                uow.Save();
+            }
+            return RedirectToAction("alerts", "a");
+        }
     }
 }

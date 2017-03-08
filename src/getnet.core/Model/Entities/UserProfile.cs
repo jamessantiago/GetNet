@@ -12,10 +12,13 @@ namespace getnet.core.Model.Entities
     {
         public int UserProfileId { get; set; }
 
+        [Required, StringLength(25)]
+        public string Username { get; set; }
+
         [StringLength(300)]
         public string DisplayName { get; set; }
 
-        [Required, StringLength(200)]
+        [StringLength(256)]
         public string Email { get; set; }
 
         public virtual ICollection<AlertRule> AlertRules { get; set; }
@@ -24,6 +27,7 @@ namespace getnet.core.Model.Entities
         {
             public void Build(ref ModelBuilder modelBuilder)
             {
+                modelBuilder.Entity<UserProfile>().HasIndex("Username").IsUnique();
                 modelBuilder.Entity<UserProfile>().HasIndex("Email").IsUnique();
             }
         }

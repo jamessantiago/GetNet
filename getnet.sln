@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.26228.4
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{1FC5DD2B-3D15-49AE-9432-C80CB6244369}"
 EndProject
@@ -9,24 +9,18 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		BuildAll.ps1 = BuildAll.ps1
 		CONTRIBUTING.md = CONTRIBUTING.md
-		global.json = global.json
-		Performance1.psess = Performance1.psess
-		Performance2.psess = Performance2.psess
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.web", "src\getnet.web\getnet.web.xproj", "{612DA792-54C3-4FE1-A20A-A312746DEFD6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "getnet.web", "src\getnet.web\getnet.web.csproj", "{612DA792-54C3-4FE1-A20A-A312746DEFD6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.core", "src\getnet.core\getnet.core.xproj", "{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "getnet.core", "src\getnet.core\getnet.core.csproj", "{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.tests", "src\getnet.tests\getnet.tests.xproj", "{E5AC5A36-D477-41DA-B4D2-AC1E88708E51}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "getnet.tests", "src\getnet.tests\getnet.tests.csproj", "{E5AC5A36-D477-41DA-B4D2-AC1E88708E51}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "getnet.service", "src\getnet.service\getnet.service.xproj", "{EF997B7F-6C68-439D-AFBF-8FDC51896C90}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "getnet.service", "src\getnet.service\getnet.service.csproj", "{EF997B7F-6C68-439D-AFBF-8FDC51896C90}"
 EndProject
 Global
-	GlobalSection(Performance) = preSolution
-		HasPerformanceSessions = true
-	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -57,5 +51,8 @@ Global
 		{35331E6F-6C5E-46F3-93C9-688DB2BFC7FB} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
 		{E5AC5A36-D477-41DA-B4D2-AC1E88708E51} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
 		{EF997B7F-6C68-439D-AFBF-8FDC51896C90} = {1FC5DD2B-3D15-49AE-9432-C80CB6244369}
+	EndGlobalSection
+	GlobalSection(Performance) = preSolution
+		HasPerformanceSessions = true
 	EndGlobalSection
 EndGlobal

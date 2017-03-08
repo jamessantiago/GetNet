@@ -14,7 +14,7 @@ namespace getnet.core
 {
     public static partial class Discovery
     {
-        public static async Task DiscoverEndpoints(Site site)
+        public static void DiscoverEndpoints(Site site)
         {
             foreach (var router in site.NetworkDevices.Where(d => d.Capabilities.HasFlag(NetworkCapabilities.Router)))
             {
@@ -143,7 +143,7 @@ namespace getnet.core
                         uow.Save();
                     }
                     uow.Save();
-                    EndpointAnalysis.FullAnalysis(existingDevice.DeviceId);
+                    Task.Run(() => EndpointAnalysis.FullAnalysis(existingDevice.DeviceId));
                         
                 }
             }

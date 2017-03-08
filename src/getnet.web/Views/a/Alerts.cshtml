@@ -15,28 +15,36 @@ else
 {
 
 <div class="mdl-shadow--2dp mdl-color--white getnet-cell mdl-cell mdl-cell--12-col">
+    
+    <form action="/account/updateemail" method="post">
+        <input type="hidden" name="username" value="@Current.User.AccountName"/>
+        <div mdl-textbox-for="email" mdl-label="Email" mdl-errors="@ViewData.ModelState.ErrorsFor("username")" mdl-value="@Current.User.UserProfile.Email"></div>
+        <br/>
+        <button mdl-submit-button="Update"></button>
+    </form>
+    <br/><br/>
+    <table id="alerts" class="mdl-data-table" width="100%" cellspacing="0">
+        <thead>
+        <tr>
+            <th>Log Level</th>
+            <th>Type</th>
+            <th>Site</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var alert in Model)
+        {
+            <tr>
+                <td><button class="mdl-button mdl-js-button mdl-button--icon" title="Remove this alert" onclick="window.location = '/a/deletealert/@alert.AlertRuleId'"><i class="material-icons">delete</i></button> @alert.LogLevel</td>
+                <td>@alert.Type</td>
+                <td>@(alert.Site?.Name ?? "Any")</td>
+            </tr>
+        }
+        </tbody>
+    </table>
     <button type="button" class="mdl-button mdl-js-button mdl-button--raised mdl-js-ripple-effect mdl-button--colored show-dialog">
         New
     </button>
-    <table id="alerts" class="mdl-data-table" width="100%" cellspacing="0">
-        <thead>
-            <tr>
-                <th>Log Level</th>
-                <th>Type</th>
-                <th>Site</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var alert in Model)
-            {
-                <tr>
-                    <td><button class="mdl-button mdl-js-button mdl-button--icon" title="Remove this alert" onclick="window.location = '/a/deletealert/@alert.AlertRuleId'"><i class="material-icons">delete</i></button> @alert.LogLevel</td>
-                    <td>@alert.Type</td>
-                    <td>@(alert.Site?.Name ?? "Any")</td>
-                </tr>
-            }
-        </tbody>
-    </table>
 </div>
 
 @section dialog {

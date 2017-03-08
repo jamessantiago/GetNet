@@ -27,9 +27,12 @@ namespace getnet.core
             IEnumerable<CdpNeighbor> neighbors = null;
             try
             {
-                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>().Where(d => 
-                    d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch) &&
-                    !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router));
+                neighbors = device.ManagementIP.Ssh().Execute<CdpNeighbor>();
+                neighbors = neighbors.Count(d => d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch)) == 1 ? 
+                    neighbors.Where(d => d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch)) : 
+                    neighbors.Where(d => 
+                        d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Switch) &&
+                        !d.Capabilities.GetCaps().HasFlag(NetworkCapabilities.Router));
             } catch (Exception ex)
             {
                 logger.Error(ex, WhistlerTypes.NetworkDiscovery, "Failed to retrieve cdp table from device " + device.Hostname);
@@ -38,7 +41,7 @@ namespace getnet.core
 
             foreach (var nei in neighbors)
             {
-                var existingDevice = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == nei.IP.ToInt()).FirstOrDefault();
+                var existingDevice = uow.Repo<NetworkDevice>().Get(d => d.RawManagementIP == nei.IP.ToInt() || d.Hostname == nei.Hostname).FirstOrDefault();
                 if (!devices.Any(d => d.RawManagementIP == nei.IP.ToInt() || d.Hostname == nei.Hostname) && existingDevice == null)
                 {
                     var newDevice = new NetworkDevice

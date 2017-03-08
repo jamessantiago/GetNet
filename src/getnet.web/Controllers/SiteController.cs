@@ -15,7 +15,6 @@ using getnet.core;
 using getnet.core.Helpers;
 using getnet.Helpers;
 using Newtonsoft.Json;
-using NuGet.Protocol.Core.v3;
 
 namespace getnet.Controllers
 {
@@ -153,7 +152,7 @@ namespace getnet.Controllers
 
             foreach (var ipnet in ipnets.Where(d => d.IPNetwork.Cidr >= 30 && neighbors.Any(n => n.InPort != d.Interface)))
             {
-                var ip = ipnet.IPNetwork.Cidr == 31 ? ipnet.IPNetwork.Broadcast.IncrementIPbyOne() : ipnet.IPNetwork.LastUsable;
+                var ip = ipnet.IPNetwork.Cidr == 31 ? ipnet.IP.IncrementIPbyOne() : ipnet.IPNetwork.LastUsable;
                 if (!ip.CanSsh()) continue;
 
                 var ver = ip.Ssh().Execute<DeviceVersion>();
@@ -202,6 +201,9 @@ namespace getnet.Controllers
                         ChassisSerial = router.Serial,
                         Site = site
                     };
+
+                    if (ip.Ssh().Execute<MacAddress>().Any())
+                        device.Capabilities = device.Capabilities | NetworkCapabilities.Switch;
                     var devchanges = uow.Repo<NetworkDevice>().Insert(device);
                     site.NetworkDevices.AddOrNew(device);
                     uow.Save();
@@ -256,6 +258,9 @@ namespace getnet.Controllers
                         ChassisSerial = router.Serial,
                         Site = site
                     };
+                    if (ip.Ssh().Execute<MacAddress>().Any())
+                        device.Capabilities = device.Capabilities | NetworkCapabilities.Switch;
+                    
                     var devchanges = uow.Repo<NetworkDevice>().Insert(device);
                     site.NetworkDevices.AddOrNew(device);
                     uow.Save();
@@ -298,7 +303,7 @@ namespace getnet.Controllers
                 {
                     try
                     {
-                        Discovery.DiscoverEndpoints(site).Wait();
+                        Discovery.DiscoverEndpoints(site);
                         logger.Info("Endpoint discovery complete", WhistlerTypes.NetworkDiscovery, id);
                     }
                     catch (Exception ex) {

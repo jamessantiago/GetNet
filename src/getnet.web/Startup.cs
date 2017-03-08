@@ -33,20 +33,20 @@ namespace getnet
             string pathToCryptoKeys = Directory.GetCurrentDirectory() + Path.DirectorySeparatorChar
                     + "dp_keys" + Path.DirectorySeparatorChar;
             services.AddDataProtection()
-                .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys));
-
-            //CoreCurrent.Configuration.SetSecure("Security:Provider", "admin");
-            //CoreCurrent.Configuration.Set("Security:Ldap:Host", "192.168.157.131");
-            //CoreCurrent.Configuration.SetSecure("Security:Ldap:LoginDN", "CN=ldapuser,CN=Users,DC=getnet,DC=local");
-            //CoreCurrent.Configuration.SetSecure("Security:Ldap:Password", "TestPassword123");
-            //CoreCurrent.Configuration.Set("Security:Ldap:Roles:" + Roles.GlobalAdmins, "Domain Users");
-            //CoreCurrent.Configuration.SetSecure("SSH:Username", "admin");
-            //CoreCurrent.Configuration.SetSecure("SSH:Password", "password");
-            //CoreCurrent.Configuration["ASPNETCORE_ENVIRONMENT"] = "Development";
+                .PersistKeysToFileSystem(new DirectoryInfo(pathToCryptoKeys))
+                .SetDefaultKeyLifetime(TimeSpan.FromDays(3650))
+                .SetApplicationName("getnet");
+            
             switch (CoreCurrent.Configuration["Security:Provider"])
             {
                 case "ldap":
-                    services.AddIdentity<User, Role>()
+                    services.AddIdentity<User, Role>(options =>
+                        {
+                            options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(7);
+                            options.Cookies.ApplicationCookie.LoginPath = "/login";
+                            options.Cookies.ApplicationCookie.LogoutPath = "/logoff";
+                            options.Cookies.ApplicationCookie.SlidingExpiration = true;
+                        })
                         .AddClaimsPrincipalFactory<ActiveDirectoryProvider>()
                         .AddUserStore<ActiveDirectoryProvider>()
                         .AddRoleStore<ActiveDirectoryProvider>();
@@ -73,9 +73,10 @@ namespace getnet
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.Configure<IdentityOptions>(options =>
             {
-                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(5);
+                options.Cookies.ApplicationCookie.ExpireTimeSpan = TimeSpan.FromDays(7);
                 options.Cookies.ApplicationCookie.LoginPath = "/login";
                 options.Cookies.ApplicationCookie.LogoutPath = "/logoff";
+                options.Cookies.ApplicationCookie.SlidingExpiration = true;
             });
         }
 
